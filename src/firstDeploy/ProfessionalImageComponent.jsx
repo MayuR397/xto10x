@@ -44,7 +44,7 @@ const ProfessionalImageComponent = () => {
       <img
         src="https://ik.imagekit.io/74a8dncgy/xto10x.jpg?updatedAt=1737041745666"
         alt="Professional"
-        className="w-2/3 rounded-xl shadow-md mb-10" // Rounded corners and smaller size
+        className="w-full sm:w-2/3 rounded-xl shadow-md mb-10" // Make the image full width on small screens and 2/3 on larger screens
       />
 
     </div>
