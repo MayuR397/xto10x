@@ -2,7 +2,7 @@ import React from 'react';
 import HackathonHeader from './firstDeploy/HackathonHeader';
 
 import TenXSection from './firstDeploy/TenXSection';
-import Looker from './components/looker';
+import FindTeam from './components/FindTeam';
 import ProfessionalImageComponent from './firstDeploy/ProfessionalImageComponent';
 import SimpleAccordion from './firstDeploy/FAQAccordion';
 import EventSchedule from './firstDeploy/EventSchedule';
@@ -14,7 +14,7 @@ const App = () => {
       <HackathonHeader />
       <TenXSection/>
       <ProfessionalImageComponent/>
-      <Looker/>
+      <FindTeam/>
       <EventSchedule/>
       {/* <SimpleAccordion/> */}
     </div>

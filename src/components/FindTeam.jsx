@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Looker = () => {
+const FindTeam = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true); // State to track loading
 
@@ -87,4 +87,4 @@ const Looker = () => {
   );
 };
 
-export default Looker;
+export default FindTeam;
