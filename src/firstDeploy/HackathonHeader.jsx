@@ -4,11 +4,11 @@ const HackathonHeader = () => {
   const hackathonName = "Hackathon 2025";
   const tagline = "Code, Collaborate, Conquer!";
 
-  // Set the target time to tomorrow at 11:00 AM
-  const now = new Date();
-  const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 11, 0, 0);
+  // Set the target time to today at 11:30 AM IST
+  const targetTime = new Date();
+  targetTime.setHours(11, 30, 0, 0); // Set to 11:30 AM today
 
-  const [timeLeft, setTimeLeft] = useState(targetTime - now);
+  const [timeLeft, setTimeLeft] = useState(targetTime - new Date());
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -47,7 +47,7 @@ const HackathonHeader = () => {
       </h2>
       <p className="text-lg italic text-center mb-6">{tagline}</p>
       <div className="text-4xl font-mono text-red-500">
-        {timeLeft > 0 ? formatTime(timeLeft) : "Time's Up!"}
+        {timeLeft > 0 ? formatTime(timeLeft) : "Hackathon Started"}
       </div>
     </div>
   );
