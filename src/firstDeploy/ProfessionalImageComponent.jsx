@@ -8,7 +8,7 @@ const ProfessionalImageComponent = () => {
       <div className="flex flex-wrap justify-center gap-6 mb-6 mt-0">
         {/* Slack Button */}
         <a
-          href="https://bit.ly/42hSjff"
+          href="https://join.slack.com/t/xto10x-talk/shared_invite/zt-2yal8bdwg-B5OLgAYkkML5HlgUOa_SiA"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 bg-red-400 text-white py-3 px-6 rounded-lg shadow hover:bg-red-500 transition duration-300"
