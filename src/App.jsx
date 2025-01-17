@@ -10,6 +10,8 @@ import Dashboard from './components/Dashboard';
 import NewLeaderBoard from './components/NewLeaderBoard';
 import ProblemStatements from './components/ProblemStatements';
 import Footer from './components/Footer';
+import FAQAccordion from './firstDeploy/FAQAccordion';
+import GoogleFormButton from './components/GoogleFormButton';
 
 const App = () => {
   return (
@@ -17,13 +19,15 @@ const App = () => {
       <HackathonHeader />
       <TenXSection/>
       {/* <Dashboard/> */}
-      {/* <ProblemStatements/> */}
+      <GoogleFormButton/>
+      <ProblemStatements/>
       {/* <NewLeaderBoard/> */}
       <ProfessionalImageComponent/>
       <FindTeam/>
       <EventSchedule/>
+      <FAQAccordion/>
       {/* <Footer/> */}
-      {/* <SimpleAccordion/> */}
+      
     </div>
   );
 };

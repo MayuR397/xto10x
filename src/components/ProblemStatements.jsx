@@ -18,7 +18,7 @@ const ProblemStatements = () => {
             className="bg-red-400 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-red-600 transition duration-300 flex items-center justify-center gap-3"
           >
             <FaCode size={20} />
-            <span>Frontend Development</span>
+            <span>Software Development</span>
           </a>
 
           {/* Data Analytics (DA) Button */}
@@ -40,7 +40,7 @@ const ProblemStatements = () => {
             className="bg-green-400 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 flex items-center justify-center gap-3"
           >
             <FaVials size={20} />
-            <span>SDET</span>
+            <span>Software Testing</span>
           </a>
         </div>
       </div>

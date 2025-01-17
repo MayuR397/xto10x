@@ -125,8 +125,8 @@ const NewLeaderBoard = () => {
             onChange={handleCourseChange}
             className="p-2 rounded border w-full sm:w-auto"
           >
-            <option value="fsd">Full Stack Development (FSD)</option>
-            <option value="sdet">Software Development Engineer in Test (SDET)</option>
+            <option value="fsd">Software Development (SD)</option>
+            <option value="sdet">Software Testing (SDET)</option>
             <option value="da">Data Analytics (DA)</option>
           </select>
         </div>
