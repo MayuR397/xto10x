@@ -20,6 +20,7 @@ const App = () => {
       <HackathonHeader />
       <TenXSection/>
       {/* <Dashboard/> */}
+      <CheckpointApp/>
       <GoogleFormButton/>
       <ProblemStatements/>
       {/* <NewLeaderBoard/> */}
@@ -28,7 +29,6 @@ const App = () => {
       <EventSchedule/>
       <FAQAccordion/>
       {/* <Footer/> */}
-      <CheckpointApp/>
       
     </div>
   );
