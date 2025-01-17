@@ -12,6 +12,7 @@ import ProblemStatements from './components/ProblemStatements';
 import Footer from './components/Footer';
 import FAQAccordion from './firstDeploy/FAQAccordion';
 import GoogleFormButton from './components/GoogleFormButton';
+import CheckpointApp from './components/LeaderCheckpoint';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
       <EventSchedule/>
       <FAQAccordion/>
       {/* <Footer/> */}
+      <CheckpointApp/>
       
     </div>
   );
