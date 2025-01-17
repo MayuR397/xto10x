@@ -51,7 +51,19 @@ const CheckpointApp = () => {
 
         setCurrentCheckpoint(activeCheckpoint || null);
     };
-
+    const formatDateTime = (isoString) => {
+        const date = new Date(isoString);
+        return date.toLocaleString("en-IN", {
+            weekday: "short", // e.g., Fri
+            day: "2-digit",   // e.g., 17
+            month: "short",   // e.g., Jan
+            year: "numeric",  // e.g., 2025
+            hour: "2-digit",  // e.g., 10
+            minute: "2-digit", // e.g., 22
+            hour12: true,      // e.g., 10:22 PM
+        });
+    };
+    
     useEffect(() => {
         calculateCurrentCheckpoint();
         const interval = setInterval(() => {
@@ -256,8 +268,10 @@ const CheckpointApp = () => {
             {/* Display Current Checkpoint Status */}
             <div style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold", fontSize: "18px" }}>
                 {currentCheckpoint ? (
-                    <span style={{ color: "#28a745" }}>
-                        Checkpoint Open: {currentCheckpoint.start} to {currentCheckpoint.end}
+                   <span style={{ color: "#28a745" }}>
+                     Checkpoint Open: <br/>
+                     Start - {formatDateTime(currentCheckpoint.start)}<br/>
+                     Ends- {formatDateTime(currentCheckpoint.end)}
                     </span>
                 ) : (
                     <span style={{ color: "#dc3545" }}>No active checkpoint</span>
