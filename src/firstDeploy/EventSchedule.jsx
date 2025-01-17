@@ -34,19 +34,24 @@ const EventSchedule = () => {
     },
     {
       day: "Saturday",
-      time: "03:00AM - 03:30AM",
+      time: "3:00AM - 3:30AM",
       activity:
         "Chai Pe Kharcha By Jeetu Bhaiyya ",
     },
     {
       day: "Saturday",
-      time: "07:00AM - 07:30AM",
+      time: "7:00AM - 7:30AM",
       activity: "Morning Groove",
     },
     {
       day: "Saturday",
-      time: "02:00PM - 02:30PM",
+      time: "2:00PM - 2:30PM",
       activity: "Behind the scenes : Masai Edition",
+    },
+    {
+      day: "Saturday",
+      time: "7:00PM - 7:30PM",
+      activity: "Guest Appearance",
     },
     {
       day: "Sunday",
@@ -55,12 +60,12 @@ const EventSchedule = () => {
     },
     {
       day: "Sunday",
-      time: "03:00AM - 03:30AM",
+      time: "3:00AM - 3:30AM",
       activity: "Chill & Chat( Random non-official talk )",
     },
     {
       day: "Sunday",
-      time: "09:00AM - 09:30AM",
+      time: "9:00AM - 9:30AM",
       activity: "Reel Reveal Gala",
     },
     {
