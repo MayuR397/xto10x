@@ -67,9 +67,9 @@ const FAQAccordion = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 flex gap-8 bg-gray-50">
+    <div className="max-w-6xl mx-auto p-6 flex flex-col sm:flex-row gap-8 bg-gray-50">
       {/* Categories Section */}
-      <div className="w-1/4 bg-white shadow-md rounded-xl p-4">
+      <div className="w-full sm:w-1/4 bg-white shadow-md rounded-xl p-4 mb-8 sm:mb-0">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Questions Categories</h3>
         <ul className="space-y-2">
           {categories.map((category) => (
@@ -89,7 +89,7 @@ const FAQAccordion = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="w-3/4 bg-white shadow-md rounded-xl p-6">
+      <div className="w-full sm:w-3/4 bg-white shadow-md rounded-xl p-6">
         <h3 className="text-2xl font-bold text-red-400 mb-6">
           Frequently Asked Questions
         </h3>
