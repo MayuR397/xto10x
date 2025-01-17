@@ -14,7 +14,7 @@ const EventSchedule = () => {
     },
     {
       day: "Friday",
-      time: "12:30PM - 1:30PM",
+      time: "12:30PM - 6:00PM",
       activity: "Problem Statement Rollout & Team Brainstorming",
     },
     {
@@ -24,7 +24,7 @@ const EventSchedule = () => {
     },
     {
       day: "Friday",
-      time: "6:00PM - 6:30PM",
+      time: "9:00PM - 9:30PM",
       activity: "Word War",
     },
     {
@@ -65,17 +65,17 @@ const EventSchedule = () => {
     },
     {
         day: "Sunday",
-        time: "11:00AM - 12:00PM",
+        time: "7:00AM - 8:00PM",
         activity: "Project Submission",
     },
     {
       day: "Sunday",
-      time: "12:00PM - 12:30PM",
+      time: "8:00PM - 8:30PM",
       activity: "Closing Note - Final Bytes By Yogesh Bhat",
     },
     {
       day: "Sunday",
-      time: "12:30PM - 01:00PM",
+      time: "8:30PM - 9:00PM",
       activity: "The Way Forward",
     },
   ];
