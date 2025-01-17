@@ -136,10 +136,7 @@ const CheckpointApp = () => {
     };
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-            <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Team Checkpoint System</h1>
-
-
+        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif,", maxWidth:"1200px",margin:"auto"}}>
             {/* <button
                 style={{
                     padding: "10px 20px",
@@ -262,7 +259,7 @@ const CheckpointApp = () => {
                     WebkitTextFillColor: "transparent", // Makes the gradient visible
                 }}
             >
-                Leaderboard
+               🏆 Checkpoint Leaderboard
             </h2>
 
             {/* Display Current Checkpoint Status */}
@@ -301,6 +298,9 @@ const CheckpointApp = () => {
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                 backgroundColor: "#f9f9f9",
                 padding: "10px",
+                maxHeight:"600px",
+                overflowY:"scroll",
+                marginBottom:"50px"
             }}>
                 <table style={{
                     width: "100%",
@@ -308,7 +308,7 @@ const CheckpointApp = () => {
                     borderRadius: "10px",
                     overflow: "hidden",
                 }}>
-                    <thead>
+                    <thead >
                         <tr style={{ backgroundColor: "#007bff", color: "white", fontWeight: "bold" }}>
                             <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ddd" }}>Team Name</th>
                             <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ddd" }}>Members</th>
