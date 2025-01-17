@@ -76,7 +76,12 @@ const CheckpointApp = () => {
     const fetchTeams = async () => {
         try {
             const response = await axios.get("https://hackathonback-af0y.onrender.com/tm/getteams");
-            setTeams(response.data); // Update teams with fetched data
+            const sortedTeams = response?.data?.sort((a, b) => {
+                const passedCountA = a.checkpoints.filter(cp => cp.status === "Passed").length;
+                const passedCountB = b.checkpoints.filter(cp => cp.status === "Passed").length;
+                return passedCountB - passedCountA; // Descending order
+            });
+            setTeams(sortedTeams); // Update teams with fetched data
 
         } catch (error) {
             console.error("Error fetching teams:", error);
