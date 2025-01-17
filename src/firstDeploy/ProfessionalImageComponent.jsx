@@ -30,7 +30,7 @@ const ProfessionalImageComponent = () => {
 
         {/* YouTube Button */}
         <a
-          href="https://www.youtube.com/live/qgy0SEMjRjA?feature=shared"
+          href="https://www.youtube.com/live/kb4joSzUu4k?si=efRR7yP_hJFoIyyQ"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 bg-red-500 text-white py-3 px-6 rounded-lg shadow hover:bg-red-600 transition duration-300"
