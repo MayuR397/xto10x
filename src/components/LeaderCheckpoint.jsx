@@ -116,9 +116,12 @@ const CheckpointApp = () => {
     };
 
     // Mark checkpoint for a team
+    const [dis,setdis]=useState(false);
     const markCheckpoint = async (teamId) => {
+        setdis(true)
         if (!currentCheckpoint) {
             alert("No active checkpoint window");
+            setdis(false)
             return;
         }
 
@@ -129,8 +132,10 @@ const CheckpointApp = () => {
             });
             setMessage(response.data.message);
             alert(response.data.message);
+            setdis(false)
             fetchTeams(); // Refresh teams after marking the checkpoint
         } catch (error) {
+            setdis(false)
             console.error("Error marking checkpoint:", error);
             alert(error.response?.data?.message || "Error marking checkpoint");
             setMessage("Error marking checkpoint");
@@ -356,7 +361,7 @@ const CheckpointApp = () => {
                                                     cursor: "pointer",
                                                 }}
                                                 onClick={() => markCheckpoint(team._id)}
-
+                                                disabled={dis}
                                             >
                                                 Pass Checkpoint
                                             </button>}
