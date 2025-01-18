@@ -342,7 +342,7 @@ const CheckpointApp = () => {
                                     )}</td>
                                     <td style={{ padding: "10px", textAlign: "center", color: "#28a745" }}>{passedCount}</td>
                                     <td style={{ padding: "10px", textAlign: "center", color: "#dc3545" }}>{missedCount}</td>
-                                    <td style={{ padding: "10px" }}>
+                                    <td style={{ padding: "10px", maxHeight: "80px", whites: "nowrap", overflowY:"scroll", display: "block" }}>
                                         {team.checkpoints.map((checkpoint, index) => (
                                             <div key={index}>
                                                 {checkpoint.time}: {checkpoint.status}
