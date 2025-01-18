@@ -54,14 +54,9 @@ const EventSchedule = () => {
       activity: "Guest Appearance",
     },
     {
-      day: "Sunday",
-      time: "12:00AM - 12:30AM",
+      day: "Saturday",
+      time: "10:00PM - 12:00AM",
       activity: "Connect with Experts",
-    },
-    {
-      day: "Sunday",
-      time: "3:00AM - 3:30AM",
-      activity: "Chill & Chat( Random non-official talk )",
     },
     {
       day: "Sunday",
