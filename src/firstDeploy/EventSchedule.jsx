@@ -65,7 +65,7 @@ const EventSchedule = () => {
     },
     {
         day: "Sunday",
-        time: "7:00AM - 8:00PM",
+        time: "7:00PM - 8:00PM",
         activity: "Project Submission",
     },
     {
