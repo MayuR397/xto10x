@@ -278,7 +278,7 @@ const CheckpointApp = () => {
                      Ends- {formatDateTime(currentCheckpoint.end)}
                     </span>
                 ) : (
-                    <span style={{ color: "#dc3545" }}>No active checkpoint</span>
+                    <span style={{ color: "#dc3545" }}>Final checkpoint Ended.</span>
                 )}
             </div>
             <br />
