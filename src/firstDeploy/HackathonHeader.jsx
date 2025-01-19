@@ -6,7 +6,7 @@ const HackathonHeader = () => {
 
   // Set the target time to today at 11:30 AM IST
   const targetTime = new Date();
-  targetTime.setHours(11, 30, 0, 0); // Set to 11:30 AM today
+  targetTime.setHours(20, 0, 0, 0); // Set to 11:30 AM today
 
   const [timeLeft, setTimeLeft] = useState(targetTime - new Date());
 
@@ -47,7 +47,7 @@ const HackathonHeader = () => {
       </h2>
       <p className="text-lg italic text-center mb-6">{tagline}</p>
       <div className="text-4xl font-mono text-red-500">
-        {timeLeft > 0 ? formatTime(timeLeft) : "Hackathon Started"}
+        {timeLeft > 0 ? formatTime(timeLeft) : "Hackathon Ended"}
       </div>
     </div>
   );
