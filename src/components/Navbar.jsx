@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import './Navbar.css'; // Make sure to update your CSS file
+import { useNavigate } from 'react-router-dom';
 // Import your clock logo (e.g., import ClockIcon from './ClockIcon.svg';)
 
 function Navbar() {
   const [time, setTime] = useState(new Date());
   const hackathonName = "Hackathon 2025";
   const tagline = "Code, Collaborate, Conquer!";
+
+  const navigate = useNavigate();
+
+  const handleRegisterTeamClick = () => {
+    // Navigate to the team registration page
+    navigate('/register-team');
+  };
+
+  const handleSelectTeamClick = () => {
+    // Navigate to the team selection page
+    navigate('/select-team');
+  };
+
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -41,8 +55,8 @@ function Navbar() {
           </div>
 
           <div className="flex space-x-2"> {/* Reduced space between buttons */}
-            <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">Select Team</button> {/* Smaller padding and font */}
-            <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">Register Team</button>
+            <button className="bg-red-500 text-white px-3 py-1 rounded text-sm" onClick={handleSelectTeamClick}>Select Team</button> {/* Smaller padding and font */}
+            <button className="bg-red-500 text-white px-3 py-1 rounded text-sm" onClick={handleRegisterTeamClick}>Register Team</button>
           </div>
         </div>
       </nav>
