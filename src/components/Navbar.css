@@ -1,0 +1,45 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c3e50;
+    color: white;
+    padding: 0 10px;
+    height: 70px;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  
+  .logo h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+nav {
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.timer {
+  padding: 8px 12px;
+  background-color: rgba(255, 235, 235, 0.7);
+  border-radius: 4px;
+  color: #e53e3e;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 10s linear infinite;
+}
