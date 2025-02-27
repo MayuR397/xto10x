@@ -1,28 +1,49 @@
-// File: App.jsx
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import MainContent from './components/MainContent';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Login from './components/login'; // Updated import path
+import MainContent from './components/MainContent'; // Updated import path
 import './App.css';
-import { RegisterTeamPage } from './components/RegisterTeamPage';
+import Navbar from "./components/Navbar"
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const storedLoginStatus = localStorage.getItem('isLoggedIn');
+    if (storedLoginStatus === 'true') {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    localStorage.setItem('isLoggedIn', 'true');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('isLoggedIn');
+  };
+
   return (
-    <div className="app">
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/dashboard" element={<MainContent />} />
-          <Route path="/register-team" element={<RegisterTeamPage/>} />
-          {/* <Route path="/select-team" element={<SelectTeamPage/>} /> */}
-        </Routes>
-    </Router>
-      
-    </div>
-  );
+    <Router>
+      <Routes>
+        <Route
+          path="/login"
+          element={isLoggedIn ? <Navigate to="/" /> : <Login onLoginSuccess={handleLoginSuccess} />}
+        />
+        <Route
+          path="/"
+          element={isLoggedIn ? <div>
+            <Navbar/>
+            <MainContent onLogout={handleLogout} />
+            </div> : 
+            <Navigate to="/login" />}
+        />
+        <Route path="/register-team" element={<RegisterTeamPage/>} />
+        {/* <Route path="/select-team" element={<SelectTeamPage/>} /> */}
+      </Routes>
+    </Router>  );
 }
 
 export default App;
-
-
-
