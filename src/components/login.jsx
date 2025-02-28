@@ -16,7 +16,7 @@ function Login({ onLoginSuccess }) {
     setLoading(true);
 
     try {
-      const response = await fetch('https://084b-103-105-226-54.ngrok-free.app/users/verify-user', {
+      const response = await fetch('http://localhost:5009/users/verify-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,6 +30,7 @@ function Login({ onLoginSuccess }) {
       }
 
       const data = await response.json();
+      localStorage.setItem("userId",data.user._id)
       console.log('Login successful:', data);
       onLoginSuccess();
       navigate('/');

@@ -4,6 +4,8 @@ import Login from './components/login'; // Updated import path
 import MainContent from './components/MainContent'; // Updated import path
 import './App.css';
 import Navbar from "./components/Navbar"
+import { RegisterTeamPage } from './components/RegisterTeamPage';
+import { SelectTeamPage } from './components/SelectTeamPage';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -41,7 +43,7 @@ function App() {
             <Navigate to="/login" />}
         />
         <Route path="/register-team" element={<RegisterTeamPage/>} />
-        {/* <Route path="/select-team" element={<SelectTeamPage/>} /> */}
+        <Route path="/select-team" element={<SelectTeamPage/>} />
       </Routes>
     </Router>  );
 }
