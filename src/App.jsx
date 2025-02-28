@@ -5,22 +5,20 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import Login from "./components/login"; // Updated import path
-import MainContent from "./components/MainContent"; // Updated import path
-import "./App.css";
+import Login from "./components/login";
+import MainContent from "./components/MainContent";
 import Navbar from "./components/Navbar";
 import { RegisterTeamPage } from "./components/RegisterTeamPage";
 import { SelectTeamPage } from "./components/SelectTeamPage";
-import AssistPanel from "./components/AssistPanel";
+// import AssistPanel from "./components/AssistPanel";
+import "./App.css";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null); // Initially set to null
 
   useEffect(() => {
-    const storedLoginStatus = localStorage.getItem("isLoggedIn");
-    if (storedLoginStatus === "true") {
-      setIsLoggedIn(true);
-    }
+    const storedLoginStatus = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(storedLoginStatus);
   }, []);
 
   const handleLoginSuccess = () => {
@@ -33,17 +31,18 @@ function App() {
     localStorage.removeItem("isLoggedIn");
   };
 
+  // 🚀 Prevent rendering until `isLoggedIn` is determined
+  if (isLoggedIn === null) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <>
+    <Router>
       <Routes>
         <Route
           path="/login"
           element={
-            isLoggedIn ? (
-              <Navigate to="/" />
-            ) : (
-              <Login onLoginSuccess={handleLoginSuccess} />
-            )
+            isLoggedIn ? <Navigate to="/" /> : <Login onLoginSuccess={handleLoginSuccess} />
           }
         />
         <Route
@@ -59,11 +58,12 @@ function App() {
             )
           }
         />
-        <Route path="/register-team" element={<RegisterTeamPage />} />
-        <Route path="/select-team" element={<SelectTeamPage />} />
+        <Route path="/register-team" element={isLoggedIn ? <RegisterTeamPage /> : <Navigate to="/login" />} />
+        <Route path="/select-team" element={isLoggedIn ? <SelectTeamPage /> : <Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      <AssistPanel />
-    </>
+      {/* <AssistPanel /> */}
+    </Router>
   );
 }
 
