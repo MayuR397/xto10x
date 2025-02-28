@@ -6,6 +6,7 @@ import './App.css';
 import Navbar from "./components/Navbar"
 import { RegisterTeamPage } from './components/RegisterTeamPage';
 import { SelectTeamPage } from './components/SelectTeamPage';
+import AssistPanel from './components/AssistPanel';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,6 +46,7 @@ function App() {
         <Route path="/register-team" element={<RegisterTeamPage/>} />
         <Route path="/select-team" element={<SelectTeamPage/>} />
       </Routes>
+      <AssistPanel/>
     </Router>  );
 }
 

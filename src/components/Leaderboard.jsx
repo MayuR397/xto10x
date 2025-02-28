@@ -44,7 +44,6 @@ function Leaderboard() {
       </table>
     </div>
     <div style={{marginTop:"80px"}}>
-    <AssistPanel/>
     </div>
     </div>
     
