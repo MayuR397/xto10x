@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import './Navbar.css'; // Make sure to update your CSS file
-// Import your clock logo (e.g., import ClockIcon from './ClockIcon.svg';)
 
 function Navbar() {
   const [time, setTime] = useState(new Date());
-  const hackathonName = "Hackathon 2025";
   const tagline = "Code, Collaborate, Conquer!";
 
   useEffect(() => {
@@ -40,16 +39,19 @@ function Navbar() {
             </div>
           </div>
 
-          <div className="flex space-x-2"> {/* Reduced space between buttons */}
-            <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">Select Team</button> {/* Smaller padding and font */}
-            <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">Register Team</button>
+          {/* Wrap buttons in Link components */}
+          <div className="flex space-x-2">
+            <Link to="/select-team">
+              <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">Select Team</button>
+            </Link>
+            <Link to="/register-team">
+              <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">Register Team</button>
+            </Link>
           </div>
         </div>
       </nav>
 
       <div className="bg-gray-800 text-white py-4 text-center flex items-center justify-center">
-        {/* Replace with your ClockIcon component/image */}
-        {/* <ClockIcon className="mr-2 animate-spin-slow" /> */}
         <div className="mr-2 animate-spin-slow">⏰</div>
         <div className="text-xl font-bold">
           {time.toLocaleTimeString()}
