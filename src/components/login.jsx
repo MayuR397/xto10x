@@ -16,13 +16,16 @@ function Login({ onLoginSuccess }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5009/users/verify-user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "http://13.201.170.14:5009/users/verify-user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
