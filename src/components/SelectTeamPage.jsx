@@ -15,7 +15,7 @@ const SelectTeamPage = () => {
     const fetchUserDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5009/users/get-user/${userId}`
+          `http://13.201.170.14:5009/users/get-user/${userId}`
         );
         if (!response.ok) throw new Error("Failed to fetch user data");
         const userData = await response.json();
@@ -27,7 +27,7 @@ const SelectTeamPage = () => {
 
     const fetchTeams = async () => {
       try {
-        const response = await fetch("http://localhost:5009/team/get-teams");
+        const response = await fetch("http://13.201.170.14:5009/team/get-teams");
         if (!response.ok) throw new Error("Failed to fetch teams");
         const data = await response.json();
         setTeams(data);
@@ -48,7 +48,7 @@ const SelectTeamPage = () => {
     const fetchPendingRequests = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5009/team-request/${userTeamId}/join-requests`,
+          `http://13.201.170.14:5009/team-request/${userTeamId}/join-requests`,
           {
             method: "GET",
           }
@@ -73,7 +73,7 @@ const SelectTeamPage = () => {
   const handleJoinRequest = async (teamId) => {
     try {
       const response = await fetch(
-        "http://localhost:5009/team-request/send-request",
+        "http://13.201.170.14:5009/team-request/send-request",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -96,7 +96,7 @@ const SelectTeamPage = () => {
     setRequestProcessing(true);
     try {
       const response = await fetch(
-        "http://localhost:5009/team-request/accept-request",
+        "http://13.201.170.14:5009/team-request/accept-request",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -113,7 +113,7 @@ const SelectTeamPage = () => {
 
         // Refresh teams to show updated member list
         const teamsResponse = await fetch(
-          "http://localhost:5009/team/get-teams"
+          "http://13.201.170.14:5009/team/get-teams"
         );
         if (teamsResponse.ok) {
           const teamsData = await teamsResponse.json();
@@ -136,7 +136,7 @@ const SelectTeamPage = () => {
     setRequestProcessing(true);
     try {
       const response = await fetch(
-        "http://localhost:5009/team-request/decline-request",
+        "http://13.201.170.14:5009/team-request/decline-request",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -166,7 +166,7 @@ const SelectTeamPage = () => {
 
   const leaveTeam = async (userId) => {
     try {
-      const response = await fetch("http://localhost:5009/users/leave-team", {
+      const response = await fetch("http://13.201.170.14:5009/users/leave-team", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -190,7 +190,7 @@ const SelectTeamPage = () => {
 
   const deleteTeam = async (teamId, userId) => {
     try {
-      const response = await fetch("http://localhost:5009/team/delete-team", {
+      const response = await fetch("http://13.201.170.14:5009/team/delete-team", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

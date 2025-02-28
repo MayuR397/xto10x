@@ -11,7 +11,11 @@ function AssistPanel() {
   return (
     <div className="assist-panel">
       <div className="panel-links">
-        <a href="https://slack.com" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://join.slack.com/t/xto10x-feb25/shared_invite/zt-30x9tx03l-qsLLuHg5ZdRfrSR5_jpmOA"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <FaSlack className="button-logo" />
           Slack
         </a>
@@ -23,13 +27,18 @@ function AssistPanel() {
           <FaQuestionCircle className="button-logo" />
           FAQ
         </button>
-        <button className="problems-button" onClick={() => setShowProblems(true)}>
+        <button
+          className="problems-button"
+          onClick={() => setShowProblems(true)}
+        >
           <FaListAlt className="button-logo" />
           Problems
         </button>
       </div>
       {showFAQ && <FAQModal onClose={() => setShowFAQ(false)} />}
-      {showProblems && <ProblemStatementsModal onClose={() => setShowProblems(false)} />}
+      {showProblems && (
+        <ProblemStatementsModal onClose={() => setShowProblems(false)} />
+      )}
     </div>
   );
 }
