@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-import './Navbar.css'; // Make sure to update your CSS file
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Import Link from react-router-dom
+import "./Navbar.css"; // Make sure to update your CSS file
 
 function Navbar() {
   const [time, setTime] = useState(new Date());
   const tagline = "Code, Collaborate, Conquer!";
-
+  const navigate = useNavigate();
   useEffect(() => {
     const timer = setInterval(() => {
       setTime(new Date());
@@ -41,11 +41,18 @@ function Navbar() {
 
           {/* Wrap buttons in Link components */}
           <div className="flex space-x-2">
-            <Link to="/select-team">
-              <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">Select Team</button>
-            </Link>
+            {/* <Link to="/select-team"> */}
+            <button
+              className="bg-red-500 text-white px-3 py-1 rounded text-sm"
+              onClick={() => navigate("/select-team")}
+            >
+              Select Team
+            </button>
+            {/* </Link> */}
             <Link to="/register-team">
-              <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">Register Team</button>
+              <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">
+                Register Team
+              </button>
             </Link>
           </div>
         </div>
@@ -53,9 +60,7 @@ function Navbar() {
 
       <div className="bg-gray-800 text-white py-4 text-center flex items-center justify-center">
         <div className="mr-2 animate-spin-slow">⏰</div>
-        <div className="text-xl font-bold">
-          {time.toLocaleTimeString()}
-        </div>
+        <div className="text-xl font-bold">{time.toLocaleTimeString()}</div>
       </div>
     </div>
   );
