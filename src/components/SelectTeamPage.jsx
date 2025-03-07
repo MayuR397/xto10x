@@ -16,7 +16,7 @@ const SelectTeamPage = () => {
     const fetchUserDetails = async () => {
       try {
         const response = await fetch(
-          `http://13.201.170.14:5009/users/get-user/${userId}`
+          `https://x10x-api.iasam.dev/users/get-user/${userId}`
         );
         if (!response.ok) throw new Error("Failed to fetch user data");
         const userData = await response.json();
@@ -28,7 +28,7 @@ const SelectTeamPage = () => {
 
     const fetchTeams = async () => {
       try {
-        const response = await fetch("http://13.201.170.14:5009/team/get-teams");
+        const response = await fetch("https://x10x-api.iasam.dev/team/get-teams");
         if (!response.ok) throw new Error("Failed to fetch teams");
         const data = await response.json();
         setTeams(data);
@@ -49,7 +49,7 @@ const SelectTeamPage = () => {
     const fetchPendingRequests = async () => {
       try {
         const response = await fetch(
-          `http://13.201.170.14:5009/team-request/${userTeamId}/join-requests`,
+          `https://x10x-api.iasam.dev/team-request/${userTeamId}/join-requests`,
           {
             method: "GET",
           }
@@ -74,7 +74,7 @@ const SelectTeamPage = () => {
   const handleJoinRequest = async (teamId) => {
     try {
       const response = await fetch(
-        "http://13.201.170.14:5009/team-request/send-request",
+        "https://x10x-api.iasam.dev/team-request/send-request",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -97,7 +97,7 @@ const SelectTeamPage = () => {
     setRequestProcessing(true);
     try {
       const response = await fetch(
-        "http://13.201.170.14:5009/team-request/accept-request",
+        "https://x10x-api.iasam.dev/team-request/accept-request",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -137,7 +137,7 @@ const SelectTeamPage = () => {
     setRequestProcessing(true);
     try {
       const response = await fetch(
-        "http://13.201.170.14:5009/team-request/decline-request",
+        "https://x10x-api.iasam.dev/team-request/decline-request",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -166,7 +166,7 @@ const SelectTeamPage = () => {
   // Leave team
   const leaveTeam = async (userId) => {
     try {
-      const response = await fetch("http://13.201.170.14:5009/users/leave-team", {
+      const response = await fetch("https://x10x-api.iasam.dev/users/leave-team", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -190,7 +190,7 @@ const SelectTeamPage = () => {
 
   const deleteTeam = async (teamId, userId) => {
     try {
-      const response = await fetch("http://13.201.170.14:5009/team/delete-team", {
+      const response = await fetch("https://x10x-api.iasam.dev/team/delete-team", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
