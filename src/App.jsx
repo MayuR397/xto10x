@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Navbar from "./components/Navbar";
 import MainContent from "./components/MainContent";
 import InteractiveElement from "./components/InteractiveElement";
@@ -6,20 +6,29 @@ import Footer from "./components/Footer";
 import CountDownTimer from "./components/CountDownTimer";
 import { Routes, Route } from "react-router-dom";
 import SelectTeamPage from "./components/SelectTeamPage";
-
+import { RegisterTeamPage } from "./components/RegisterTeamPage";
+import { MyContext } from "./context/AuthContextProvider";
+import Login from "./components/login";
+import { ToastContainer } from "react-toastify";
 
 function App() {
+  const { isAuth } = useContext(MyContext);
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <CountDownTimer/>
-      <Routes>
-        <Route path="/" element={<MainContent />}/>
-        <Route path="/select-team" element={<SelectTeamPage/>}/>
-      </Routes>
-      <InteractiveElement />
-      <Footer />
-    </div>
+    <>
+      <ToastContainer />
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        {isAuth && <CountDownTimer />}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={isAuth ? <MainContent /> : <Login />} />
+          <Route path="/select-team" element={<SelectTeamPage />} />
+          <Route path="/register-team" element={<RegisterTeamPage />} />
+        </Routes>
+        <InteractiveElement />
+        <Footer />
+      </div>
+    </>
   );
 }
 

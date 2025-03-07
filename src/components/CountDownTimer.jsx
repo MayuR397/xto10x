@@ -4,7 +4,7 @@ import { Clock } from "lucide-react";
 const CountDownTimer = () => {
   const calculateTimeLeft = () => {
     const now = new Date();
-    const targetDate = new Date("2025-04-28T00:00:00");
+    const targetDate = new Date("2025-03-28T00:00:00");
     const difference = targetDate - now;
 
     if (difference > 0) {

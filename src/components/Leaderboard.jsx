@@ -1,5 +1,7 @@
 import React from "react";
 import { Trophy, Users, Flame } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LeaderBoard = () => {
   const leaderboardData = [

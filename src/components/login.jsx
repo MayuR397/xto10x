@@ -1,14 +1,30 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Clock, ArrowRight, Mail, Lock, AlertCircle } from 'lucide-react';
-import TenXSection from '../../srcOld/firstDeploy/TenXSection';
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Mail,
+  Lock,
+  Loader2,
+  Code,
+  Trophy,
+  Users,
+  Rocket,
+  Star,
+} from "lucide-react";
+import { MyContext } from "../context/AuthContextProvider";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function Login({ onLoginSuccess }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+function Login() {
+  const [email, setEmail] = useState("shivamgonda551@gmail.com");
+  const [password, setPassword] = useState("8qp2jw");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { isAuth, setIsAuth } = useContext(MyContext);
+
+  useEffect(() => {
+    isAuth && navigate("/");
+  }, [isAuth]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +33,7 @@ function Login({ onLoginSuccess }) {
 
     try {
       const response = await fetch(
-        "http://13.201.170.14:5009/users/verify-user",
+        "https://x10x-api.iasam.dev/users/verify-user",
         {
           method: "POST",
           headers: {
@@ -29,14 +45,17 @@ function Login({ onLoginSuccess }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+        throw new Error(errorData.message || "Login failed");
       }
 
       const data = await response.json();
       localStorage.setItem("userId", data.user._id);
-      console.log('Login successful:', data);
-      onLoginSuccess();
-      navigate('/');
+      console.log("Login successful:", data);
+      setIsAuth(true);
+      toast.success("User logged in successfully", {
+        position: "top-right",
+      });
+      navigate("/");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -45,31 +64,50 @@ function Login({ onLoginSuccess }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
-      {/* Left Section - Login Form */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-16">
-        <div className="w-full max-w-md">
-          {/* Logo */}
-          <div className="mb-8 text-center">
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Left Panel - Login Form */}
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="max-w-md w-full">
+          {/* Logo and Title */}
+          <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-2">
-              <span className="text-black">xto</span>
-              <span className="text-red-500">10x</span>
+              <span className="text-gray-900">xto</span>
+              <span className="text-[#FF3B3B]">10x</span>
             </h1>
             <p className="text-gray-600">Hackathon Feb 2025</p>
           </div>
-          
+
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md flex items-start">
-              <AlertCircle className="mr-2 flex-shrink-0 mt-0.5" size={18} />
-              <p>{error}</p>
+            <div className="mb-6 bg-red-50 border-l-4 border-[#FF3B3B] p-4 rounded-md">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="h-5 w-5 text-red-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
             </div>
           )}
-          
+
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Email Address
               </label>
               <div className="relative">
@@ -77,21 +115,22 @@ function Login({ onLoginSuccess }) {
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="email"
-                  name="email"
                   type="email"
-                  autoComplete="email"
-                  required
+                  id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B3B] focus:border-[#FF3B3B]"
                   placeholder="Enter your email"
+                  required
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Password
               </label>
               <div className="relative">
@@ -99,115 +138,89 @@ function Login({ onLoginSuccess }) {
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="password"
-                  name="password"
                   type="password"
-                  autoComplete="current-password"
-                  required
+                  id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF3B3B] focus:border-[#FF3B3B]"
                   placeholder="Enter your password"
+                  required
                 />
               </div>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Logging in...
-                  </>
-                ) : (
-                  <>
-                    Login <ArrowRight className="ml-2 h-5 w-5" />
-                  </>
-                )}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF3B3B] hover:bg-[#ff2525] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF3B3B] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="flex items-center">
+                  <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" />
+                  Logging in...
+                </div>
+              ) : (
+                "Sign In"
+              )}
+            </button>
           </form>
-          
-          {/* Additional Links */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <a href="#" className="font-medium text-red-500 hover:text-red-600 transition">
-                Register now
-              </a>
+        </div>
+      </div>
+
+      {/* Right Panel - Features */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8">
+        <div className="w-full max-w-md mx-auto flex flex-col justify-center">
+          <div className="mb-12">
+            <div className="inline-block p-3 bg-gradient-to-br from-[#FF3B3B] to-[#ff6b6b] rounded-2xl shadow-xl mb-6">
+              <Rocket className="h-8 w-8 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold mb-4">
+              Transform Ideas into Reality
+            </h2>
+            <p className="text-gray-300 text-lg">
+              Join the most exciting hackathon of 2025
             </p>
           </div>
-        </div>
-      </div>
-      
-      {/* Right Section - Banner */}
-      <div className="hidden md:block md:w-1/2 bg-gradient-to-r from-red-500 to-red-700 p-12 flex flex-col justify-center">
-        <div className="max-w-lg mx-auto text-white">
-          <h2 className="text-3xl font-bold mb-6">Welcome to the xto10x Hackathon</h2>
-          <p className="text-xl mb-8">Join the most exciting coding competition of 2025 and showcase your skills!</p>
-          
-          {/* Countdown Timer */}
-          <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg mb-8">
-            <div className="flex items-center mb-4">
-              <Clock className="mr-2" size={20} />
-              <h3 className="font-semibold text-lg">Event Countdown</h3>
-            </div>
-            <div className="flex justify-between">
-              <div className="text-center">
-                <div className="text-2xl font-mono bg-white/10 rounded-md px-4 py-2">28</div>
-                <div className="text-xs mt-1">DAYS</div>
+
+          <div className="space-y-8">
+            <div className="flex items-start space-x-4 bg-white/5 p-4 rounded-xl backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-[#FF3B3B]/20 to-[#ff6b6b]/20 p-3 rounded-lg">
+                <Code className="h-6 w-6 text-[#FF3B3B]" />
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-mono bg-white/10 rounded-md px-4 py-2">14</div>
-                <div className="text-xs mt-1">HOURS</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-mono bg-white/10 rounded-md px-4 py-2">36</div>
-                <div className="text-xs mt-1">MINUTES</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-mono bg-white/10 rounded-md px-4 py-2">42</div>
-                <div className="text-xs mt-1">SECONDS</div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Prizes */}
-          <div className="space-y-4">
-            <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-yellow-400 text-yellow-800 flex items-center justify-center font-bold mr-4">1</div>
               <div>
-                <p className="font-semibold">First Prize</p>
-                <p className="text-xl font-bold">$5,000</p>
+                <h3 className="font-semibold text-lg">Code Excellence</h3>
+                <p className="text-gray-400">
+                  Build innovative solutions with modern tech stacks
+                </p>
               </div>
             </div>
-            <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-gray-300 text-gray-800 flex items-center justify-center font-bold mr-4">2</div>
+
+            <div className="flex items-start space-x-4 bg-white/5 p-4 rounded-xl backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-[#FF3B3B]/20 to-[#ff6b6b]/20 p-3 rounded-lg">
+                <Users className="h-6 w-6 text-[#FF3B3B]" />
+              </div>
               <div>
-                <p className="font-semibold">Second Prize</p>
-                <p className="text-xl font-bold">$3,000</p>
+                <h3 className="font-semibold text-lg">Team Collaboration</h3>
+                <p className="text-gray-400">
+                  Connect with talented developers worldwide
+                </p>
               </div>
             </div>
-            <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-amber-600 text-amber-900 flex items-center justify-center font-bold mr-4">3</div>
+
+            <div className="flex items-start space-x-4 bg-white/5 p-4 rounded-xl backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-[#FF3B3B]/20 to-[#ff6b6b]/20 p-3 rounded-lg">
+                <Trophy className="h-6 w-6 text-[#FF3B3B]" />
+              </div>
               <div>
-                <p className="font-semibold">Third Prize</p>
-                <p className="text-xl font-bold">$2,000</p>
+                <h3 className="font-semibold text-lg">Win Prizes</h3>
+                <p className="text-gray-400">
+                  Compete for exciting rewards and recognition
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
-      {/* TenXSection component */}
-      <TenXSection />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const InteractiveElement = () => {
   return (
@@ -12,7 +13,7 @@ const InteractiveElement = () => {
           <div className="max-w-3xl mx-auto mb-10 bg-white/10 p-6 rounded-lg backdrop-blur-sm">
             <p className="text-lg mb-6">
               Join our hackathon and get a chance to win amazing prizes worth
-              $10,000!
+              10,000!
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="bg-white/5 p-4 rounded-lg backdrop-blur-sm">
@@ -30,9 +31,11 @@ const InteractiveElement = () => {
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-md font-bold transition transform hover:scale-105">
-              Register Your Team
-            </button>
+            <Link to="/register-team" onClick={() => window.scrollTo(0, 0)}>
+              <button className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-md font-bold transition transform hover:scale-105">
+                Register Your Team
+              </button>
+            </Link>
             <button className="bg-transparent border-2 border-white hover:bg-white/10 text-white px-8 py-3 rounded-md font-bold transition transform hover:scale-105">
               Download Brochure
             </button>

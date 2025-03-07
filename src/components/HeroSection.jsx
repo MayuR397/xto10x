@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -14,9 +15,11 @@ const HeroSection = () => {
             creativity, and innovation.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="bg-white text-red-600 px-6 py-3 rounded-md font-semibold hover:bg-gray-100 transition transform hover:scale-105">
-              Register Now
-            </button>
+            <Link to="/register-team">
+              <button className="bg-white text-red-600 px-6 py-3 rounded-md font-semibold hover:bg-gray-100 transition transform hover:scale-105">
+                Register Now
+              </button>
+            </Link>
             <button className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-md font-semibold hover:bg-white/10 transition transform hover:scale-105">
               Learn More
             </button>
