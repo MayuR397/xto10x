@@ -114,7 +114,7 @@ const SelectTeamPage = () => {
 
         // Refresh teams to show updated member list
         const teamsResponse = await fetch(
-          "http://13.201.170.14:5009/team/get-teams"
+          "https://x10x-api.iasam.dev/team/get-teams"
         );
         if (teamsResponse.ok) {
           const teamsData = await teamsResponse.json();
