@@ -91,7 +91,7 @@ const Navbar = () => {
   // Logout function
   const handleLogout = () => {
     localStorage.removeItem("userId");
-    localStorage.removeItem('userData');
+    localStorage.removeItem("userData");
     setIsAuth(false);
     toast.success("User logged out successfully", {
       position: "top-right",
@@ -157,11 +157,16 @@ const Navbar = () => {
                   onClick={() =>
                     setIsProfileDropdownOpen(!isProfileDropdownOpen)
                   }
-                  className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition"
+                  className="flex items-center justify-center bg-gradient-to-r from-gray-600 to-gray-700 text-white p-3 rounded-full hover:bg-gradient-to-r hover:from-gray-700 hover:to-gray-800 transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transform hover:scale-105"
+                  aria-expanded={isProfileDropdownOpen}
+                  aria-haspopup="true"
                 >
-                  <User className="h-5 w-5 text-red-500" />
-                  <span>Profile</span>
-                  <ChevronDown className="h-4 w-4" />
+                  <User className="h-5 w-5 text-white" />
+                  <ChevronDown
+                    className={`h-4 w-4 ml-1 transition-transform duration-300 ${
+                      isProfileDropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
 
                 {/* Dropdown Menu */}
