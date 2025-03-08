@@ -5,16 +5,16 @@ import "react-toastify/dist/ReactToastify.css";
 
 const LeaderBoard = () => {
   const leaderboardData = [
-    { rank: 1, team: "Team 6", streak: 15 },
-    { rank: 2, team: "Team 8", streak: 15 },
-    { rank: 3, team: "Team 1", streak: 13 },
-    { rank: 4, team: "Team 3", streak: 12 },
-    { rank: 5, team: "Team 4", streak: 9 },
-    { rank: 6, team: "Team 5", streak: 6 },
-    { rank: 7, team: "Team 7", streak: 6 },
-    { rank: 8, team: "Team 9", streak: 4 },
-    { rank: 9, team: "Team 10", streak: 3 },
-    { rank: 10, team: "Team 2", streak: 2 },
+    { rank: 1, team: "The Dev Dominators", streak: 15 },
+    { rank: 2, team: "Inova Ro-verge", streak: 15 },
+    { rank: 3, team: "Team ADRENØ", streak: 13 },
+    { rank: 4, team: "The Dev Dynamo's Solo", streak: 12 },
+    { rank: 5, team: "R-Coder", streak: 9 },
+    { rank: 6, team: "Let's learn actively.", streak: 6 },
+    { rank: 7, team: "Vigyan Astra", streak: 6 },
+    { rank: 8, team: "FlexFlow", streak: 4 },
+    { rank: 9, team: "Future_Learner", streak: 3 },
+    { rank: 10, team: "Rudra's Warriors", streak: 2 },
   ];
   return (
     <>
