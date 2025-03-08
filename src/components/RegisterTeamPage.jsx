@@ -3,8 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Users, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Confetti from "react-confetti"; // 🎉 Import Confetti
+import { useWindowSize } from "react-use"; // For dynamic width/height
 
 const RegisterTeamPage = () => {
+  const { width, height } = useWindowSize(); // Auto-resizes confetti
+  const [showConfetti, setShowConfetti] = useState(false); // State for Confetti 🎉
   const navigate = useNavigate();
   const [teamData, setTeamData] = useState({
     teamName: "",
@@ -46,12 +50,16 @@ const RegisterTeamPage = () => {
       if (!response.ok) {
         throw new Error("Failed to create team");
       }
-
       const result = await response.json();
+      // 🎉 Trigger Confetti Animation
+      setShowConfetti(true);
       toast.success("Team created successfully!", {
         position: "top-right",
       });
-      navigate(-1);
+      setTimeout(() => {
+        setShowConfetti(false);
+        navigate("/select-team");
+      }, 4000); // Auto-stop confetti after 4 seconds
     } catch (err) {
       setError(err.message || "Something went wrong");
     } finally {
@@ -61,6 +69,16 @@ const RegisterTeamPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      {showConfetti && (
+        <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-50">
+          <Confetti
+            width={width}
+            height={height}
+            recycle={false}
+            numberOfPieces={400}
+          />
+        </div>
+      )}
       <div className="max-w-md mx-auto">
         {/* Back Button */}
         <button

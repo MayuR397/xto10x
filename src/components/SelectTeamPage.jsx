@@ -32,6 +32,19 @@ const SelectTeamPage = () => {
 
   const userId = localStorage.getItem("userId");
 
+  const fetchTeams = async () => {
+    try {
+      const response = await fetch("https://x10x-api.iasam.dev/team/get-teams");
+      if (!response.ok) throw new Error("Failed to fetch teams");
+      const data = await response.json();
+      setTeams(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -43,21 +56,6 @@ const SelectTeamPage = () => {
         setUserTeamId(userData?.teamId || null);
       } catch (err) {
         console.error("Error fetching user data", err);
-      }
-    };
-
-    const fetchTeams = async () => {
-      try {
-        const response = await fetch(
-          "https://x10x-api.iasam.dev/team/get-teams"
-        );
-        if (!response.ok) throw new Error("Failed to fetch teams");
-        const data = await response.json();
-        setTeams(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -223,7 +221,7 @@ const SelectTeamPage = () => {
       toast.success("You have successfully left the team", {
         position: "top-right",
       });
-      window.location.reload(); // Refresh to update UI
+      await fetchTeams(); // ✅ Refresh teams after successful deletion
     } catch (error) {
       console.error("Error:", error);
       toast.success(error.message, {
@@ -250,11 +248,10 @@ const SelectTeamPage = () => {
       if (!response.ok) {
         throw new Error(data.message || "Failed to delete the team");
       }
-
       toast.success("You have successfully deleted the team", {
         position: "top-right",
       });
-      window.location.reload(); // Refresh to update UI
+      fetchTeams(); // ✅ Refresh teams after successful deletion
     } catch (error) {
       console.error("Error:", error);
       toast.error(error.message, {
@@ -376,7 +373,7 @@ const SelectTeamPage = () => {
           <h3 className="text-xl font-bold mb-2">Error</h3>
           <p className="text-gray-700">{error}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => window.location.reload()} // 🔄 Fake state change to refresh UI
             className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
           >
             Try Again
