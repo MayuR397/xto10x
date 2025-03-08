@@ -50,7 +50,6 @@ function Login() {
 
       const data = await response.json();
       localStorage.setItem("userId", data.user._id);
-      console.log("Login successful:", data);
       setIsAuth(true);
       toast.success("User logged in successfully", {
         position: "top-right",

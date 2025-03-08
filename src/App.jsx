@@ -11,6 +11,7 @@ import { MyContext } from "./context/AuthContextProvider";
 import Login from "./components/login";
 import { ToastContainer } from "react-toastify";
 import AdminPage from "./components/AdminPage";
+import ProfilePage from "./components/ProfilePage";
 
 function App() {
   const { isAuth } = useContext(MyContext);
@@ -23,9 +24,10 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={isAuth ? <MainContent /> : <Login />} />
-          <Route path="/select-team" element={<SelectTeamPage />} />
-          <Route path="/register-team" element={<RegisterTeamPage />} />
+          <Route path="/select-team" element={isAuth ? <SelectTeamPage /> : <Login/>} />
+          <Route path="/register-team" element={isAuth ? <RegisterTeamPage /> : <Login/>} />
           <Route path="/admin-page" element={<AdminPage/>}/>
+          <Route path="/profile" element={isAuth ? <ProfilePage/> :  <Login/>}/>
         </Routes>
         <InteractiveElement />
         <Footer />

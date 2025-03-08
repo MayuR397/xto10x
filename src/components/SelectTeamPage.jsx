@@ -14,6 +14,7 @@ import {
   Phone,
   ChevronDown,
   ChevronUp,
+  Code,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -520,10 +521,6 @@ const SelectTeamPage = () => {
                               {team.teamMembers.map((member) => {
                                 const memberDetails =
                                   fullTeamDetails[member._id] || {}; // Get fetched details
-                                console.log(
-                                  "This is team members details",
-                                  memberDetails
-                                );
                                 return (
                                   <li
                                     key={member._id}
@@ -547,7 +544,27 @@ const SelectTeamPage = () => {
                                           </span>
                                         )}
 
-                                        {/* 👇 Only show button if user is in the same team */}
+                                        {/* Display Skills */}
+                                        {memberDetails.skills &&
+                                          memberDetails.skills[0] && (
+                                            <div className="mt-1">
+                                              <span
+                                                className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700"
+                                                title={memberDetails.skills[0]} // ✅ Full text visible on hover
+                                              >
+                                                <Code className="w-3 h-3 mr-1" />
+                                                {memberDetails.skills[0]
+                                                  .length > 48
+                                                  ? `${memberDetails.skills[0].slice(
+                                                      0,
+                                                      48
+                                                    )}...`
+                                                  : memberDetails.skills[0]}
+                                              </span>
+                                            </div>
+                                          )}
+
+                                        {/* Contact Details Button */}
                                         {userTeamId === team._id && (
                                           <div className="mt-2">
                                             <button
@@ -555,8 +572,8 @@ const SelectTeamPage = () => {
                                                 toggleContact(member._id)
                                               }
                                               className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors 
-                 bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200
-                 focus:outline-none focus:ring-2 focus:ring-gray-300`}
+                    bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200
+                    focus:outline-none focus:ring-2 focus:ring-gray-300`}
                                               aria-expanded={
                                                 visibleContacts[member._id]
                                                   ? "true"
