@@ -12,9 +12,12 @@ import Login from "./components/login";
 import { ToastContainer } from "react-toastify";
 import AdminPage from "./components/AdminPage";
 import ProfilePage from "./components/ProfilePage";
+import ChatbotButton from "./components/chatbot/ChatbotButton";
+import ChatWindow from "./components/chatbot/ChatWindow";
 
 function App() {
   const { isAuth } = useContext(MyContext);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   return (
     <>
       <ToastContainer />
@@ -24,13 +27,27 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={isAuth ? <MainContent /> : <Login />} />
-          <Route path="/select-team" element={isAuth ? <SelectTeamPage /> : <Login/>} />
-          <Route path="/register-team" element={isAuth ? <RegisterTeamPage /> : <Login/>} />
-          <Route path="/admin-page" element={<AdminPage/>}/>
-          <Route path="/profile" element={isAuth ? <ProfilePage/> :  <Login/>}/>
+          <Route
+            path="/select-team"
+            element={isAuth ? <SelectTeamPage /> : <Login />}
+          />
+          <Route
+            path="/register-team"
+            element={isAuth ? <RegisterTeamPage /> : <Login />}
+          />
+          <Route path="/admin-page" element={<AdminPage />} />
+          <Route
+            path="/profile"
+            element={isAuth ? <ProfilePage /> : <Login />}
+          />
         </Routes>
         <InteractiveElement />
         <Footer />
+        <ChatbotButton
+          isOpen={isChatOpen}
+          onClick={() => setIsChatOpen(!isChatOpen)}
+        />
+        <ChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       </div>
     </>
   );
