@@ -207,19 +207,19 @@ const Navbar = () => {
         {isAuth && isMenuOpen && (
           <div className="md:hidden mt-4 space-y-3">
             <Link to="/select-team" onClick={() => setIsMenuOpen(false)}>
-              <button className="w-full bg-white border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50 transition">
+              <button className="w-full bg-white border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50 transition mb-2">
                 Select Team
               </button>
             </Link>
 
             <Link to="/register-team" onClick={() => setIsMenuOpen(false)}>
-              <button className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+              <button className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition mb-2">
                 Register Team
               </button>
             </Link>
 
             <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
-              <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition">
+              <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition mb-2">
                 <User className="h-5 w-5 text-red-500" />
                 <span>View Profile</span>
               </button>
