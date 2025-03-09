@@ -43,11 +43,18 @@ function App() {
         </Routes>
         <InteractiveElement />
         <Footer />
-        <ChatbotButton
-          isOpen={isChatOpen}
-          onClick={() => setIsChatOpen(!isChatOpen)}
-        />
-        <ChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        {isAuth && (
+          <ChatbotButton
+            isOpen={isChatOpen}
+            onClick={() => setIsChatOpen(!isChatOpen)}
+          />
+        )}
+        {isAuth && (
+          <ChatWindow
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+          />
+        )}
       </div>
     </>
   );

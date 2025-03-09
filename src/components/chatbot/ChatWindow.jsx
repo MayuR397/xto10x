@@ -3,21 +3,36 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Send, X, Minimize2, Maximize2, Loader2, Sparkles } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 
-const genAI = new GoogleGenerativeAI('AIzaSyD0U4keaEUFqrR2VZJTHIPnwKIpUIDO4Dg');
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 const ChatWindow = ({ isOpen, onClose }) => {
-  const userDetails = JSON.parse(
-    localStorage.getItem("userData") || '{"name": "Guest"}'
-  );
-  const userName = userDetails.name || "Guest";
-  const userInitial = userName.charAt(0).toUpperCase();
+  const [userName, setUserName] = useState("Guest");
+  const [userInitial, setUserInitial] = useState("G");
+  const [messages, setMessages] = useState([]);
 
-  const [messages, setMessages] = useState([
-    {
-      text: `Hi ${userName}! I'm your AI assistant powered by Masai. How can I help you today?`,
-      isBot: true,
-    },
-  ]);
+  useEffect(() => {
+    const fetchUserData = () => {
+      const userDetails = JSON.parse(
+        localStorage.getItem("userData") || '{"name": "Guest"}'
+      );
+      setUserName(userDetails.name || "Guest");
+      setUserInitial((userDetails.name || "G").charAt(0).toUpperCase());
+      // Add the welcome message dynamically
+      setMessages([
+        {
+          text: `Hi ${
+            userDetails.name || "Guest"
+          }! I'm your AI assistant powered by Masai. How can I help you today?`,
+          isBot: true,
+        },
+      ]);
+    };
+
+    if (isOpen) {
+      fetchUserData(); // Fetch data each time the chat is opened
+    }
+  }, [isOpen]);
+
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -116,7 +131,7 @@ const ChatWindow = ({ isOpen, onClose }) => {
           </div>
           <div>
             <h3 className="font-medium text-sm">AI Assistant</h3>
-            <p className="text-xs text-white/80">Powered by Masai</p>
+            <p className="text-xs text-white/80">Welcome, {userName}</p>
           </div>
         </div>
         <div className="flex items-center gap-1">
