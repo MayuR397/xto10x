@@ -180,8 +180,319 @@
 
 // export default VideoConference;
 
+// import { useEffect, useRef, useState } from "react";
+// import { Video, VideoOff, Mic, MicOff, Monitor } from "lucide-react";
+
+// export default function VideoRoom({ roomId }) {
+//   const [peers, setPeers] = useState([]);
+//   const [isMuted, setIsMuted] = useState(false);
+//   const [isVideoOff, setIsVideoOff] = useState(false);
+//   const [isScreenSharing, setIsScreenSharing] = useState(false);
+//   const localVideoRef = useRef(null);
+//   const drone = useRef(null);
+//   const pcs = useRef({});
+//   const localStream = useRef(null);
+//   const screenStream = useRef(null);
+
+//   useEffect(() => {
+//     drone.current = new ScaleDrone("OVFw1lkcn48cg6Ut");
+//     const roomName = `observable-${roomId}`;
+
+//     drone.current.on("open", (error) => {
+//       if (error) return console.error(error);
+
+//       const room = drone.current.subscribe(roomName);
+//       room.on("open", (error) => error && console.error(error));
+
+//       room.on("members", (members) => {
+//         console.log("MEMBERS", members);
+//         const peersArray = members.filter(
+//           (member) => member.id !== drone.current.clientId
+//         );
+//         setPeers(peersArray);
+//         peersArray.forEach((member) => createPeerConnection(member.id));
+//       });
+
+//       room.on("member_join", (member) => {
+//         console.log("MEMBER JOIN", member);
+//         setPeers((peers) => [...peers, member]);
+//         createPeerConnection(member.id);
+//       });
+
+//       room.on("member_leave", (member) => {
+//         console.log("MEMBER LEAVE", member);
+//         setPeers((peers) => peers.filter((peer) => peer.id !== member.id));
+//         if (pcs.current[member.id]) {
+//           pcs.current[member.id].close();
+//           delete pcs.current[member.id];
+//         }
+//         const videoElement = document.getElementById(member.id);
+//         if (videoElement) videoElement.remove();
+//       });
+
+//       room.on("data", (message, client) => {
+//         if (!client || client.id === drone.current.clientId) return;
+//         handleSignaling(message, client.id);
+//       });
+
+//       startLocalStream();
+//     });
+
+//     return () => {
+//       if (localStream.current) {
+//         localStream.current.getTracks().forEach((track) => track.stop());
+//       }
+//       if (screenStream.current) {
+//         screenStream.current.getTracks().forEach((track) => track.stop());
+//       }
+//       Object.values(pcs.current).forEach((pc) => pc.close());
+//       if (drone.current) {
+//         drone.current.close();
+//       }
+//     };
+//   }, [roomId]);
+
+//   const startLocalStream = async () => {
+//     try {
+//       const stream = await navigator.mediaDevices.getUserMedia({
+//         video: true,
+//         audio: true,
+//       });
+//       localStream.current = stream;
+//       localVideoRef.current.srcObject = stream;
+//     } catch (error) {
+//       console.error("Error accessing media devices:", error);
+//     }
+//   };
+
+//   const createPeerConnection = (clientId) => {
+//     const pc = new RTCPeerConnection({
+//       iceServers: [
+//         { urls: "stun:stun.l.google.com:19302" },
+//         { urls: "stun:stun1.l.google.com:19302" },
+//       ],
+//     });
+
+//     pc.onicecandidate = (event) => {
+//       if (event.candidate) {
+//         drone.current.publish({
+//           room: `observable-${roomId}`,
+//           message: { candidate: event.candidate, target: clientId },
+//         });
+//       }
+//     };
+
+//     pc.ontrack = (event) => {
+//       addRemoteVideo(event.streams[0], clientId);
+//     };
+
+//     if (localStream.current) {
+//       localStream.current
+//         .getTracks()
+//         .forEach((track) => pc.addTrack(track, localStream.current));
+//     }
+
+//     pc.onnegotiationneeded = async () => {
+//       try {
+//         const offer = await pc.createOffer();
+//         await pc.setLocalDescription(offer);
+//         drone.current.publish({
+//           room: `observable-${roomId}`,
+//           message: { sdp: pc.localDescription, target: clientId },
+//         });
+//       } catch (err) {
+//         console.error("Error creating offer:", err);
+//       }
+//     };
+
+//     pcs.current[clientId] = pc;
+//   };
+
+//   const handleSignaling = async (message, clientId) => {
+//     const pc = pcs.current[clientId];
+//     if (!pc) return;
+
+//     try {
+//       if (message.sdp) {
+//         await pc.setRemoteDescription(new RTCSessionDescription(message.sdp));
+//         if (message.sdp.type === "offer") {
+//           const answer = await pc.createAnswer();
+//           await pc.setLocalDescription(answer);
+//           drone.current.publish({
+//             room: `observable-${roomId}`,
+//             message: { sdp: answer, target: clientId },
+//           });
+//         }
+//       } else if (message.candidate) {
+//         await pc.addIceCandidate(new RTCIceCandidate(message.candidate));
+//       }
+//     } catch (err) {
+//       console.error("Error handling signaling:", err);
+//     }
+//   };
+
+//   const addRemoteVideo = (stream, clientId) => {
+//     const existingVideo = document.getElementById(clientId);
+//     if (!existingVideo) {
+//       const videoContainer = document.createElement("div");
+//       videoContainer.className =
+//         "relative w-full md:w-1/2 lg:w-1/3 aspect-video";
+//       videoContainer.id = `container-${clientId}`;
+
+//       const video = document.createElement("video");
+//       video.srcObject = stream;
+//       video.autoplay = true;
+//       video.playsInline = true;
+//       video.id = clientId;
+//       video.className = "w-full h-full object-cover rounded-lg";
+
+//       videoContainer.appendChild(video);
+//       document.getElementById("remote-videos").appendChild(videoContainer);
+//     }
+//   };
+
+//   const toggleAudio = () => {
+//     if (localStream.current) {
+//       const audioTrack = localStream.current.getAudioTracks()[0];
+//       if (audioTrack) {
+//         audioTrack.enabled = !audioTrack.enabled;
+//         setIsMuted(!audioTrack.enabled);
+//       }
+//     }
+//   };
+
+//   const toggleVideo = () => {
+//     if (localStream.current) {
+//       const videoTrack = localStream.current.getVideoTracks()[0];
+//       if (videoTrack) {
+//         videoTrack.enabled = !videoTrack.enabled;
+//         setIsVideoOff(!videoTrack.enabled);
+//       }
+//     }
+//   };
+
+//   const toggleScreenShare = async () => {
+//     try {
+//       if (!isScreenSharing) {
+//         screenStream.current = await navigator.mediaDevices.getDisplayMedia({
+//           video: true,
+//           audio: true,
+//         });
+
+//         const videoTrack = screenStream.current.getVideoTracks()[0];
+
+//         Object.values(pcs.current).forEach((pc) => {
+//           const sender = pc.getSenders().find((s) => s.track?.kind === "video");
+//           if (sender) {
+//             sender.replaceTrack(videoTrack);
+//           }
+//         });
+
+//         localVideoRef.current.srcObject = screenStream.current;
+//         setIsScreenSharing(true);
+
+//         videoTrack.onended = () => {
+//           stopScreenSharing();
+//         };
+//       } else {
+//         stopScreenSharing();
+//       }
+//     } catch (err) {
+//       console.error("Error sharing screen:", err);
+//     }
+//   };
+
+//   const stopScreenSharing = () => {
+//     if (screenStream.current) {
+//       screenStream.current.getTracks().forEach((track) => track.stop());
+//       screenStream.current = null;
+
+//       if (localStream.current) {
+//         const videoTrack = localStream.current.getVideoTracks()[0];
+//         Object.values(pcs.current).forEach((pc) => {
+//           const sender = pc.getSenders().find((s) => s.track?.kind === "video");
+//           if (sender && videoTrack) {
+//             sender.replaceTrack(videoTrack);
+//           }
+//         });
+//         localVideoRef.current.srcObject = localStream.current;
+//       }
+//     }
+//     setIsScreenSharing(false);
+//   };
+
+//   return (
+//     <div className="p-4 bg-gray-900 min-h-screen">
+//       <div className="max-w-7xl mx-auto">
+//         <h1 className="text-2xl font-bold mb-4 text-white">
+//           Video Room: {roomId}
+//         </h1>
+
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+//           <div className="relative aspect-video">
+//             <video
+//               ref={localVideoRef}
+//               autoPlay
+//               playsInline
+//               muted
+//               className="w-full h-full object-cover rounded-lg"
+//             />
+//             <div className="absolute bottom-2 left-2 text-white text-sm bg-black bg-opacity-50 px-2 py-1 rounded">
+//               You {isScreenSharing ? "(Screen)" : ""}
+//             </div>
+//           </div>
+//           <div
+//             id="remote-videos"
+//             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+//           />
+//         </div>
+
+//         <div className="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
+//           <div className="max-w-7xl mx-auto flex justify-center space-x-4">
+//             <button
+//               onClick={toggleAudio}
+//               className={`p-4 rounded-full ${
+//                 isMuted ? "bg-red-500" : "bg-gray-600"
+//               }`}
+//             >
+//               {isMuted ? (
+//                 <MicOff className="h-6 w-6 text-white" />
+//               ) : (
+//                 <Mic className="h-6 w-6 text-white" />
+//               )}
+//             </button>
+
+//             <button
+//               onClick={toggleVideo}
+//               className={`p-4 rounded-full ${
+//                 isVideoOff ? "bg-red-500" : "bg-gray-600"
+//               }`}
+//             >
+//               {isVideoOff ? (
+//                 <VideoOff className="h-6 w-6 text-white" />
+//               ) : (
+//                 <Video className="h-6 w-6 text-white" />
+//               )}
+//             </button>
+
+//             <button
+//               onClick={toggleScreenShare}
+//               className={`p-4 rounded-full ${
+//                 isScreenSharing ? "bg-green-500" : "bg-gray-600"
+//               }`}
+//             >
+//               <Monitor className="h-6 w-6 text-white" />
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
 import { useEffect, useRef, useState } from "react";
-import { Video, VideoOff, Mic, MicOff, Monitor } from "lucide-react";
+import { Video, VideoOff, Mic, MicOff, Monitor, PhoneOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function VideoRoom({ roomId }) {
   const [peers, setPeers] = useState([]);
@@ -193,6 +504,7 @@ export default function VideoRoom({ roomId }) {
   const pcs = useRef({});
   const localStream = useRef(null);
   const screenStream = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     drone.current = new ScaleDrone("OVFw1lkcn48cg6Ut");
@@ -217,6 +529,15 @@ export default function VideoRoom({ roomId }) {
         console.log("MEMBER JOIN", member);
         setPeers((peers) => [...peers, member]);
         createPeerConnection(member.id);
+        // Initiate connection from the new member to existing peers
+        if (localStream.current) {
+          const pc = pcs.current[member.id];
+          if (pc) {
+            localStream.current.getTracks().forEach((track) => {
+              pc.addTrack(track, localStream.current);
+            });
+          }
+        }
       });
 
       room.on("member_leave", (member) => {
@@ -226,8 +547,8 @@ export default function VideoRoom({ roomId }) {
           pcs.current[member.id].close();
           delete pcs.current[member.id];
         }
-        const videoElement = document.getElementById(member.id);
-        if (videoElement) videoElement.remove();
+        const container = document.getElementById(`container-${member.id}`);
+        if (container) container.remove();
       });
 
       room.on("data", (message, client) => {
@@ -346,7 +667,13 @@ export default function VideoRoom({ roomId }) {
       video.id = clientId;
       video.className = "w-full h-full object-cover rounded-lg";
 
+      const label = document.createElement("div");
+      label.className =
+        "absolute bottom-2 left-2 text-white text-sm bg-black bg-opacity-50 px-2 py-1 rounded";
+      label.textContent = "Peer";
+
       videoContainer.appendChild(video);
+      videoContainer.appendChild(label);
       document.getElementById("remote-videos").appendChild(videoContainer);
     }
   };
@@ -421,14 +748,37 @@ export default function VideoRoom({ roomId }) {
     setIsScreenSharing(false);
   };
 
+  const endCall = () => {
+    if (localStream.current) {
+      localStream.current.getTracks().forEach((track) => track.stop());
+    }
+    if (screenStream.current) {
+      screenStream.current.getTracks().forEach((track) => track.stop());
+    }
+    Object.values(pcs.current).forEach((pc) => pc.close());
+    if (drone.current) {
+      drone.current.close();
+    }
+    navigate("/");
+  };
+
   return (
     <div className="p-4 bg-gray-900 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold mb-4 text-white">
-          Video Room: {roomId}
-        </h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold text-white">
+            Video Room: {roomId}
+          </h1>
+          <button
+            onClick={endCall}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            <PhoneOff className="h-5 w-5" />
+            End Call
+          </button>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
           <div className="relative aspect-video">
             <video
               ref={localVideoRef}
@@ -453,7 +803,7 @@ export default function VideoRoom({ roomId }) {
               onClick={toggleAudio}
               className={`p-4 rounded-full ${
                 isMuted ? "bg-red-500" : "bg-gray-600"
-              }`}
+              } hover:opacity-80 transition-opacity`}
             >
               {isMuted ? (
                 <MicOff className="h-6 w-6 text-white" />
@@ -466,7 +816,7 @@ export default function VideoRoom({ roomId }) {
               onClick={toggleVideo}
               className={`p-4 rounded-full ${
                 isVideoOff ? "bg-red-500" : "bg-gray-600"
-              }`}
+              } hover:opacity-80 transition-opacity`}
             >
               {isVideoOff ? (
                 <VideoOff className="h-6 w-6 text-white" />
@@ -479,7 +829,7 @@ export default function VideoRoom({ roomId }) {
               onClick={toggleScreenShare}
               className={`p-4 rounded-full ${
                 isScreenSharing ? "bg-green-500" : "bg-gray-600"
-              }`}
+              } hover:opacity-80 transition-opacity`}
             >
               <Monitor className="h-6 w-6 text-white" />
             </button>
