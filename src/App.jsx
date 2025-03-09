@@ -14,6 +14,11 @@ import AdminPage from "./components/AdminPage";
 import ProfilePage from "./components/ProfilePage";
 import ChatbotButton from "./components/chatbot/ChatbotButton";
 import ChatWindow from "./components/chatbot/ChatWindow";
+import ResourceHub from "./components/ResourceHub";
+import VideoConference from "./components/VideoConference";
+import ZoomMeeting from "./components/VideoConference";
+import VideoMeet from "./components/VideoConference";
+import VideoRoom from "./components/VideoConference";
 
 function App() {
   const { isAuth } = useContext(MyContext);
@@ -40,6 +45,8 @@ function App() {
             path="/profile"
             element={isAuth ? <ProfilePage /> : <Login />}
           />
+          <Route path="/resource-hub" element={<ResourceHub/>}/>
+          <Route path="/collab" element={<VideoRoom/>}/>
         </Routes>
         <InteractiveElement />
         <Footer />
