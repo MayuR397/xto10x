@@ -322,7 +322,7 @@ function MeetingRoom() {
     passWord: "n3wffi",
     role: 0,
     userName: "React",
-    leaveUrl: "http://localhost:5173/",
+    leaveUrl: "https://xto10x.masaischool.com/",
   };
 
   const getSignature = async () => {
