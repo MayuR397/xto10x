@@ -321,30 +321,32 @@ function MeetingRoom() {
     meetingNumber: "5024406023",
     passWord: "n3wffi",
     role: 0,
-    userName: "React",
+    userName: localStorage.getItem("userData")
+      ? JSON.parse(localStorage.getItem("userData")).name
+      : "Guest User",
     leaveUrl: "https://xto10x.masaischool.com/",
   };
 
   const getSignature = async () => {
     setIsLoading(true);
     setError(null);
-  
+
     try {
       let ZoomMtgInstance = ZoomMtg;
-  
+
       if (!ZoomMtgInstance) {
         const { ZoomMtg } = await import("@zoom/meetingsdk");
         await import("@zoom/meetingsdk/dist/css/bootstrap.css");
         await import("@zoom/meetingsdk/dist/css/react-select.css");
-  
+
         // ZoomMtg.setZoomJSLib("https://source.zoom.us/3.11.0/lib", "/av");
         ZoomMtg.preLoadWasm();
         ZoomMtg.prepareWebSDK();
-  
+
         ZoomMtgInstance = ZoomMtg;
         setZoomMtg(ZoomMtg); // For future reference
       }
-  
+
       const req = await fetch(config.authEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -353,9 +355,9 @@ function MeetingRoom() {
           role: config.role,
         }),
       });
-  
+
       if (!req.ok) throw new Error("Failed to get signature");
-  
+
       const res = await req.json();
       await startMeeting(res.signature, ZoomMtgInstance); // Pass instance directly
       setIsJoined(true);
@@ -366,17 +368,17 @@ function MeetingRoom() {
       setIsLoading(false);
     }
   };
-  
+
   const startMeeting = (signature, ZoomMtgInstance) => {
     if (!ZoomMtgInstance) return;
-  
+
     let zoomContainer = document.getElementById("zmmtg-root");
     if (!zoomContainer) {
       zoomContainer = document.createElement("div");
       zoomContainer.id = "zmmtg-root";
       document.body.appendChild(zoomContainer);
     }
-  
+
     // Key visibility fixes
     zoomContainer.style.position = "fixed";
     zoomContainer.style.top = "0";
@@ -385,14 +387,14 @@ function MeetingRoom() {
     zoomContainer.style.height = "100vh";
     zoomContainer.style.zIndex = "9999"; // Ensure top layer
     zoomContainer.style.display = "block"; // Force visibility
-  
+
     ZoomMtgInstance.init({
       leaveUrl: config.leaveUrl,
       patchJsMedia: true,
       leaveOnPageUnload: true,
       success: () => {
         console.log("Zoom SDK Initialized");
-  
+
         ZoomMtgInstance.join({
           meetingNumber: config.meetingNumber,
           sdkKey: config.sdkKey,
@@ -409,13 +411,12 @@ function MeetingRoom() {
         console.error("Zoom Init Error:", error);
       },
     });
-  
+
     ZoomMtgInstance.inMeetingServiceListener("onUserLeave", () => {
       const zoomContainer = document.getElementById("zmmtg-root");
       if (zoomContainer) zoomContainer.remove();
     });
   };
-  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white">
