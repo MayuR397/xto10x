@@ -435,7 +435,6 @@ function MeetingRoom() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <Code2 className="h-8 w-8 text-red-500" />
               <span className="ml-2 text-2xl font-bold text-white">
                 xto<span className="text-red-500">10</span>x
               </span>
@@ -444,8 +443,8 @@ function MeetingRoom() {
               href="/"
               className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors text-white"
             >
-              <Home className="h-5 w-5" />
-              <span>Home</span>
+              <Home className="h-5 w-5 text-white" />
+              <span className="text-white">Home</span>
             </a>
           </div>
         </div>

@@ -131,7 +131,10 @@ const ChatWindow = ({ isOpen, onClose }) => {
           </div>
           <div>
             <h3 className="font-medium text-sm">AI Assistant</h3>
-            <p className="text-xs text-white/80">Welcome, {userName}</p>
+            <p className="text-xs text-white/80">
+              Welcome,{" "}
+              {userName.length > 15 ? `${userName.slice(0, 15)}...` : userName}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-1">
