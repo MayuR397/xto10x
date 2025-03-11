@@ -417,9 +417,13 @@ function MeetingRoom() {
       },
     });
 
-    ZoomMtgInstance.inMeetingServiceListener("onUserLeave", () => {
-      const zoomContainer = document.getElementById("zmmtg-root");
-      if (zoomContainer) zoomContainer.remove();
+    ZoomMtgInstance.inMeetingServiceListener("onUserLeave", (data) => {
+      const currentUser = ZoomMtgInstance.getCurrentUser({});
+
+      if (data.userId === currentUser.userId) {
+        const zoomContainer = document.getElementById("zmmtg-root");
+        if (zoomContainer) zoomContainer.remove();
+      }
     });
   };
 
