@@ -327,6 +327,11 @@ function MeetingRoom() {
     leaveUrl: "https://xto10x.masaischool.com/",
   };
 
+  const generateUniqueName = (name) => {
+    const randomNumber = Math.floor(1000 + Math.random() * 9000); // 4-digit random number
+    return `${name} #${randomNumber}`;
+  };
+
   const getSignature = async () => {
     setIsLoading(true);
     setError(null);
@@ -399,7 +404,7 @@ function MeetingRoom() {
           meetingNumber: config.meetingNumber,
           sdkKey: config.sdkKey,
           signature: signature,
-          userName: config.userName,
+          userName: generateUniqueName(config.userName),
           passWord: config.passWord,
           success: (success) => console.log("Meeting Joined:", success),
           error: (error) => {
