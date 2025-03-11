@@ -308,6 +308,7 @@
 // export default MeetingRoom;
 
 import React, { useState } from "react";
+import { Users, Code2, Video, Home, ArrowRight } from "lucide-react";
 
 function MeetingRoom() {
   const [isLoading, setIsLoading] = useState(false);
@@ -428,20 +429,136 @@ function MeetingRoom() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-      <h1 className="text-2xl font-bold mb-4">Zoom Meeting SDK Sample</h1>
-      {error && <p className="text-red-500">{error}</p>}{" "}
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <button
-          onClick={getSignature}
-          className="bg-blue-500 text-black px-4 py-2 rounded-md"
-          disabled={isJoined}
-        >
-          {isJoined ? "Meeting Joined" : "Join Meeting"}
-        </button>
-      )}
+    <div className="min-h-screen bg-[#1a1f2e]">
+      {/* Navigation Bar */}
+      <nav className="bg-[#1a1f2e] border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <Code2 className="h-8 w-8 text-red-500" />
+              <span className="ml-2 text-2xl font-bold text-white">
+                xto<span className="text-red-500">10</span>x
+              </span>
+            </div>
+            <a
+              href="/"
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors text-white"
+            >
+              <Home className="h-5 w-5" />
+              <span>Home</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-white mb-4">
+            Hackathon Collaboration Hub
+          </h1>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Transform Ideas into Reality - Join the most exciting hackathon
+            collaboration space
+          </p>
+        </div>
+
+        {/* Meeting Info Card */}
+        <div className="bg-gray-800 rounded-2xl shadow-xl p-8 mb-8 border border-gray-700">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold text-white">
+                Live Coding Session
+              </h2>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3 text-gray-300">
+                  <Users className="w-5 h-5 text-red-500" />
+                  <span>Open Collaboration Space</span>
+                </div>
+                <div className="flex items-center space-x-3 text-gray-300">
+                  <Code2 className="w-5 h-5 text-red-500" />
+                  <span>Full-Stack Development</span>
+                </div>
+              </div>
+
+              {error && (
+                <div className="bg-red-900/50 text-red-400 p-3 rounded-lg border border-red-800">
+                  {error}
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col justify-center items-center space-y-6">
+              <div className="w-24 h-24 bg-gray-700 rounded-full flex items-center justify-center">
+                <Video className="w-12 h-12 text-red-500" />
+              </div>
+
+              {isLoading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-gray-300">
+                    Connecting to session...
+                  </span>
+                </div>
+              ) : (
+                <button
+                  onClick={getSignature}
+                  disabled={isJoined}
+                  className={`
+                    group w-full md:w-auto px-8 py-4 rounded-xl font-medium text-lg
+                    transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-2
+                    ${
+                      isJoined
+                        ? "bg-green-900/20 text-green-500 cursor-not-allowed"
+                        : "bg-red-500 text-white hover:bg-red-600 shadow-lg hover:shadow-red-500/20"
+                    }
+                  `}
+                >
+                  <span>
+                    {isJoined
+                      ? "Currently in Session"
+                      : "Join Collaboration Room"}
+                  </span>
+                  {!isJoined && (
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Meeting Guidelines */}
+        <div className="bg-gray-800 rounded-xl p-6 shadow-xl border border-gray-700">
+          <h3 className="text-lg font-semibold text-white mb-4">
+            Session Guidelines
+          </h3>
+          <ul className="space-y-2 text-gray-300">
+            <li className="flex items-center space-x-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+              <span>
+                Share your screen when discussing code implementations
+              </span>
+            </li>
+            <li className="flex items-center space-x-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+              <span>
+                Use the chat for sharing quick links and code snippets
+              </span>
+            </li>
+            <li className="flex items-center space-x-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+              <span>Maintain a collaborative and supportive environment</span>
+            </li>
+            <li className="flex items-center space-x-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+              <span>Take turns speaking to avoid audio overlap</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Zoom Meeting Root - DO NOT MODIFY */}
       <div id="zmmtg-root"></div>
     </div>
   );

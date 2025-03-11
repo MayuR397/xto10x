@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Send, X, Minimize2, Maximize2, Loader2, Sparkles } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI("AIzaSyD0U4keaEUFqrR2VZJTHIPnwKIpUIDO4Dg");
 
 const ChatWindow = ({ isOpen, onClose }) => {
   const [userName, setUserName] = useState("Guest");
