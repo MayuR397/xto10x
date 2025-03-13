@@ -29,6 +29,7 @@
     "react-syntax-highlighter": "^15.6.1",
     "react-toastify": "^11.0.5",
     "react-use": "^17.6.0",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.9"
   },

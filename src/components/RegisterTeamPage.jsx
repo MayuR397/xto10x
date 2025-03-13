@@ -5,6 +5,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Confetti from "react-confetti"; // 🎉 Import Confetti
 import { useWindowSize } from "react-use"; // For dynamic width/height
+import { io } from "socket.io-client";
+
+// ✅ Initialize socket connection
+const socket = io("http://localhost:5009", { transports: ["websocket"] });
 
 const RegisterTeamPage = () => {
   const { width, height } = useWindowSize(); // Auto-resizes confetti
@@ -37,7 +41,7 @@ const RegisterTeamPage = () => {
       };
 
       const response = await fetch(
-        `https://x10x-api.iasam.dev/team/create-team`,
+        `http://localhost:5009/team/create-team`,
         {
           method: "POST",
           headers: {
@@ -51,6 +55,10 @@ const RegisterTeamPage = () => {
         throw new Error("Failed to create team");
       }
       const result = await response.json();
+
+      // ✅ Emit real-time event to notify other users
+      socket.emit("teamUpdated", result.team);
+
       // 🎉 Trigger Confetti Animation
       setShowConfetti(true);
       toast.success("Team created successfully!", {

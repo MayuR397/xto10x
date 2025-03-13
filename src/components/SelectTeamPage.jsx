@@ -15,9 +15,14 @@ import {
   ChevronDown,
   ChevronUp,
   Code,
+  Video,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import { io } from "socket.io-client";
 import "react-toastify/dist/ReactToastify.css";
+
+// Initialize socket connection
+const socket = io("http://localhost:5009"); // Replace with your backend URL
 
 const SelectTeamPage = () => {
   const [teams, setTeams] = useState([]);
@@ -62,6 +67,24 @@ const SelectTeamPage = () => {
 
     fetchUserDetails();
     fetchTeams();
+
+    // Listen for team updates
+    socket.on("teamCreated", (newTeam) => {
+      console.log("🔥 New team created:", newTeam);
+      fetchTeams();
+      // setTeams((prevTeams) => [...prevTeams, newTeam]); // Update UI
+    });
+
+    socket.on("teamDeleted", (deletedTeamId) => {
+      setTeams((prevTeams) =>
+        prevTeams.filter((team) => team._id !== deletedTeamId)
+      );
+    });
+
+    return () => {
+      socket.off("teamUpdated");
+      socket.off("teamDeleted");
+    };
   }, [userId]);
 
   useEffect(() => {
@@ -327,6 +350,10 @@ const SelectTeamPage = () => {
       [memberId]: !prev[memberId], // Toggle visibility for this member
     }));
   };
+
+  function generateThreeDigitNumber() {
+    return Math.floor(100 + Math.random() * 900);
+  }
 
   useEffect(() => {
     const fetchFullMemberDetails = async () => {
@@ -720,6 +747,20 @@ const SelectTeamPage = () => {
                               <LogOut size={18} />
                               <span>Leave Team</span>
                             </button>
+                          )}
+
+                          {userTeamId === team._id && (
+                            <a
+                              href={`https://meet.jit.si/${team.teamName}_${generateThreeDigitNumber()}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <button
+                                className={`flex items-center justify-center gap-2 ${colorScheme.button} text-white px-4 py-2.5 rounded-md transition`}
+                              >
+                                <Video /> Team Meet
+                              </button>
+                            </a>
                           )}
                         </div>
                       </div>
