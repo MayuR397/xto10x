@@ -97,7 +97,7 @@ function App() {
   const isMeetingRoom = location.pathname === "/meeting-room";
   const isDashboard = location.pathname === "/"
   const isEvolveRoute = location.pathname === "/evolve";
-  
+
   if (isEvolveRoute) {
     // If on the /evolve route, render only the Evolve component
     return <Evolve />;

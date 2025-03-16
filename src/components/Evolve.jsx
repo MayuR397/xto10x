@@ -220,24 +220,24 @@ const Evolve = () => {
               <span className="text-xs text-gray-500 font-light">by Masai</span>
             </div>
             <div className="hidden md:flex items-center gap-8 text-sm">
-              <a
+              <p
                 href="#wings"
-                className="hover:text-red-500 text-amber-400 !important transition-colors"
+                className="hover:text-red-500 transition-colors cursor-pointer"
               >
                 Studio Wings
-              </a>
-              <a
+              </p>
+              <p
                 href="#features"
-                className="hover:text-red-500 transition-colors"
+                className="hover:text-red-500 transition-colors cursor-pointer"
               >
                 Features
-              </a>
-              <a
+              </p>
+              <p
                 href="#community"
-                className="hover:text-red-500 transition-colors"
+                className="hover:text-red-500 transition-colors cursor-pointer"
               >
                 Community
-              </a>
+              </p>
               <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-black/80 transition-colors">
                 Join Now
               </button>
