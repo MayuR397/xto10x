@@ -87,6 +87,7 @@ import ChatWindow from "./components/chatbot/ChatWindow";
 import ResourceHub from "./components/ResourceHub";
 import VideoConference from "./components/VideoConference";
 import MeetingRoom from "./components/MeetingRoom";
+import Evolve from "./components/Evolve";
 
 function App() {
   const { isAuth } = useContext(MyContext);
@@ -95,6 +96,12 @@ function App() {
 
   const isMeetingRoom = location.pathname === "/meeting-room";
   const isDashboard = location.pathname === "/"
+  const isEvolveRoute = location.pathname === "/evolve";
+  
+  if (isEvolveRoute) {
+    // If on the /evolve route, render only the Evolve component
+    return <Evolve />;
+  }
 
   return (
     <>
@@ -120,6 +127,7 @@ function App() {
           />
           <Route path="/resource-hub" element={<ResourceHub />} />
           <Route path="/meeting-room" element={<MeetingRoom />} />
+          <Route path="/evolve" element={<Evolve/>}/>
         </Routes>
         {!isMeetingRoom && isDashboard && <VideoConference />}
         {!isMeetingRoom && isDashboard && <InteractiveElement />}
