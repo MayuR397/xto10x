@@ -22,6 +22,7 @@ import { io } from "socket.io-client";
 import "react-toastify/dist/ReactToastify.css";
 import { MyContext } from "../context/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
+import ConfirmationModal from "./ConfirmationModal";
 
 // Initialize socket connection
 // const socket = io("http://localhost:5009"); // Replace with your backend URL
@@ -38,12 +39,41 @@ const SelectTeamPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleContacts, setVisibleContacts] = useState({});
   const [fullTeamDetails, setFullTeamDetails] = useState({});
-  const userData = JSON.parse(localStorage.getItem('userData'));
+  const userData = JSON.parse(localStorage.getItem("userData"));
 
   const userId = localStorage.getItem("userId");
   const { setCurrentHackathonId } = useContext(MyContext);
   const currentHackathon = localStorage.getItem("currentHackathon");
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState({});
+
+  // Configure Modal based on Action and Pass Arguments
+  const openModal = (actionType, teamId, creatorId) => {
+    if (actionType === "leave") {
+      setModalConfig({
+        title: "Confirm Leaving Team",
+        message:
+          "Are you sure you want to leave the team? This action cannot be undone.",
+        onConfirm: () => {
+          leaveTeam(userId);
+          setIsModalOpen(false);
+        },
+      });
+    } else if (actionType === "delete") {
+      setModalConfig({
+        title: "Confirm Deleting Team",
+        message:
+          "Are you sure you want to delete the team? This action is irreversible.",
+        onConfirm: () => {
+          deleteTeam(teamId, creatorId);
+          setIsModalOpen(false);
+        },
+      });
+    }
+    setIsModalOpen(true);
+  };
+
   useEffect(() => {
     if (!currentHackathon) {
       navigate("/eligible-hackathons");
@@ -419,7 +449,7 @@ const SelectTeamPage = () => {
 
               {userTeamId && (
                 <button
-                  onClick={() => leaveTeam(userId)}
+                  onClick={() => setIsModalOpen(true)}
                   className="mt-4 md:mt-0 flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition"
                 >
                   <LogOut size={18} />
@@ -478,6 +508,10 @@ const SelectTeamPage = () => {
                   const teamHasPendingRequests =
                     pendingRequests.length > 0 && isCreator;
 
+                  // Conditionally check if userTeamId exists and matches team._id
+                  if (userTeamId && userTeamId !== team._id) {
+                    return null; // Skip rendering this team if the condition is not met
+                  }
                   const colorScheme = getColorScheme(index);
 
                   return (
@@ -718,10 +752,15 @@ const SelectTeamPage = () => {
                               </button>
                             )}
 
+                          {/* Delete Team (For Creator) */}
                           {isCreator && (
                             <button
                               onClick={() =>
-                                deleteTeam(team._id, team.createdBy._id)
+                                openModal(
+                                  "delete",
+                                  team._id,
+                                  team.createdBy._id
+                                )
                               }
                               className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition"
                             >
@@ -730,15 +769,25 @@ const SelectTeamPage = () => {
                             </button>
                           )}
 
+                          {/* Leave Team (For Member) */}
                           {isMember && !isCreator && (
                             <button
-                              onClick={() => leaveTeam(userId)}
+                              onClick={() => openModal("leave")}
                               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition"
                             >
                               <LogOut size={18} />
                               <span>Leave Team</span>
                             </button>
                           )}
+
+                          {/* Reusable Confirmation Modal */}
+                          <ConfirmationModal
+                            isOpen={isModalOpen}
+                            onClose={() => setIsModalOpen(false)}
+                            onConfirm={modalConfig.onConfirm}
+                            title={modalConfig.title}
+                            message={modalConfig.message}
+                          />
 
                           {userTeamId === team._id && (
                             <a

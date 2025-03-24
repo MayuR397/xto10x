@@ -24,7 +24,7 @@ import EligibleHackathons from "./components/EligibleHackathons";
 import CreateUser from "./components/CreateUser";
 
 function App() {
-  const { isAuth } = useContext(MyContext);
+  const { isAuth, hackathon } = useContext(MyContext);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const location = useLocation();
 
@@ -47,7 +47,7 @@ function App() {
       <ToastContainer />
       <div className="min-h-screen bg-gray-50">
         {!isMeetingRoom && !isDashboard && <Navbar />}
-        {isAuth && !isDashboard && !isMeetingRoom && <CountDownTimer />}
+        {isAuth && !isDashboard && !isMeetingRoom && hackathon.eventType !== "Interactive Hackathon" && <CountDownTimer />}
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
@@ -62,7 +62,7 @@ function App() {
             path="/hackathon"
             element={
               <ProtectedRoute>
-                <MainContent />
+                {hackathon.eventType === "Interactive Hackathon" ? <CSBT/> : <MainContent/>}
               </ProtectedRoute>
             }
           />
@@ -118,12 +118,13 @@ function App() {
           <Route path="/create-users" element={<CreateUser/>}/>
           <Route path="/admin-page" element={<AdminPage />} />
         </Routes>
-        {!isMeetingRoom && !isDashboard && isAuth && isHackathon && (
+
+        {!isMeetingRoom && !isDashboard && isAuth && isHackathon && hackathon.eventType !== "Interactive Hackathon" && (
           <ProtectedRoute>
             <VideoConference />
           </ProtectedRoute>
         )}
-        {!isMeetingRoom && !isDashboard && isAuth && isHackathon && (
+        {!isMeetingRoom && !isDashboard && isAuth && isHackathon && hackathon.eventType !== "Interactive Hackathon" && (
           <ProtectedRoute>
             <InteractiveElement />
           </ProtectedRoute>

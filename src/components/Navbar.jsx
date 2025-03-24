@@ -99,8 +99,8 @@ const Navbar = () => {
           {/* Event Details - Hidden on mobile */}
           {!isLogin && (
             <div className="hidden md:block">
-              <div className="flex justify-center text-xl font-semibold">
-                <div>{hackathon.name ? hackathon.name : "Hackathon"} </div>
+              <div className="flex justify-center text-xl ">
+                <div className="font-bold">{hackathon.name ? hackathon.name : "Hackathon"} </div>
                 <span className="text-red-500 ml-2">{currentDate}</span>
               </div>
               <div className="text-gray-600 text-sm mt-1 flex justify-center">
@@ -149,7 +149,7 @@ const Navbar = () => {
                   aria-haspopup="true"
                 >
                   {/* Circle with User Initials */}
-                  <div className="w-10 h-10 rounded-full bg-gray-600 text-white flex items-center justify-center text-lg font-semibold">
+                  <div className="w-10 h-10 rounded-full bg-gray-800 text-white flex items-center justify-center text-lg font-semibold">
                     {userInitials}
                   </div>
 
