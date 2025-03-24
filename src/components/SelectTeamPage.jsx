@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Users,
   UserPlus,
@@ -20,11 +20,14 @@ import {
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import "react-toastify/dist/ReactToastify.css";
+import { MyContext } from "../context/AuthContextProvider";
+import { useNavigate } from "react-router-dom";
 
 // Initialize socket connection
-const socket = io("http://localhost:5009"); // Replace with your backend URL
+// const socket = io("http://localhost:5009"); // Replace with your backend URL
 
 const SelectTeamPage = () => {
+  const baseURL = import.meta.env.VITE_BASE_URL;
   const [teams, setTeams] = useState([]);
   const [userTeamId, setUserTeamId] = useState(null);
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -35,12 +38,21 @@ const SelectTeamPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleContacts, setVisibleContacts] = useState({});
   const [fullTeamDetails, setFullTeamDetails] = useState({});
+  const userData = JSON.parse(localStorage.getItem('userData'));
 
   const userId = localStorage.getItem("userId");
+  const { setCurrentHackathonId } = useContext(MyContext);
+  const currentHackathon = localStorage.getItem("currentHackathon");
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!currentHackathon) {
+      navigate("/eligible-hackathons");
+    }
+  });
 
   const fetchTeams = async () => {
     try {
-      const response = await fetch("https://x10x-api.iasam.dev/team/get-teams");
+      const response = await fetch(`${baseURL}/team/${currentHackathon}`);
       if (!response.ok) throw new Error("Failed to fetch teams");
       const data = await response.json();
       setTeams(data);
@@ -54,9 +66,7 @@ const SelectTeamPage = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch(
-          `https://x10x-api.iasam.dev/users/get-user/${userId}`
-        );
+        const response = await fetch(`${baseURL}/users/get-user/${userId}`);
         if (!response.ok) throw new Error("Failed to fetch user data");
         const userData = await response.json();
         setUserTeamId(userData?.teamId || null);
@@ -69,21 +79,21 @@ const SelectTeamPage = () => {
     fetchTeams();
 
     // Listen for team updates
-    socket.on("teamCreated", (newTeam) => {
-      console.log("🔥 New team created:", newTeam);
-      fetchTeams();
-      // setTeams((prevTeams) => [...prevTeams, newTeam]); // Update UI
-    });
+    // socket.on("teamCreated", (newTeam) => {
+    //   // console.log("🔥 New team created:", newTeam);
+    //   // fetchTeams();
+    //   // setTeams((prevTeams) => [...prevTeams, newTeam]); // Update UI
+    // });
 
-    socket.on("teamDeleted", (deletedTeamId) => {
-      setTeams((prevTeams) =>
-        prevTeams.filter((team) => team._id !== deletedTeamId)
-      );
-    });
+    // socket.on("teamDeleted", (deletedTeamId) => {
+    //   // setTeams((prevTeams) =>
+    //   //   prevTeams.filter((team) => team._id !== deletedTeamId)
+    //   // );
+    // });
 
     return () => {
-      socket.off("teamUpdated");
-      socket.off("teamDeleted");
+      // socket.off("teamUpdated");
+      // socket.off("teamDeleted");
     };
   }, [userId]);
 
@@ -93,7 +103,7 @@ const SelectTeamPage = () => {
     const fetchPendingRequests = async () => {
       try {
         const response = await fetch(
-          `https://x10x-api.iasam.dev/team-request/${userTeamId}/join-requests`,
+          `${baseURL}/team-request/${userTeamId}/join-requests`,
           {
             method: "GET",
           }
@@ -117,14 +127,11 @@ const SelectTeamPage = () => {
 
   const handleJoinRequest = async (teamId) => {
     try {
-      const response = await fetch(
-        "https://x10x-api.iasam.dev/team-request/send-request",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, teamId }),
-        }
-      );
+      const response = await fetch(`${baseURL}/team-request/send-request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, teamId }),
+      });
 
       const result = await response.json();
       if (response.ok) {
@@ -144,14 +151,11 @@ const SelectTeamPage = () => {
   const handleAcceptRequest = async (requestId, teamId) => {
     setRequestProcessing(true);
     try {
-      const response = await fetch(
-        "https://x10x-api.iasam.dev/team-request/accept-request",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ requestId, teamId }),
-        }
-      );
+      const response = await fetch(`${baseURL}/team-request/accept-request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId, teamId }),
+      });
 
       const result = await response.json();
       if (response.ok) {
@@ -161,9 +165,7 @@ const SelectTeamPage = () => {
         );
 
         // Refresh teams to show updated member list
-        const teamsResponse = await fetch(
-          "https://x10x-api.iasam.dev/team/get-teams"
-        );
+        const teamsResponse = await fetch(`${baseURL}/team/get-teams`);
         if (teamsResponse.ok) {
           const teamsData = await teamsResponse.json();
           setTeams(teamsData);
@@ -190,14 +192,11 @@ const SelectTeamPage = () => {
   const handleDeclineRequest = async (requestId) => {
     setRequestProcessing(true);
     try {
-      const response = await fetch(
-        "https://x10x-api.iasam.dev/team-request/decline-request",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ requestId }),
-        }
-      );
+      const response = await fetch(`${baseURL}/team-request/decline-request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId }),
+      });
 
       const result = await response.json();
       if (response.ok) {
@@ -226,16 +225,13 @@ const SelectTeamPage = () => {
   // Leave team
   const leaveTeam = async (userId) => {
     try {
-      const response = await fetch(
-        "https://x10x-api.iasam.dev/users/leave-team",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId }),
-        }
-      );
+      const response = await fetch(`${baseURL}/users/leave-team`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
 
       const data = await response.json();
 
@@ -256,16 +252,13 @@ const SelectTeamPage = () => {
 
   const deleteTeam = async (teamId, userId) => {
     try {
-      const response = await fetch(
-        "https://x10x-api.iasam.dev/team/delete-team",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ teamId, userId }),
-        }
-      );
+      const response = await fetch(`${baseURL}/team/delete-team`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ teamId, userId }),
+      });
 
       const data = await response.json();
 
@@ -368,9 +361,7 @@ const SelectTeamPage = () => {
 
         await Promise.all(
           memberIds.map(async (id) => {
-            const res = await fetch(
-              `https://x10x-api.iasam.dev/users/get-user/${id}`
-            );
+            const res = await fetch(`${baseURL}/users/get-user/${id}`);
             if (res.ok) {
               const userData = await res.json();
               memberDetails[id] = userData; // Store full details
@@ -751,7 +742,9 @@ const SelectTeamPage = () => {
 
                           {userTeamId === team._id && (
                             <a
-                              href={`https://meet.jit.si/${team.teamName}_${generateThreeDigitNumber()}`}
+                              href={`https://meet.jit.si/${
+                                team.teamName
+                              }_${generateThreeDigitNumber()}`}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
@@ -759,6 +752,22 @@ const SelectTeamPage = () => {
                                 className={`flex items-center justify-center gap-2 ${colorScheme.button} text-white px-4 py-2.5 rounded-md transition`}
                               >
                                 <Video /> Team Meet
+                              </button>
+                            </a>
+                          )}
+
+                          {userTeamId === team._id && (
+                            <a
+                              href={`https://meet.jit.si/${
+                                userData.name
+                              }_${generateThreeDigitNumber()}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <button
+                                className={`flex items-center justify-center gap-2 ${colorScheme.button} text-white px-4 py-2.5 rounded-md transition`}
+                              >
+                                <Video /> Solo Meet
                               </button>
                             </a>
                           )}

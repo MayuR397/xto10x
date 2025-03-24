@@ -1,75 +1,5 @@
-// import React, { useState, useEffect, useContext } from "react";
-// import Navbar from "./components/Navbar";
-// import MainContent from "./components/MainContent";
-// import InteractiveElement from "./components/InteractiveElement";
-// import Footer from "./components/Footer";
-// import CountDownTimer from "./components/CountDownTimer";
-// import { Routes, Route } from "react-router-dom";
-// import SelectTeamPage from "./components/SelectTeamPage";
-// import { RegisterTeamPage } from "./components/RegisterTeamPage";
-// import { MyContext } from "./context/AuthContextProvider";
-// import Login from "./components/login";
-// import { ToastContainer } from "react-toastify";
-// import AdminPage from "./components/AdminPage";
-// import ProfilePage from "./components/ProfilePage";
-// import ChatbotButton from "./components/chatbot/ChatbotButton";
-// import ChatWindow from "./components/chatbot/ChatWindow";
-// import ResourceHub from "./components/ResourceHub";
-// import VideoConference from "./components/VideoConference";
-// import MeetingRoom from "./components/MeetingRoom";
-
-// function App() {
-//   const { isAuth } = useContext(MyContext);
-//   const [isChatOpen, setIsChatOpen] = useState(false);
-//   return (
-//     <>
-//       <ToastContainer />
-//       <div className="min-h-screen bg-gray-50">
-//         <Navbar />
-//         {isAuth && <CountDownTimer />}
-//         <Routes>
-//           <Route path="/login" element={<Login />} />
-//           <Route path="/" element={isAuth ? <MainContent /> : <Login />} />
-//           <Route
-//             path="/select-team"
-//             element={isAuth ? <SelectTeamPage /> : <Login />}
-//           />
-//           <Route
-//             path="/register-team"
-//             element={isAuth ? <RegisterTeamPage /> : <Login />}
-//           />
-//           <Route path="/admin-page" element={<AdminPage />} />
-//           <Route
-//             path="/profile"
-//             element={isAuth ? <ProfilePage /> : <Login />}
-//           />
-//           <Route path="/resource-hub" element={<ResourceHub />} />
-//           <Route path="/meeting-room" element={<MeetingRoom />} />
-//         </Routes>
-//         <VideoConference />
-//         <InteractiveElement />
-//         <Footer />
-//         {isAuth && (
-//           <ChatbotButton
-//             isOpen={isChatOpen}
-//             onClick={() => setIsChatOpen(!isChatOpen)}
-//           />
-//         )}
-//         {isAuth && (
-//           <ChatWindow
-//             isOpen={isChatOpen}
-//             onClose={() => setIsChatOpen(false)}
-//           />
-//         )}
-//       </div>
-//     </>
-//   );
-// }
-
-// export default App;
-
 import React, { useState, useEffect, useContext } from "react";
-import { useLocation, Routes, Route } from "react-router-dom";
+import { useLocation, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import MainContent from "./components/MainContent";
 import InteractiveElement from "./components/InteractiveElement";
@@ -87,7 +17,11 @@ import ChatWindow from "./components/chatbot/ChatWindow";
 import ResourceHub from "./components/ResourceHub";
 import VideoConference from "./components/VideoConference";
 import MeetingRoom from "./components/MeetingRoom";
-import Evolve from "./components/Evolve";
+import Evolve from "./components/evolve/Evolve";
+import CSBT from "./components/csbt/CSBT";
+import ProtectedRoute from "./components/ProtectedRoute";
+import EligibleHackathons from "./components/EligibleHackathons";
+import CreateUser from "./components/CreateUser";
 
 function App() {
   const { isAuth } = useContext(MyContext);
@@ -95,42 +29,105 @@ function App() {
   const location = useLocation();
 
   const isMeetingRoom = location.pathname === "/meeting-room";
-  const isDashboard = location.pathname === "/"
-  const isEvolveRoute = location.pathname === "/evolve";
+  const isDashboard = location.pathname === "/";
+  const isHackathon = location.pathname === "/hackathon";
+  const isCSBT = location.pathname === "/csbt";
 
-  if (isEvolveRoute) {
-    // If on the /evolve route, render only the Evolve component
-    return <Evolve />;
+  // if (isAuth && isEvolveRoute) {
+  //   // If on the /evolve route, render only the Evolve component
+  //   return <Evolve />;
+  // }
+
+  if (isCSBT) {
+    return <CSBT />;
   }
 
   return (
     <>
       <ToastContainer />
       <div className="min-h-screen bg-gray-50">
-        {!isMeetingRoom && <Navbar />}
-        {isAuth && !isMeetingRoom && <CountDownTimer />}
+        {!isMeetingRoom && !isDashboard && <Navbar />}
+        {isAuth && !isDashboard && !isMeetingRoom && <CountDownTimer />}
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={isAuth ? <MainContent /> : <Login />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Evolve />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hackathon"
+            element={
+              <ProtectedRoute>
+                <MainContent />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/select-team"
-            element={isAuth ? <SelectTeamPage /> : <Login />}
+            element={
+              <ProtectedRoute>
+                <SelectTeamPage />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/register-team"
-            element={isAuth ? <RegisterTeamPage /> : <Login />}
+            element={
+              <ProtectedRoute>
+                <RegisterTeamPage />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/admin-page" element={<AdminPage />} />
           <Route
             path="/profile"
-            element={isAuth ? <ProfilePage /> : <Login />}
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/resource-hub" element={<ResourceHub />} />
-          <Route path="/meeting-room" element={<MeetingRoom />} />
-          <Route path="/evolve" element={<Evolve/>}/>
+          <Route
+            path="/resource-hub"
+            element={
+              <ProtectedRoute>
+                <ResourceHub />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/meeting-room"
+            element={
+              <ProtectedRoute>
+                <MeetingRoom />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/csbt"
+            element={
+              <ProtectedRoute>
+                <CSBT />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/eligible-hackathons" element={<ProtectedRoute><EligibleHackathons/></ProtectedRoute>}/>
+          <Route path="/create-users" element={<CreateUser/>}/>
+          <Route path="/admin-page" element={<AdminPage />} />
         </Routes>
-        {!isMeetingRoom && isDashboard && <VideoConference />}
-        {!isMeetingRoom && isDashboard && <InteractiveElement />}
+        {!isMeetingRoom && !isDashboard && isAuth && isHackathon && (
+          <ProtectedRoute>
+            <VideoConference />
+          </ProtectedRoute>
+        )}
+        {!isMeetingRoom && !isDashboard && isAuth && isHackathon && (
+          <ProtectedRoute>
+            <InteractiveElement />
+          </ProtectedRoute>
+        )}
         {!isMeetingRoom && <Footer />}
         {isAuth && !isMeetingRoom && (
           <ChatbotButton

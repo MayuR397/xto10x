@@ -24,7 +24,12 @@ import {
   TrendingUp,
   MessageCircle,
   Clock,
+  BarChart3,
+  Bell,
+  Briefcase,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import EvolveNavbar from "./EvolveNavbar";
 
 const Evolve = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -35,60 +40,109 @@ const Evolve = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // const wings = [
+  //   {
+  //     icon: Code2,
+  //     title: "CodeForge",
+  //     desc: "Master modern software development through hands-on projects and industry-standard practices.",
+  //     gradient: "bg-gradient-to-br from-[#FF416C]/90 to-[#FF4B2B]/90",
+  //     softBg: "bg-[#FF416C]/5",
+  //     features: ["Full-stack Development", "Cloud Architecture", "DevOps"],
+  //     stats: { projects: "250+", students: "1.2K+", rating: "4.8" },
+  //   },
+  //   {
+  //     icon: Brain,
+  //     title: "AlgoNest",
+  //     desc: "Excel in data structures, algorithms, and competitive programming with expert guidance.",
+  //     gradient: "bg-gradient-to-br from-[#7F00FF]/90 to-[#E100FF]/90",
+  //     softBg: "bg-[#7F00FF]/5",
+  //     features: ["Advanced DSA", "System Design", "Problem Solving"],
+  //     stats: { projects: "180+", students: "950+", rating: "4.9" },
+  //   },
+  //   {
+  //     icon: Network,
+  //     title: "FutureMind",
+  //     desc: "Build cutting-edge AI solutions and explore the frontiers of machine learning.",
+  //     gradient: "bg-gradient-to-br from-[#11998e]/90 to-[#38ef7d]/90",
+  //     softBg: "bg-[#11998e]/5",
+  //     features: ["Machine Learning", "Neural Networks", "AI Applications"],
+  //     stats: { projects: "200+", students: "800+", rating: "4.7" },
+  //   },
+  //   {
+  //     icon: Database,
+  //     title: "InfoSphere",
+  //     desc: "Transform raw data into actionable insights through advanced analytics and visualization.",
+  //     gradient: "bg-gradient-to-br from-[#4E65FF]/90 to-[#92EFFD]/90",
+  //     softBg: "bg-[#4E65FF]/5",
+  //     features: ["Data Analytics", "Big Data", "Visualization"],
+  //     stats: { projects: "150+", students: "600+", rating: "4.8" },
+  //   },
+  //   {
+  //     icon: LineChart,
+  //     title: "StratLab",
+  //     desc: "Bridge the gap between technology and business with strategic thinking and leadership.",
+  //     gradient: "bg-gradient-to-br from-[#F857A6]/90 to-[#FF5858]/90",
+  //     softBg: "bg-[#F857A6]/5",
+  //     features: ["Tech Strategy", "Product Management", "Leadership"],
+  //     stats: { projects: "120+", students: "450+", rating: "4.9" },
+  //   },
+  //   {
+  //     icon: Ship,
+  //     title: "ChipWorks",
+  //     desc: "Create innovative IoT solutions and smart systems for the connected world.",
+  //     gradient: "bg-gradient-to-br from-[#24C6DC]/90 to-[#514A9D]/90",
+  //     softBg: "bg-[#24C6DC]/5",
+  //     features: ["IoT Development", "Embedded Systems", "Smart Solutions"],
+  //     stats: { projects: "160+", students: "700+", rating: "4.8" },
+  //   },
+  // ];
+
   const wings = [
     {
+      size: "large",
       icon: Code2,
       title: "CodeForge",
-      desc: "Master modern software development through hands-on projects and industry-standard practices.",
-      gradient: "bg-gradient-to-br from-[#FF416C]/90 to-[#FF4B2B]/90",
-      softBg: "bg-[#FF416C]/5",
-      features: ["Full-stack Development", "Cloud Architecture", "DevOps"],
-      stats: { projects: "250+", students: "1.2K+", rating: "4.8" },
+      desc: "Empowering learners through hands-on coding experiences. Our structured programs help students build real-world applications, preparing them for successful tech careers.",
+      metrics: [
+        { label: "Projects Built", value: "500+" },
+        { label: "Student Satisfaction", value: "98%" },
+        { label: "Career Transition Rate", value: "40%" },
+      ],
+      image:
+        "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1200",
+      gradient: "from-neutral-900 to-neutral-800",
     },
     {
+      size: "small",
       icon: Brain,
-      title: "AlgoNest",
-      desc: "Excel in data structures, algorithms, and competitive programming with expert guidance.",
-      gradient: "bg-gradient-to-br from-[#7F00FF]/90 to-[#E100FF]/90",
-      softBg: "bg-[#7F00FF]/5",
-      features: ["Advanced DSA", "System Design", "Problem Solving"],
-      stats: { projects: "180+", students: "950+", rating: "4.9" },
+      title: "AIHub",
+      desc: "Integrating AI-powered learning assistants to provide personalized support, ensuring students grasp complex concepts effectively.",
+      gradient: "from-neutral-800 to-neutral-700",
     },
     {
-      icon: Network,
-      title: "FutureMind",
-      desc: "Build cutting-edge AI solutions and explore the frontiers of machine learning.",
-      gradient: "bg-gradient-to-br from-[#11998e]/90 to-[#38ef7d]/90",
-      softBg: "bg-[#11998e]/5",
-      features: ["Machine Learning", "Neural Networks", "AI Applications"],
-      stats: { projects: "200+", students: "800+", rating: "4.7" },
-    },
-    {
-      icon: Database,
-      title: "InfoSphere",
-      desc: "Transform raw data into actionable insights through advanced analytics and visualization.",
-      gradient: "bg-gradient-to-br from-[#4E65FF]/90 to-[#92EFFD]/90",
-      softBg: "bg-[#4E65FF]/5",
-      features: ["Data Analytics", "Big Data", "Visualization"],
-      stats: { projects: "150+", students: "600+", rating: "4.8" },
-    },
-    {
-      icon: LineChart,
-      title: "StratLab",
-      desc: "Bridge the gap between technology and business with strategic thinking and leadership.",
-      gradient: "bg-gradient-to-br from-[#F857A6]/90 to-[#FF5858]/90",
-      softBg: "bg-[#F857A6]/5",
-      features: ["Tech Strategy", "Product Management", "Leadership"],
-      stats: { projects: "120+", students: "450+", rating: "4.9" },
-    },
-    {
-      icon: Ship,
+      size: "small",
+      icon: Cpu,
       title: "ChipWorks",
-      desc: "Create innovative IoT solutions and smart systems for the connected world.",
-      gradient: "bg-gradient-to-br from-[#24C6DC]/90 to-[#514A9D]/90",
-      softBg: "bg-[#24C6DC]/5",
-      features: ["IoT Development", "Embedded Systems", "Smart Solutions"],
-      stats: { projects: "160+", students: "700+", rating: "4.8" },
+      desc: "Offering foundational courses in hardware and embedded systems to help students understand the fundamentals of computing.",
+      gradient: "from-neutral-700 to-neutral-600",
+    },
+    {
+      size: "medium",
+      icon: BarChart3,
+      title: "StratLab",
+      desc: "Providing data-driven insights and career analytics to guide students on their learning journey and optimize job placement outcomes.",
+      image:
+        "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800",
+      gradient: "from-neutral-800 to-neutral-700",
+    },
+    {
+      size: "medium",
+      icon: Network,
+      title: "AlgoNest",
+      desc: "Fostering problem-solving skills through algorithmic challenges and system design projects, preparing learners for technical interviews and competitive coding.",
+      image:
+        "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800",
+      gradient: "from-neutral-700 to-neutral-600",
     },
   ];
 
@@ -100,6 +154,7 @@ const Evolve = () => {
       color: "bg-blue-50",
       accentColor: "text-blue-600",
       borderColor: "border-blue-100",
+      link: "",
     },
     {
       icon: Rocket,
@@ -108,14 +163,16 @@ const Evolve = () => {
       color: "bg-purple-50",
       accentColor: "text-purple-600",
       borderColor: "border-purple-100",
+      link: "",
     },
     {
-      icon: Brain,
-      title: "AI-Powered Tutoring",
-      desc: "Get personalized assistance and instant feedback to accelerate your learning journey",
-      color: "bg-green-50",
-      accentColor: "text-green-600",
-      borderColor: "border-green-100",
+      icon: Bell,
+      title: "Latest Updates",
+      desc: "Stay informed with the latest tech news, trends, and platform updates",
+      color: "bg-indigo-50",
+      accentColor: "text-indigo-600",
+      borderColor: "border-indigo-100",
+      link: "",
     },
     {
       icon: Trophy,
@@ -124,14 +181,16 @@ const Evolve = () => {
       color: "bg-amber-50",
       accentColor: "text-amber-600",
       borderColor: "border-amber-100",
+      link: "/eligible-hackathons",
     },
     {
-      icon: Code,
-      title: "Interactive Coding",
-      desc: "Practice in our browser-based IDE with real-time feedback and guidance",
+      icon: Briefcase,
+      title: "Internships",
+      desc: "Gain real-world experience with internship opportunities from top companies",
       color: "bg-pink-50",
       accentColor: "text-pink-600",
       borderColor: "border-pink-100",
+      link: "",
     },
     {
       icon: Users,
@@ -140,6 +199,7 @@ const Evolve = () => {
       color: "bg-teal-50",
       accentColor: "text-teal-600",
       borderColor: "border-teal-100",
+      link: "",
     },
   ];
 
@@ -202,50 +262,7 @@ const Evolve = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
-      <nav
-        className={`fixed w-full z-50 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/80 backdrop-blur-md shadow-sm py-4"
-            : "bg-transparent py-6"
-        }`}
-      >
-        <div className="max-w-[1400px] mx-auto px-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <img
-                src="https://ik.imagekit.io/t6mlgjrxa/IMG_0248.png?updatedAt=1742069249449"
-                alt="Evolve"
-                className="h-8"
-              />
-              <span className="text-xs text-gray-500 font-light">by Masai</span>
-            </div>
-            <div className="hidden md:flex items-center gap-8 text-sm">
-              <p
-                href="#wings"
-                className="hover:text-red-500 transition-colors cursor-pointer"
-              >
-                Studio Wings
-              </p>
-              <p
-                href="#features"
-                className="hover:text-red-500 transition-colors cursor-pointer"
-              >
-                Features
-              </p>
-              <p
-                href="#community"
-                className="hover:text-red-500 transition-colors cursor-pointer"
-              >
-                Community
-              </p>
-              <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-black/80 transition-colors">
-                Join Now
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+      <EvolveNavbar/>
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
         <div className="absolute inset-0 bg-[#F5F5F7]" />
@@ -297,7 +314,7 @@ const Evolve = () => {
       </section>
 
       {/* Studio Wings */}
-      <section className="py-24 bg-gray-50">
+      {/* <section className="py-24 bg-gray-50">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-2 bg-red-100 text-red-500 text-sm font-medium mb-4 rounded-full">
@@ -318,24 +335,24 @@ const Evolve = () => {
                 key={wing.title}
                 className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300"
               >
-                <div className="p-8 h-full flex flex-col">
-                  {/* Colored accent bar */}
-                  <div
+                <div className="p-8 h-full flex flex-col"> */}
+      {/* Colored accent bar */}
+      {/* <div
                     className={`h-1 w-16 rounded-full mb-6 bg-gradient-to-r ${wing.gradient}`}
-                  ></div>
+                  ></div> */}
 
-                  {/* Icon */}
-                  <div className="mb-6">
+      {/* Icon */}
+      {/* <div className="mb-6">
                     <wing.icon className="h-8 w-8 text-black" />
                   </div>
 
                   <h3 className="text-2xl font-bold text-black mb-3">
                     {wing.title}
                   </h3>
-                  <p className="text-gray-600 mb-6">{wing.desc}</p>
+                  <p className="text-gray-600 mb-6">{wing.desc}</p> */}
 
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-4 mb-6">
+      {/* Stats */}
+      {/* <div className="grid grid-cols-3 gap-4 mb-6">
                     {Object.entries(wing.stats).map(([key, value]) => (
                       <div key={key} className="text-center">
                         <div className="text-black font-bold">{value}</div>
@@ -344,10 +361,10 @@ const Evolve = () => {
                         </div>
                       </div>
                     ))}
-                  </div>
+                  </div> */}
 
-                  {/* Features */}
-                  <ul className="space-y-3 mb-8">
+      {/* Features */}
+      {/* <ul className="space-y-3 mb-8">
                     {wing.features.map((feature) => (
                       <li
                         key={feature}
@@ -372,6 +389,91 @@ const Evolve = () => {
                 </div>
               </article>
             ))}
+          </div>
+        </div>
+      </section> */}
+
+      {/* Wings Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="mb-16">
+            <h2 className="text-4xl font-bold text-red-500 mb-4">Wings</h2>
+            <p className="text-neutral-600 max-w-2xl text-lg">
+              Empowering learners with industry-relevant skills through hands-on
+              training, fostering growth, innovation, and career excellence.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-12 gap-6">
+            {wings.map((wing, index) => {
+              const baseClasses =
+                "rounded-2xl overflow-hidden relative group transition-all duration-300 hover:shadow-xl";
+              const gridClasses = {
+                large: "col-span-12 md:col-span-8 row-span-2 h-[600px]",
+                medium: "col-span-12 md:col-span-6 h-[400px]",
+                small: "col-span-12 md:col-span-4 h-[300px]",
+              };
+
+              return (
+                <div
+                  key={wing.title}
+                  className={`${baseClasses} ${gridClasses[wing.size]}`}
+                >
+                  {/* Background Image or Gradient */}
+                  <div className="absolute inset-0">
+                    {wing.image ? (
+                      <>
+                        <img
+                          src={wing.image}
+                          alt={wing.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-br ${wing.gradient} opacity-90`}
+                        />
+                      </>
+                    ) : (
+                      <div
+                        className={`w-full h-full bg-gradient-to-br ${wing.gradient}`}
+                      />
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative h-full p-8 flex flex-col justify-between text-white">
+                    <div>
+                      <wing.icon className="h-8 w-8 mb-4" />
+                      <h3 className="text-2xl font-medium mb-3">
+                        {wing.title}
+                      </h3>
+                      <p className="text-white/80 text-lg">{wing.desc}</p>
+                    </div>
+
+                    {wing.metrics && (
+                      <div className="grid grid-cols-3 gap-6 mt-8">
+                        {wing.metrics.map((metric, idx) => (
+                          <div key={idx}>
+                            <div className="text-2xl font-semibold">
+                              {metric.value}
+                            </div>
+                            <div className="text-white/60 text-sm">
+                              {metric.label}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="mt-6">
+                      <button className="group inline-flex items-center text-sm font-medium cursor-pointer">
+                        Learn more
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -418,13 +520,14 @@ const Evolve = () => {
                   </h3>
                   <p className="text-gray-600 mb-4">{feature.desc}</p>
 
-                  <p
-                    href="#"
-                    className={`inline-flex items-center text-sm font-medium ${feature.accentColor} group-hover:underline cursor-pointer`}
-                  >
-                    Learn more{" "}
-                    <ChevronRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </p>
+                  <Link to={feature.link}>
+                    <p
+                      className={`inline-flex items-center text-sm font-medium ${feature.accentColor} group-hover:underline cursor-pointer`}
+                    >
+                      Learn more{" "}
+                      <ChevronRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </p>
+                  </Link>
                 </div>
               </div>
             ))}

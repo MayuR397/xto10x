@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Users, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
@@ -6,11 +6,13 @@ import "react-toastify/dist/ReactToastify.css";
 import Confetti from "react-confetti"; // 🎉 Import Confetti
 import { useWindowSize } from "react-use"; // For dynamic width/height
 import { io } from "socket.io-client";
+import { MyContext } from "../context/AuthContextProvider";
 
 // ✅ Initialize socket connection
-const socket = io("http://localhost:5009", { transports: ["websocket"] });
+// const socket = io("http://localhost:5009", { transports: ["websocket"] });
 
 const RegisterTeamPage = () => {
+  const baseURL = import.meta.env.VITE_BASE_URL;
   const { width, height } = useWindowSize(); // Auto-resizes confetti
   const [showConfetti, setShowConfetti] = useState(false); // State for Confetti 🎉
   const navigate = useNavigate();
@@ -19,6 +21,14 @@ const RegisterTeamPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { setCurrentHackathonId } = useContext(MyContext);
+  const currentHackathon = localStorage.getItem("currentHackathon");
+
+  useEffect(() => {
+    if (!currentHackathon) {
+      navigate("/eligible-hackathons");
+    }
+  });
 
   const handleChange = (e) => {
     setTeamData({
@@ -38,18 +48,16 @@ const RegisterTeamPage = () => {
       const teamPayload = {
         teamName: teamData.teamName,
         createdBy: userId,
+        hackathonId: setCurrentHackathonId,
       };
 
-      const response = await fetch(
-        `http://localhost:5009/team/create-team`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(teamPayload),
-        }
-      );
+      const response = await fetch(`${baseURL}/team/create-team`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(teamPayload),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to create team");
@@ -57,7 +65,7 @@ const RegisterTeamPage = () => {
       const result = await response.json();
 
       // ✅ Emit real-time event to notify other users
-      socket.emit("teamUpdated", result.team);
+      // socket.emit("teamUpdated", result.team);
 
       // 🎉 Trigger Confetti Animation
       setShowConfetti(true);

@@ -1,17 +1,30 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MyContext } from "../context/AuthContextProvider";
 import { LogOut, User, ChevronDown, Menu, X } from "lucide-react"; // Added icons
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
-  const { isAuth, setIsAuth } = useContext(MyContext);
+  const baseURL = import.meta.env.VITE_BASE_URL;
+  const userId = localStorage.getItem("userId");
+  const { isAuth, setIsAuth, hackathon } = useContext(MyContext);
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const location = useLocation();
+  const isLogin = location.pathname === "/login";
   // ✅ Dynamic Month & Year
   const [currentDate, setCurrentDate] = useState("");
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
+  const userInitials = userData?.name
+    ? userData.name
+        .split(" ")
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "U"; // Default to "U" if no name available
 
   useEffect(() => {
     const now = new Date();
@@ -49,6 +62,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("userData");
+    localStorage.removeItem("currentHackathon");
     setIsAuth(false);
     toast.success("User logged out successfully", {
       position: "top-right",
@@ -61,25 +75,41 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="flex-shrink-0">
-            <div className="flex items-center">
-              <h1 className="text-3xl font-bold">
-                <span className="text-black">xto</span>
-                <span className="text-red-500">10x</span>
-              </h1>
-              <span className="text-gray-500 text-sm ml-2">by masai</span>
+          {isLogin ? (
+            <div className="flex items-center gap-2">
+              <img
+                src="https://ik.imagekit.io/t6mlgjrxa/IMG_0248.png?updatedAt=1742069249449"
+                alt="Evolve"
+                className="h-8"
+              />
+              <span className="text-xs text-gray-500 font-light">by Masai</span>
             </div>
-          </Link>
+          ) : (
+            <Link to="/hackathon" className="flex-shrink-0">
+              <div className="flex items-center">
+                <h1 className="text-3xl font-bold">
+                  <span className="text-black">xto</span>
+                  <span className="text-red-500">10x</span>
+                </h1>
+                <span className="text-gray-500 text-sm ml-2">by masai</span>
+              </div>
+            </Link>
+          )}
 
           {/* Event Details - Hidden on mobile */}
-          <div className="hidden md:block">
-            <div className="text-xl font-semibold">
-              Hackathon <span className="text-red-500">{currentDate}</span>
+          {!isLogin && (
+            <div className="hidden md:block">
+              <div className="flex justify-center text-xl font-semibold">
+                <div>{hackathon.name ? hackathon.name : "Hackathon"} </div>
+                <span className="text-red-500 ml-2">{currentDate}</span>
+              </div>
+              <div className="text-gray-600 text-sm mt-1 flex justify-center">
+                {hackathon.description
+                  ? hackathon.description
+                  : "Code, Collaborate, Conquer!"}
+              </div>
             </div>
-            <div className="text-gray-600 text-sm">
-              Code, Collaborate, Conquer!
-            </div>
-          </div>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -114,11 +144,15 @@ const Navbar = () => {
                   onClick={() =>
                     setIsProfileDropdownOpen(!isProfileDropdownOpen)
                   }
-                  className="flex items-center justify-center bg-gradient-to-r from-gray-600 to-gray-700 text-white p-3 rounded-full hover:bg-gradient-to-r hover:from-gray-700 hover:to-gray-800 transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transform hover:scale-105"
+                  className="flex items-center space-x-2"
                   aria-expanded={isProfileDropdownOpen}
                   aria-haspopup="true"
                 >
-                  <User className="h-5 w-5 text-white" />
+                  {/* Circle with User Initials */}
+                  <div className="w-10 h-10 rounded-full bg-gray-600 text-white flex items-center justify-center text-lg font-semibold">
+                    {userInitials}
+                  </div>
+
                   <ChevronDown
                     className={`h-4 w-4 ml-1 transition-transform duration-300 ${
                       isProfileDropdownOpen ? "rotate-180" : ""
@@ -140,13 +174,7 @@ const Navbar = () => {
                     <button
                       onClick={() => {
                         setIsProfileDropdownOpen(false);
-                        {
-                          /* ✅ Closes dropdown on click */
-                        }
                         handleLogout();
-                        {
-                          /* Ensures logout logic is executed */
-                        }
                       }}
                       className="w-full text-left px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500 transition flex items-center"
                     >

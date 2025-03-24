@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -15,15 +15,19 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
-  const [email, setEmail] = useState("shivamgonda551@gmail.com");
-  const [password, setPassword] = useState("8qp2jw");
+  const baseURL = import.meta.env.VITE_BASE_URL;
+  const [email, setEmail] = useState("aparnankartha1999@gmail.com");
+  const [password, setPassword] = useState("z4a7b2c8d");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const { isAuth, setIsAuth } = useContext(MyContext);
 
+
   useEffect(() => {
-    isAuth && navigate("/");
+    isAuth && navigate(from);
   }, [isAuth]);
 
   const handleSubmit = async (e) => {
@@ -33,7 +37,7 @@ function Login() {
 
     try {
       const response = await fetch(
-        "https://x10x-api.iasam.dev/users/verify-user",
+        `${baseURL}/users/verify-user`,
         {
           method: "POST",
           headers: {
@@ -54,7 +58,8 @@ function Login() {
       toast.success("User logged in successfully", {
         position: "top-right",
       });
-      navigate("/");
+      console.log("from", from, isAuth)
+      navigate(from);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -67,13 +72,21 @@ function Login() {
       {/* Left Panel - Login Form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="max-w-md w-full">
-          {/* Logo and Title */}
+          {/* Logo, Masai Tagline, and Quote */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-2">
-              <span className="text-gray-900">xto</span>
-              <span className="text-[#FF3B3B]">10x</span>
-            </h1>
-            <p className="text-gray-600">Hackathon Feb 2025</p>
+            <div className="flex justify-center items-center mb-4">
+              <img
+                src="https://ik.imagekit.io/t6mlgjrxa/IMG_0248.png?updatedAt=1742069249449"
+                alt="Evolve"
+                className="h-10"
+              />
+              <span className="text-xs text-gray-500 font-light ml-2">
+                by Masai
+              </span>
+            </div>
+            <p className="text-gray-500 italic">
+              "Learn, Build, Evolve — One Line of Code at a Time."
+            </p>
           </div>
 
           {/* Error Message */}
@@ -174,46 +187,54 @@ function Login() {
               <Rocket className="h-8 w-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold mb-4">
-              Transform Ideas into Reality
+              Accelerate Your Learning Journey
             </h2>
             <p className="text-gray-300 text-lg">
-              Join the most exciting hackathon of 2025
+              Unlock your potential with hands-on projects and real-world
+              challenges.
             </p>
           </div>
 
           <div className="space-y-8">
+            {/* Feature 1 */}
             <div className="flex items-start space-x-4 bg-white/5 p-4 rounded-xl backdrop-blur-sm">
               <div className="bg-gradient-to-br from-[#FF3B3B]/20 to-[#ff6b6b]/20 p-3 rounded-lg">
                 <Code className="h-6 w-6 text-[#FF3B3B]" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Code Excellence</h3>
+                <h3 className="font-semibold text-lg">Hands-On Learning</h3>
                 <p className="text-gray-400">
-                  Build innovative solutions with modern tech stacks
+                  Apply your knowledge by building projects using modern
+                  technologies.
                 </p>
               </div>
             </div>
 
+            {/* Feature 2 */}
             <div className="flex items-start space-x-4 bg-white/5 p-4 rounded-xl backdrop-blur-sm">
               <div className="bg-gradient-to-br from-[#FF3B3B]/20 to-[#ff6b6b]/20 p-3 rounded-lg">
                 <Users className="h-6 w-6 text-[#FF3B3B]" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Team Collaboration</h3>
+                <h3 className="font-semibold text-lg">
+                  Collaborative Learning
+                </h3>
                 <p className="text-gray-400">
-                  Connect with talented developers worldwide
+                  Work with peers, solve problems together, and grow as a team.
                 </p>
               </div>
             </div>
 
+            {/* Feature 3 */}
             <div className="flex items-start space-x-4 bg-white/5 p-4 rounded-xl backdrop-blur-sm">
               <div className="bg-gradient-to-br from-[#FF3B3B]/20 to-[#ff6b6b]/20 p-3 rounded-lg">
                 <Trophy className="h-6 w-6 text-[#FF3B3B]" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Win Prizes</h3>
+                <h3 className="font-semibold text-lg">Achieve Excellence</h3>
                 <p className="text-gray-400">
-                  Compete for exciting rewards and recognition
+                  Earn certifications, build a strong portfolio, and showcase
+                  your skills.
                 </p>
               </div>
             </div>

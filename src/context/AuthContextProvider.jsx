@@ -1,41 +1,80 @@
 import React, { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const MyContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
+  const baseURL = import.meta.env.VITE_BASE_URL;
   const [isAuth, setIsAuth] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true); // Track loading state
+  const [currentHackathonId, setCurrentHackathonId] = useState("");
+  const currentHackathon = localStorage.getItem("currentHackathon");
   let userId = localStorage.getItem("userId");
+  const navigate = useNavigate();
+
+  const [hackathon, setHackathon] = useState([]);
+  useEffect(() => {
+    const fetchHackathons = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `${baseURL}/hackathons/${currentHackathon}`
+        );
+        const data = await response.json();
+        console.log("current id", currentHackathon);
+        console.log("Current hack data", data);
+        setHackathon(data);
+      } catch (error) {
+        console.error("Error fetching hackathons:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHackathons();
+  }, [userId, baseURL, currentHackathon]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch(
-          `https://x10x-api.iasam.dev/users/get-user/${userId}`
-        );
+        if (!userId) {
+          setLoading(false); // No userId, stop loading
+          return;
+        }
+
+        const response = await fetch(`${baseURL}/users/get-user/${userId}`);
+        const contentType = response.headers.get("Content-Type");
+        console.log("Content-Type:", contentType);
+
         if (!response.ok) throw new Error("Failed to fetch user data");
+
         const userData = await response.json();
-        console.log("This is user data", userData);
-        localStorage.setItem("userData", JSON.stringify(userData))
+        localStorage.setItem("userData", JSON.stringify(userData));
         setUserData(userData);
+        setIsAuth(true);
       } catch (err) {
         console.error("Error fetching user data", err);
+      } finally {
+        setLoading(false); // Stop loading in any case
       }
     };
 
     fetchUserDetails();
   }, [userId]);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("userId");
-    if (storedUser) {
-      console.log("from context api", storedUser);
-      setIsAuth(true);
-    }
-  }, []);
-
   return (
-    <MyContext.Provider value={{ isAuth, setIsAuth, userData }}>
+    <MyContext.Provider
+      value={{
+        isAuth,
+        setIsAuth,
+        userData,
+        loading,
+        currentHackathonId,
+        setCurrentHackathonId,
+        hackathon,
+      }}
+    >
       {children}
     </MyContext.Provider>
   );
