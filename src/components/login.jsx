@@ -16,8 +16,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const baseURL = import.meta.env.VITE_BASE_URL;
-  const [email, setEmail] = useState("aparnankartha1999@gmail.com");
-  const [password, setPassword] = useState("z4a7b2c8d");
+  const [email, setEmail] = useState("ritickraj35@gmail.com");
+  const [password, setPassword] = useState("4d7g6h9j2");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Papa from "papaparse";
-import { Upload, File, CheckCircle, XCircle } from 'lucide-react';
+import { Upload, File, CheckCircle, XCircle } from "lucide-react";
 
 const CreateUser = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
@@ -9,7 +9,7 @@ const CreateUser = () => {
   const [progress, setProgress] = useState(0);
   const [successCount, setSuccessCount] = useState(0);
   const [errorCount, setErrorCount] = useState(0);
-  const [fileName, setFileName] = useState('');
+  const [fileName, setFileName] = useState("");
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -29,7 +29,7 @@ const CreateUser = () => {
   const createUser = async (userData) => {
     try {
       const response = await fetch(
-        `https://3b80-106-51-72-9.ngrok-free.app/users/create-user`,
+        `https://6d12-14-194-11-62.ngrok-free.app/users/create-user`,
         {
           method: "POST",
           headers: {
@@ -102,15 +102,15 @@ const CreateUser = () => {
             className="hidden"
             id="file-upload"
           />
-          <label 
-            htmlFor="file-upload" 
+          <label
+            htmlFor="file-upload"
             className="cursor-pointer flex flex-col items-center"
           >
             <Upload className="w-12 h-12 text-indigo-600 mb-4" />
             <p className="text-gray-600 mb-2">
-              {fileName 
-                ? `Selected: ${fileName}` 
-                : 'Drag and drop or click to upload CSV'}
+              {fileName
+                ? `Selected: ${fileName}`
+                : "Drag and drop or click to upload CSV"}
             </p>
             <span className="text-xs text-gray-500">
               CSV files only (Supports user creation)
@@ -122,37 +122,37 @@ const CreateUser = () => {
           onClick={handleUpload}
           disabled={uploading || users.length === 0}
           className={`w-full flex items-center justify-center py-3 rounded-lg text-white font-semibold transition-all duration-300 ${
-            uploading || users.length === 0 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg'
+            uploading || users.length === 0
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg"
           }`}
         >
           {uploading ? (
             <div className="flex items-center">
-              <svg 
-                className="animate-spin h-5 w-5 mr-3" 
-                xmlns="http://www.w3.org/2000/svg" 
-                fill="none" 
+              <svg
+                className="animate-spin h-5 w-5 mr-3"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
                 viewBox="0 0 24 24"
               >
-                <circle 
-                  className="opacity-25" 
-                  cx="12" 
-                  cy="12" 
-                  r="10" 
-                  stroke="currentColor" 
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
                   strokeWidth="4"
                 ></circle>
-                <path 
-                  className="opacity-75" 
-                  fill="currentColor" 
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 ></path>
               </svg>
               Uploading...
             </div>
           ) : (
-            'Start Upload'
+            "Start Upload"
           )}
         </button>
 

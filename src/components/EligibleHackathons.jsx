@@ -14,11 +14,14 @@ const EligibleHackathons = () => {
     const fetchHackathons = async () => {
       setLoading(true);
       try {
-    
         const response = await fetch(`${baseURL}/registrations/user/${userId}`);
         const data = await response.json();
-        console.log("Hackathons Data: ", data)
-        setHackathons(data.registrations);
+        console.log("Hackathons Data: ", data);
+        if (data?.message === "No registrations found for this user") {
+          setHackathons([]);
+        } else {
+          setHackathons(data.registrations);
+        }
       } catch (error) {
         console.error("Error fetching hackathons:", error);
       } finally {
@@ -61,9 +64,7 @@ const EligibleHackathons = () => {
     <div className="p-6 max-w-7xl mx-auto h-screen">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Your Hackathons</h2>
-        <button
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-        >
+        <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
           Explore New Hackathons
         </button>
       </div>
@@ -92,7 +93,6 @@ const EligibleHackathons = () => {
             You haven't registered for any hackathons yet.
           </p>
           <button
-            onClick={() => navigate("/explore")}
             className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
           >
             Find Hackathons to Join
