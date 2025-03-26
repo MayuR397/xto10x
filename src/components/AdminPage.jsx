@@ -7,6 +7,8 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminPage = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
@@ -92,13 +94,13 @@ const AdminPage = () => {
 
     if (hackathonId) {
       try {
-        const response = await fetch(
-          `${baseURL}/hackathons/${hackathonId}`
-        );
+        const response = await fetch(`${baseURL}/hackathons/${hackathonId}`);
         if (!response.ok) throw new Error("Failed to fetch hackathon details");
         const data = await response.json();
         console.log("Selected Hackathon ID", data);
-        setEventData(data);
+        // Remove _id before setting state
+        const { _id, ...cleanData } = data;
+        setEventData(cleanData);
       } catch (error) {
         console.error(error.message);
       }
@@ -178,6 +180,7 @@ const AdminPage = () => {
   };
 
   const handleSubmit = async () => {
+    console.log(eventData);
     try {
       const response = await fetch(`${baseURL}/hackathons`, {
         method: "POST",
@@ -186,23 +189,18 @@ const AdminPage = () => {
         },
         body: JSON.stringify(eventData),
       });
-
       if (response.ok) {
-        setNotification({
-          message: "Event created successfully",
-          type: "success",
+        toast.success("Hackathon Created Sucessfully", {
+          position: "top-right",
         });
       } else {
         throw new Error("Failed to create event");
       }
     } catch (error) {
-      setNotification({
-        message: "Failed to create event. Please try again.",
-        type: "error",
+      toast.error(error.message, {
+        position: "top-right",
       });
     }
-
-    setTimeout(() => setNotification(null), 3000);
   };
 
   const handleVersionChange = (newVersion) => {
