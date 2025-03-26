@@ -25,6 +25,8 @@ const Navbar = () => {
         .join("")
         .toUpperCase()
     : "U"; // Default to "U" if no name available
+  const isInteractive =
+    hackathon.eventType == "Interactive Hackathon" ? true : false;
 
   useEffect(() => {
     const now = new Date();
@@ -100,7 +102,9 @@ const Navbar = () => {
           {!isLogin && (
             <div className="hidden md:block">
               <div className="flex justify-center text-xl ">
-                <div className="font-bold">{hackathon.name ? hackathon.name : "Hackathon"} </div>
+                <div className="font-bold">
+                  {hackathon.name ? hackathon.name : "Hackathon"}{" "}
+                </div>
                 <span className="text-red-500 ml-2">{currentDate}</span>
               </div>
               <div className="text-gray-600 text-sm mt-1 flex justify-center">
@@ -132,11 +136,13 @@ const Navbar = () => {
                 </button>
               </Link>
 
-              <Link to="/register-team">
-                <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
-                  Register Team
-                </button>
-              </Link>
+              {!isInteractive && (
+                <Link to="/register-team" onClick={() => setIsMenuOpen(false)}>
+                  <button className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition mb-2">
+                    Register Team
+                  </button>
+                </Link>
+              )}
 
               {/* Profile Dropdown */}
               <div className="relative" ref={profileDropdownRef}>
@@ -197,11 +203,13 @@ const Navbar = () => {
               </button>
             </Link>
 
-            <Link to="/register-team" onClick={() => setIsMenuOpen(false)}>
-              <button className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition mb-2">
-                Register Team
-              </button>
-            </Link>
+            {!isInteractive && (
+              <Link to="/register-team" onClick={() => setIsMenuOpen(false)}>
+                <button className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition mb-2">
+                  Register Team
+                </button>
+              </Link>
+            )}
 
             <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
               <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition mb-2">

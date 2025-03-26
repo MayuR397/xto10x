@@ -14,57 +14,82 @@ const AdminPage = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
   const userId = localStorage.getItem("userId");
   const [eventData, setEventData] = useState({
-    name: "Interactive CodeMaster 2025",
+    name: "Test Hackathon 1",
     version: "1.0",
     description:
-      "An interactive learning week followed by a challenging hackathon.",
-    startDate: "2025-05-01T09:00:00Z",
-    endDate: "2025-05-14T18:00:00Z",
+      "A two-week interactive coding hackathon for real world grooming",
+    startDate: "2025-03-24T10:00:00+05:30",
+    endDate: "2025-04-06T23:59:59+05:30",
     allowedEmails: [
       "ritickraj35@gmail.com",
       "abhishekkumarverma0811@gmail.com",
+      "gmgurjar1221@gmail.com",
+      "gautamji4966@gmail.com",
+      "vikashkumarbharti035@gmail.com",
+      "punitnaagvanshi@gamil.com",
+      "ashishdadhiich@gmail.com",
+      "rahulchandeshware66@gmail.com",
+      "mrrajak1296@gmail.com",
+      "kartikgautam1106@gmail.com",
+      "rohyadav18@gmail.com",
+      "goswamik1221@gmail.com",
+      "rohitchouhankgn11@gmail.com",
+      "vikrantsheoran4@gmail.com",
+      "khushipatel59946@gmail.com",
     ],
     minTeamSize: 2,
-    maxTeamSize: 3,
+    maxTeamSize: 4,
     problemStatements: [
       {
-        track: "Web Development",
-        description: "Build a responsive e-commerce website.",
-        difficulty: "Medium",
+        track: "ML",
+        description: "Sample ML Problem Statement",
+        difficulty: "Hard",
       },
       {
-        track: "Machine Learning",
-        description: "Create a model to predict customer churn.",
-        difficulty: "Hard",
+        track: "DA",
+        description: "Analyze large datasets for insights.",
+        difficulty: "Medium",
       },
     ],
     schedule: [
-      { date: "2025-05-01T10:00:00Z", activity: "Welcome Session" },
-      { date: "2025-05-02T12:00:00Z", activity: "Tech Talk - AI Trends" },
-      { date: "2025-05-08T14:00:00Z", activity: "Hackathon Kick-off" },
-      { date: "2025-05-14T16:00:00Z", activity: "Winner Announcement" },
+      {
+        date: "2025-03-24T10:00:00+05:30",
+        activity: "Hackathon Kick-off",
+      },
+      {
+        date: "2025-04-17T17:00:00+05:30",
+        activity: "Winner Announcement",
+      },
     ],
     eventPlan: [
       {
         week: 1,
-        phase: "Interactive",
-        description: "Workshops and tech talks.",
+        phase: "Interaction",
+        description: "Full week of Interaction",
       },
       {
         week: 2,
         phase: "Hackathon",
-        description: "Full-fledged coding competition.",
+        description: "Full week of Interaction",
       },
     ],
-    submissionStart: "2025-05-08T11:00:00Z",
-    submissionEnd: "2025-05-14T15:00:00Z",
+    submissionStart: "2025-04-05T08:00:00+05:30",
+    submissionEnd: "2025-04-06T23:59:59+05:30",
     status: "Upcoming",
     eventType: "Interactive Hackathon",
     prizeDetails: [
-      { position: 1, amount: 7000, description: "Champion" },
-      { position: 2, amount: 4000, description: "Runner-up" },
-      { position: 3, amount: 3000, description: "Runner-up" },
+      {
+        position: 1,
+        amount: 5000,
+        description: "Winner",
+      },
+      {
+        position: 2,
+        amount: 3000,
+        description: "Runner-up",
+      },
     ],
+
     createdBy: userId,
   });
   const [notification, setNotification] = useState(null);
@@ -99,7 +124,28 @@ const AdminPage = () => {
         const data = await response.json();
         console.log("Selected Hackathon ID", data);
         // Remove _id before setting state
-        const { _id, ...cleanData } = data;
+        // const { _id, ...cleanData } = data;
+        // Convert startDate, endDate, and schedule dates to IST
+        const {
+          _id,
+          startDate,
+          endDate,
+          submissionStart,
+          submissionEnd,
+          schedule = [],
+          ...rest
+        } = data;
+        const cleanData = {
+          ...rest,
+          startDate: convertUtcToIst(startDate),
+          endDate: convertUtcToIst(endDate),
+          submissionStart: convertUtcToIst(submissionStart),
+          submissionEnd: convertUtcToIst(submissionEnd),
+          schedule: schedule.map((item) => ({
+            ...item,
+            date: convertUtcToIst(item.date),
+          })),
+        };
         setEventData(cleanData);
       } catch (error) {
         console.error(error.message);
@@ -273,6 +319,30 @@ const AdminPage = () => {
     }));
   };
 
+  function toIst(isoDateString) {
+    const date = new Date(isoDateString);
+
+    // Get the year, month, day, hour, and minutes in IST
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  function convertUtcToIst(utcDateString) {
+    // Convert UTC string to Date object
+    const date = new Date(utcDateString);
+
+    // Convert to IST using toLocaleString
+    const istDate = date.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+
+    return istDate;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow-sm">
@@ -395,7 +465,7 @@ const AdminPage = () => {
                   </label>
                   <input
                     type="datetime-local"
-                    value={eventData.startDate.slice(0, 16)}
+                    value={toIst(eventData.startDate)}
                     onChange={(e) =>
                       handleInputChange(
                         "startDate",
@@ -411,7 +481,7 @@ const AdminPage = () => {
                   </label>
                   <input
                     type="datetime-local"
-                    value={eventData.endDate.slice(0, 16)}
+                    value={toIst(eventData.endDate)}
                     onChange={(e) =>
                       handleInputChange(
                         "endDate",
@@ -467,7 +537,7 @@ const AdminPage = () => {
                   </label>
                   <input
                     type="datetime-local"
-                    value={eventData.submissionStart.slice(0, 16)}
+                    value={toIst(eventData.submissionStart)}
                     onChange={(e) =>
                       handleInputChange(
                         "submissionStart",
@@ -483,7 +553,7 @@ const AdminPage = () => {
                   </label>
                   <input
                     type="datetime-local"
-                    value={eventData.submissionEnd.slice(0, 16)}
+                    value={toIst(eventData.submissionEnd)}
                     onChange={(e) =>
                       handleInputChange(
                         "submissionEnd",
@@ -592,7 +662,7 @@ const AdminPage = () => {
                 <div key={index} className="flex items-center space-x-4">
                   <input
                     type="datetime-local"
-                    value={event.date.slice(0, 16)}
+                    value={toIst(event.date)}
                     onChange={(e) =>
                       handleScheduleChange(
                         index,

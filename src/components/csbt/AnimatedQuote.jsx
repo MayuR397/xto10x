@@ -34,38 +34,43 @@ export const AnimatedQuote = () => {
           transition={{ duration: 0.5 }}
           className="flex flex-wrap justify-center gap-x-1 whitespace-normal break-keep break-words"
         >
-          {quotes[quoteIndex].split("").map((char, index) => (
-            <motion.span
-              key={index}
-              initial={{
-                opacity: 0,
-                x: Math.random() * 400 - 200,
-                y: Math.random() * 400 - 200,
-                scale: 0,
-                rotate: Math.random() * 180 - 90,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-                y: 0,
-                scale: 1,
-                rotate: 0,
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0,
-                transition: { duration: 0.3 },
-              }}
-              transition={{
-                type: "spring",
-                damping: 15,
-                stiffness: 120,
-                delay: index * 0.02,
-              }}
-              className="text-2xl md:text-3xl font-bold text-slate-600 whitespace-normal break-words [word-break:normal] hyphens-auto"
-            >
-              {char === " " ? "\u00A0" : char}
-            </motion.span>
+          {quotes[quoteIndex].split(" ").map((word, wordIndex) => (
+            <span key={wordIndex} className="whitespace-nowrap">
+              {word.split("").map((char, charIndex) => (
+                <motion.span
+                  key={`${wordIndex}-${charIndex}`}
+                  initial={{
+                    opacity: 0,
+                    x: Math.random() * 400 - 200,
+                    y: Math.random() * 400 - 200,
+                    scale: 0,
+                    rotate: Math.random() * 180 - 90,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                    y: 0,
+                    scale: 1,
+                    rotate: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0,
+                    transition: { duration: 0.3 },
+                  }}
+                  transition={{
+                    type: "spring",
+                    damping: 15,
+                    stiffness: 120,
+                    delay: charIndex * 0.02,
+                  }}
+                  className="inline-block text-2xl md:text-3xl font-bold text-slate-600 "
+                >
+                  {char}
+                </motion.span>
+              ))}
+              <span>&nbsp;</span>
+            </span>
           ))}
         </motion.div>
       </AnimatePresence>

@@ -42,11 +42,12 @@ const SelectTeamPage = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
 
   const userId = localStorage.getItem("userId");
-  const { setCurrentHackathonId } = useContext(MyContext);
+  const { hackathon } = useContext(MyContext);
   const currentHackathon = localStorage.getItem("currentHackathon");
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
+  const isInteractive = hackathon.eventType == "Interactive Hackathon" ? true : false
 
   // Configure Modal based on Action and Pass Arguments
   const openModal = (actionType, teamId, creatorId) => {
@@ -447,7 +448,7 @@ const SelectTeamPage = () => {
                 </p>
               </div>
 
-              {userTeamId && (
+              {userTeamId && !isInteractive && (
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="mt-4 md:mt-0 flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition"
@@ -703,7 +704,7 @@ const SelectTeamPage = () => {
                                       </div>
                                     </div>
 
-                                    {isCreator && member._id !== userId && (
+                                    {isCreator && member._id !== userId && !isInteractive && (
                                       <button
                                         onClick={() => removeMember(member._id)}
                                         className="p-1.5 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition"
@@ -753,7 +754,7 @@ const SelectTeamPage = () => {
                             )}
 
                           {/* Delete Team (For Creator) */}
-                          {isCreator && (
+                          {isCreator && !isInteractive && (
                             <button
                               onClick={() =>
                                 openModal(
@@ -770,7 +771,7 @@ const SelectTeamPage = () => {
                           )}
 
                           {/* Leave Team (For Member) */}
-                          {isMember && !isCreator && (
+                          {isMember && !isCreator && !isInteractive && (
                             <button
                               onClick={() => openModal("leave")}
                               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition"
