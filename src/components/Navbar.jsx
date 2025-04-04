@@ -76,27 +76,15 @@ const Navbar = () => {
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          {/* Logo */}
-          {isLogin ? (
-            <div className="flex items-center gap-2">
-              <img
-                src="https://ik.imagekit.io/t6mlgjrxa/IMG_0248.png?updatedAt=1742069249449"
-                alt="Evolve"
-                className="h-8"
-              />
-              <span className="text-xs text-gray-500 font-light">by Masai</span>
+          <Link to="/hackathon" className="flex-shrink-0">
+            <div className="flex items-center">
+              <h1 className="text-3xl font-bold">
+                <span className="text-black">xto</span>
+                <span className="text-red-500">10x</span>
+              </h1>
+              <span className="text-gray-500 text-sm ml-2">by masai</span>
             </div>
-          ) : (
-            <Link to="/hackathon" className="flex-shrink-0">
-              <div className="flex items-center">
-                <h1 className="text-3xl font-bold">
-                  <span className="text-black">xto</span>
-                  <span className="text-red-500">10x</span>
-                </h1>
-                <span className="text-gray-500 text-sm ml-2">by masai</span>
-              </div>
-            </Link>
-          )}
+          </Link>
 
           {/* Event Details - Hidden on mobile */}
           {!isLogin && (

@@ -510,9 +510,9 @@ const SelectTeamPage = () => {
                     pendingRequests.length > 0 && isCreator;
 
                   // Conditionally check if userTeamId exists and matches team._id
-                  if (userTeamId && userTeamId !== team._id) {
-                    return null; // Skip rendering this team if the condition is not met
-                  }
+                  // if (userTeamId && userTeamId !== team._id) {
+                  //   return null; // Skip rendering this team if the condition is not met
+                  // }
                   const colorScheme = getColorScheme(index);
 
                   return (

@@ -29,7 +29,7 @@ const CreateUser = () => {
   const createUser = async (userData) => {
     try {
       const response = await fetch(
-        `https://6d12-14-194-11-62.ngrok-free.app/users/create-user`,
+        `https://e116-106-51-72-9.ngrok-free.app/users/create-user`,
         {
           method: "POST",
           headers: {

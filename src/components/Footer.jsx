@@ -4,40 +4,22 @@ import { useLocation } from "react-router-dom";
 const Footer = () => {
   const location = useLocation();
   const isLogin = location.pathname === "/login";
-  const isEvolve = location.pathname === "/"
+  const isEvolve = location.pathname === "/";
   return (
     <>
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            {isLogin || isEvolve ? (
-              <>
-                <div className="flex items-center gap-2 mb-6">
-                  <img
-                    src="https://ik.imagekit.io/t6mlgjrxa/IMG_0248.png?updatedAt=1742069249449"
-                    alt="Evolve"
-                    className="h-8 invert brightness-0"
-                  />
-                  <span className="text-xs font-light text-gray-500">
-                    by Masai
-                  </span>
-                </div>
-                <p className="text-gray-400 text-sm">
-                  © 2025 Masai School. All rights reserved.
-                </p>
-              </>
-            ) : (
-              <div className="mb-4 md:mb-0">
-                <h1 className="text-2xl font-bold">
-                  <span className="text-white">xto</span>
-                  <span className="text-red-500">10x</span>
-                </h1>
-                <p className="text-gray-400 text-sm">
-                  © 2025 Masai School. All rights reserved.
-                </p>
-              </div>
-            )}
+            <div className="mb-4 md:mb-0">
+              <h1 className="text-2xl font-bold">
+                <span className="text-white">xto</span>
+                <span className="text-red-500">10x</span>
+              </h1>
+              <p className="text-gray-400 text-sm">
+                © 2025 Masai School. All rights reserved.
+              </p>
+            </div>
 
             <div className="flex space-x-6">
               <a href="#" className="text-gray-400 hover:text-white transition">

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -16,15 +16,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const baseURL = import.meta.env.VITE_BASE_URL;
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("ritickraj35@gmail.com");
+  const [password, setPassword] = useState("4d7g6h9j2");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const { isAuth, setIsAuth } = useContext(MyContext);
-
 
   useEffect(() => {
     isAuth && navigate(from);
@@ -35,35 +34,122 @@ function Login() {
     setError(null);
     setLoading(true);
 
-    try {
-      const response = await fetch(
-        `${baseURL}/users/verify-user`,
-        {
+    if (email.includes("masaischool.com")) {
+      try {
+        const loginRes = await fetch(
+          "https://experience-api.masaischool.com/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+              query: `
+              mutation login($input: LoginInput!) {
+                login(input: $input) { id }
+              }
+            `,
+              variables: {
+                input: {
+                  email: email,
+                  password: password,
+                  rememberMe: false,
+                },
+              },
+              operationName: "login",
+            }),
+          }
+        );
+
+        const loginResult = await loginRes.json();
+
+        if (loginRes.ok && loginResult.data?.login?.id) {
+          const userRes = await fetch(
+            "https://experience-api.masaischool.com/",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              credentials: "include",
+              body: JSON.stringify({
+                query: `
+                query getAuthMe {
+                  me {
+                    id
+                    name
+                    username
+                    role
+                    sections_enrolled { id name }
+                  }
+                }
+              `,
+                operationName: "getAuthMe",
+              }),
+            }
+          );
+
+          const userResult = await userRes.json();
+          const user = userResult.data?.me;
+
+          if (user) {
+            localStorage.setItem(
+              "authData",
+              JSON.stringify({
+                authenticated: true,
+                role: user.role,
+              })
+            );
+            setIsAuth(true);
+            toast.success("User logged in successfully", {
+              position: "top-right",
+            });
+            navigate(from);
+          }
+        } else {
+          setMessage({
+            type: "error",
+            text:
+              loginResult.errors?.[0]?.message ||
+              "Invalid credentials or login failed.",
+          });
+        }
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      try {
+        const response = await fetch(`${baseURL}/users/verify-user`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Login failed");
         }
-      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
+        const data = await response.json();
+        localStorage.setItem("userId", data.user._id);
+        setIsAuth(true);
+        toast.success("User logged in successfully", {
+          position: "top-right",
+        });
+        console.log("from", from, isAuth);
+        navigate(from);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-
-      const data = await response.json();
-      localStorage.setItem("userId", data.user._id);
-      setIsAuth(true);
-      toast.success("User logged in successfully", {
-        position: "top-right",
-      });
-      console.log("from", from, isAuth)
-      navigate(from);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -74,16 +160,18 @@ function Login() {
         <div className="max-w-md w-full">
           {/* Logo, Masai Tagline, and Quote */}
           <div className="text-center mb-8">
-            <div className="flex justify-center items-center mb-4">
-              <img
-                src="https://ik.imagekit.io/t6mlgjrxa/IMG_0248.png?updatedAt=1742069249449"
-                alt="Evolve"
-                className="h-10"
-              />
-              <span className="text-xs text-gray-500 font-light ml-2">
-                by Masai
-              </span>
+            <div className="container mx-auto px-4 py-4 flex justify-center items-center">
+              <Link to="/">
+                <div className="flex items-center justify-center">
+                  <h1 className="text-3xl font-bold">
+                    <span className="text-black">xto</span>
+                    <span className="text-red-500">10x</span>
+                  </h1>
+                  <span className="text-gray-500 text-sm ml-2">by masai</span>
+                </div>
+              </Link>
             </div>
+
             <p className="text-gray-500 italic">
               "Learn, Build, Evolve — One Line of Code at a Time."
             </p>

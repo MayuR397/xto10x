@@ -33,10 +33,6 @@ function App() {
   const isHackathon = location.pathname === "/hackathon";
   const isCSBT = location.pathname === "/csbt";
 
-  // if (isAuth && isEvolveRoute) {
-  //   // If on the /evolve route, render only the Evolve component
-  //   return <Evolve />;
-  // }
 
   if (isCSBT) {
     return <CSBT />;
@@ -46,7 +42,7 @@ function App() {
     <>
       <ToastContainer />
       <div className="min-h-screen bg-gray-50">
-        {!isMeetingRoom && !isDashboard && <Navbar />}
+        {!isMeetingRoom && <Navbar />}
         {isAuth && !isDashboard && !isMeetingRoom && hackathon.eventType !== "Interactive Hackathon" && <CountDownTimer />}
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -54,7 +50,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Evolve />
+                <EligibleHackathons />
               </ProtectedRoute>
             }
           />
@@ -114,7 +110,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/eligible-hackathons" element={<ProtectedRoute><EligibleHackathons/></ProtectedRoute>}/>
+          {/* <Route path="/eligible-hackathons" element={<ProtectedRoute><EligibleHackathons/></ProtectedRoute>}/> */}
           <Route path="/create-users" element={<CreateUser/>}/>
           <Route path="/admin-page" element={<AdminPage />} />
         </Routes>
