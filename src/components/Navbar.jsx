@@ -65,6 +65,7 @@ const Navbar = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("userData");
     localStorage.removeItem("currentHackathon");
+    localStorage.removeItem("authData");
     setIsAuth(false);
     toast.success("User logged out successfully", {
       position: "top-right",

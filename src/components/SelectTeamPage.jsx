@@ -47,7 +47,11 @@ const SelectTeamPage = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
-  const isInteractive = hackathon.eventType == "Interactive Hackathon" ? true : false
+  const isInteractive =
+    hackathon.eventType == "Interactive Hackathon" ? true : false;
+  const [authData, setAuthData] = useState(
+    JSON.parse(localStorage.getItem("authData"))
+  );
 
   // Configure Modal based on Action and Pass Arguments
   const openModal = (actionType, teamId, creatorId) => {
@@ -77,7 +81,7 @@ const SelectTeamPage = () => {
 
   useEffect(() => {
     if (!currentHackathon) {
-      navigate("/eligible-hackathons");
+      navigate("/");
     }
   });
 
@@ -513,6 +517,13 @@ const SelectTeamPage = () => {
                   // if (userTeamId && userTeamId !== team._id) {
                   //   return null; // Skip rendering this team if the condition is not met
                   // }
+
+                  // ✅ Allow admin to view all teams, others only if member or creator
+                  const isAdmin = authData?.role === "admin";
+                  if (!isAdmin && !isMember && !isCreator) {
+                    return null; // 🔒 Non-admins can't see this team
+                  }
+
                   const colorScheme = getColorScheme(index);
 
                   return (
@@ -704,15 +715,19 @@ const SelectTeamPage = () => {
                                       </div>
                                     </div>
 
-                                    {isCreator && member._id !== userId && !isInteractive && (
-                                      <button
-                                        onClick={() => removeMember(member._id)}
-                                        className="p-1.5 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition"
-                                        title="Remove member"
-                                      >
-                                        <X size={16} />
-                                      </button>
-                                    )}
+                                    {isCreator &&
+                                      member._id !== userId &&
+                                      !isInteractive && (
+                                        <button
+                                          onClick={() =>
+                                            removeMember(member._id)
+                                          }
+                                          className="p-1.5 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition"
+                                          title="Remove member"
+                                        >
+                                          <X size={16} />
+                                        </button>
+                                      )}
                                   </li>
                                 );
                               })}

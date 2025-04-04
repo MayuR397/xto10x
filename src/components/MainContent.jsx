@@ -11,7 +11,7 @@ const MainContent = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!currentHackathon) {
-      navigate("/eligible-hackathons");
+      navigate("/");
     }
   });
   return (

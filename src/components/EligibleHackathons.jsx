@@ -9,28 +9,50 @@ const EligibleHackathons = () => {
   const userId = localStorage.getItem("userId");
   const { setCurrentHackathonId } = useContext(MyContext);
   const navigate = useNavigate();
+  const [authData, setAuthData] = useState(
+    JSON.parse(localStorage.getItem("authData"))
+  );
 
   useEffect(() => {
     const fetchHackathons = async () => {
       setLoading(true);
-      try {
-        const response = await fetch(`${baseURL}/registrations/user/${userId}`);
-        const data = await response.json();
-        console.log("Hackathons Data: ", data);
-        if (data?.message === "No registrations found for this user") {
-          setHackathons([]);
-        } else {
-          setHackathons(data.registrations);
+      if (authData.role === "admin") {
+        try {
+          const response = await fetch(`${baseURL}/hackathons`);
+          const data = await response.json();
+          console.log("Hackathons Data: ", data);
+          if (data?.message === "No Hackathons Found") {
+            setHackathons([]);
+          } else {
+            setHackathons(data);
+          }
+        } catch (error) {
+          console.error("Error fetching hackathons:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching hackathons:", error);
-      } finally {
-        setLoading(false);
+      } else {
+        try {
+          const response = await fetch(
+            `${baseURL}/registrations/user/${userId}`
+          );
+          const data = await response.json();
+          console.log("Hackathons Data: ", data);
+          if (data?.message === "No registrations found for this user") {
+            setHackathons([]);
+          } else {
+            setHackathons(data.registrations);
+          }
+        } catch (error) {
+          console.error("Error fetching hackathons:", error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
     fetchHackathons();
-  }, [userId, baseURL]);
+  }, [userId, baseURL, authData]);
 
   const handleCardClick = (hackathonId) => {
     setCurrentHackathonId(hackathonId);
@@ -92,116 +114,215 @@ const EligibleHackathons = () => {
           <p className="text-gray-600 text-lg mb-4">
             You haven't registered for any hackathons yet.
           </p>
-          <button
-            className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-          >
+          <button className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
             Find Hackathons to Join
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {hackathons.map((registration) => {
-            const status = getEventStatus(
-              registration.hackathonId.startDate,
-              registration.hackathonId.endDate
-            );
+          {authData.role === "admin"
+            ? hackathons.map((registration) => {
+                console.log(registration);
+                const status = getEventStatus(
+                  registration.startDate,
+                  registration.endDate
+                );
 
-            return (
-              <div
-                key={registration._id}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border border-gray-100"
-                onClick={() => handleCardClick(registration.hackathonId._id)}
-              >
-                <div className="h-3 bg-indigo-600"></div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-xl font-semibold text-gray-800 leading-tight">
-                      {registration.hackathonId.name}
-                    </h3>
-                    <span
-                      className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${status.color}`}
-                    >
-                      {status.label}
-                    </span>
-                  </div>
-
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                      {formatDate(registration.hackathonId.startDate)} -{" "}
-                      {formatDate(registration.hackathonId.endDate)}
-                    </div>
-
-                    <div className="flex items-center text-sm text-gray-600">
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      {registration.hackathonId.eventType}
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-gray-100">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {registration.teamId?.teamName || "No Team"}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {registration.role}
-                        </p>
-                      </div>
-                      <div className="bg-indigo-50 p-2 rounded-md">
-                        <svg
-                          className="w-5 h-5 text-indigo-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
+                return (
+                  <div
+                    key={registration._id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border border-gray-100"
+                    onClick={() =>
+                      handleCardClick(registration._id)
+                    }
+                  >
+                    <div className="h-3 bg-indigo-600"></div>
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="text-xl font-semibold text-gray-800 leading-tight">
+                          {registration.name}
+                        </h3>
+                        <span
+                          className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${status.color}`}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 7l5 5m0 0l-5 5m5-5H6"
-                          />
-                        </svg>
+                          {status.label}
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          {formatDate(registration.startDate)} -{" "}
+                          {formatDate(registration.endDate)}
+                        </div>
+
+                        <div className="flex items-center text-sm text-gray-600">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          {registration.eventType}
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-gray-100">
+                        <div className="flex justify-end items-center">
+                          <div className="bg-indigo-50 p-2 rounded-md">
+                            <svg
+                              className="w-5 h-5 text-indigo-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 7l5 5m0 0l-5 5m5-5H6"
+                              />
+                            </svg>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })
+            : hackathons.map((registration) => {
+                console.log(registration);
+                const status = getEventStatus(
+                  registration.hackathonId.startDate,
+                  registration.hackathonId.endDate
+                );
+
+                return (
+                  <div
+                    key={registration._id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border border-gray-100"
+                    onClick={() =>
+                      handleCardClick(registration.hackathonId._id)
+                    }
+                  >
+                    <div className="h-3 bg-indigo-600"></div>
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="text-xl font-semibold text-gray-800 leading-tight">
+                          {registration.hackathonId.name}
+                        </h3>
+                        <span
+                          className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${status.color}`}
+                        >
+                          {status.label}
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          {formatDate(registration.hackathonId.startDate)} -{" "}
+                          {formatDate(registration.hackathonId.endDate)}
+                        </div>
+
+                        <div className="flex items-center text-sm text-gray-600">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          {registration.hackathonId.eventType}
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-gray-100">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {registration.teamId?.teamName || "No Team"}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {registration.role}
+                            </p>
+                          </div>
+                          <div className="bg-indigo-50 p-2 rounded-md">
+                            <svg
+                              className="w-5 h-5 text-indigo-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 7l5 5m0 0l-5 5m5-5H6"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
         </div>
       )}
     </div>

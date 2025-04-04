@@ -26,7 +26,7 @@ const RegisterTeamPage = () => {
 
   useEffect(() => {
     if (!currentHackathon) {
-      navigate("/eligible-hackathons");
+      navigate("/");
     }
   });
 

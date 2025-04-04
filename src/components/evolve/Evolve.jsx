@@ -181,7 +181,7 @@ const Evolve = () => {
       color: "bg-amber-50",
       accentColor: "text-amber-600",
       borderColor: "border-amber-100",
-      link: "/eligible-hackathons",
+      link: "/",
     },
     {
       icon: Briefcase,
