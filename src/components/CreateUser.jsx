@@ -27,6 +27,8 @@ const CreateUser = () => {
   };
 
   const createUser = async (userData) => {
+    console.log(userData);
+    console.log(JSON.stringify(userData));
     try {
       const response = await fetch(`${baseURL}/users/create-user`, {
         method: "POST",
@@ -46,7 +48,7 @@ const CreateUser = () => {
           track: userData.track,
           isVerified: userData.isVerified, // Convert to boolean
           role: userData.role,
-          teamId: userData.teamId,
+          // teamId: "asdsaw34wrtedrger",
         }),
       });
 

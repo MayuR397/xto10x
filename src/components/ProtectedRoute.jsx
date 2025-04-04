@@ -18,7 +18,6 @@ function ProtectedRoute({ children }) {
   }
   //   console.log("current state ",isAuth, children)
 
-  console.clear();
   console.log(
     "ProtectedRoute: isAuth =",
     isAuth,

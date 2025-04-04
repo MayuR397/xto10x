@@ -10,13 +10,14 @@ const EligibleHackathons = () => {
   const { setCurrentHackathonId } = useContext(MyContext);
   const navigate = useNavigate();
   const [authData, setAuthData] = useState(
-    JSON.parse(localStorage.getItem("authData"))
+    JSON.parse(localStorage.getItem("authData") || null)
   );
 
   useEffect(() => {
     const fetchHackathons = async () => {
       setLoading(true);
-      if (authData.role === "admin") {
+      if (authData && typeof authData === "object" && authData.role === "admin") {
+        console.log("Going here")
         try {
           const response = await fetch(`${baseURL}/hackathons`);
           const data = await response.json();
@@ -83,7 +84,7 @@ const EligibleHackathons = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto h-screen">
+    <div className="p-6 max-w-7xl mx-auto min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Your Hackathons</h2>
         <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
@@ -120,7 +121,7 @@ const EligibleHackathons = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {authData.role === "admin"
+          {authData?.role === "admin"
             ? hackathons.map((registration) => {
                 console.log(registration);
                 const status = getEventStatus(
