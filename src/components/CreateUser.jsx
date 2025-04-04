@@ -28,30 +28,27 @@ const CreateUser = () => {
 
   const createUser = async (userData) => {
     try {
-      const response = await fetch(
-        `https://e116-106-51-72-9.ngrok-free.app/users/create-user`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: userData.userId,
-            name: userData.name,
-            email: userData.email,
-            password: userData.password,
-            course: userData.course,
-            skills: userData.skills,
-            vertical: userData.vertical,
-            phoneNumber: userData.phoneNumber,
-            code: userData.code,
-            track: userData.track,
-            isVerified: userData.isVerified, // Convert to boolean
-            role: userData.role,
-            teamId: userData.teamId,
-          }),
-        }
-      );
+      const response = await fetch(`${baseURL}/users/create-user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userData.userId,
+          name: userData.name,
+          email: userData.email,
+          password: userData.password,
+          course: userData.course,
+          skills: userData.skills,
+          vertical: userData.vertical,
+          phoneNumber: userData.phoneNumber,
+          code: userData.code,
+          track: userData.track,
+          isVerified: userData.isVerified, // Convert to boolean
+          role: userData.role,
+          teamId: userData.teamId,
+        }),
+      });
 
       if (response.ok) {
         setSuccessCount((prev) => prev + 1);
