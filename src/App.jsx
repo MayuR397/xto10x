@@ -10,7 +10,7 @@ import { RegisterTeamPage } from "./components/RegisterTeamPage";
 import { MyContext } from "./context/AuthContextProvider";
 import Login from "./components/login";
 import { ToastContainer } from "react-toastify";
-import AdminPage from "./components/AdminPage";
+import CreateHackathon from "./components/CreateHackathon";
 import ProfilePage from "./components/ProfilePage";
 import ChatbotButton from "./components/chatbot/ChatbotButton";
 import ChatWindow from "./components/chatbot/ChatWindow";
@@ -23,6 +23,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import EligibleHackathons from "./components/EligibleHackathons";
 import CreateUser from "./components/CreateUser";
 import EditHackathon from "./components/EditHackathon";
+import AdminRoute from "./components/AdminRoute";
 
 function App() {
   const { isAuth, hackathon } = useContext(MyContext);
@@ -34,7 +35,6 @@ function App() {
   const isHackathon = location.pathname === "/hackathon";
   const isCSBT = location.pathname === "/csbt";
 
-
   if (isCSBT) {
     return <CSBT />;
   }
@@ -44,7 +44,11 @@ function App() {
       <ToastContainer />
       <div className="min-h-screen bg-gray-50">
         {!isMeetingRoom && <Navbar />}
-        {isAuth && !isDashboard && isHackathon && !isMeetingRoom && hackathon.eventType !== "Interactive Hackathon" && <CountDownTimer />}
+        {isAuth &&
+          !isDashboard &&
+          isHackathon &&
+          !isMeetingRoom &&
+          hackathon.eventType !== "Interactive Hackathon" && <CountDownTimer />}
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
@@ -59,7 +63,11 @@ function App() {
             path="/hackathon"
             element={
               <ProtectedRoute>
-                {hackathon.eventType === "Interactive Hackathon" ? <CSBT/> : <MainContent/>}
+                {hackathon.eventType === "Interactive Hackathon" ? (
+                  <CSBT />
+                ) : (
+                  <MainContent />
+                )}
               </ProtectedRoute>
             }
           />
@@ -111,22 +119,51 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/edithackathon/:id" element={<EditHackathon/>}/>
+          <Route
+            path="/edithackathon/:id"
+            element={
+              <AdminRoute>
+                <EditHackathon />
+              </AdminRoute>
+            }
+          />
           {/* <Route path="/eligible-hackathons" element={<ProtectedRoute><EligibleHackathons/></ProtectedRoute>}/> */}
-          <Route path="/create-users" element={<CreateUser/>}/>
-          <Route path="/admin-page" element={<AdminPage />} />
+          <Route
+            path="/create-users"
+            element={
+              <AdminRoute>
+                <CreateUser />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/create-hackathon"
+            element={
+              <AdminRoute>
+                <CreateHackathon />
+              </AdminRoute>
+            }
+          />
         </Routes>
 
-        {!isMeetingRoom && !isDashboard && isAuth && isHackathon && hackathon.eventType !== "Interactive Hackathon" && (
-          <ProtectedRoute>
-            <VideoConference />
-          </ProtectedRoute>
-        )}
-        {!isMeetingRoom && !isDashboard && isAuth && isHackathon && hackathon.eventType !== "Interactive Hackathon" && (
-          <ProtectedRoute>
-            <InteractiveElement />
-          </ProtectedRoute>
-        )}
+        {!isMeetingRoom &&
+          !isDashboard &&
+          isAuth &&
+          isHackathon &&
+          hackathon.eventType !== "Interactive Hackathon" && (
+            <ProtectedRoute>
+              <VideoConference />
+            </ProtectedRoute>
+          )}
+        {!isMeetingRoom &&
+          !isDashboard &&
+          isAuth &&
+          isHackathon &&
+          hackathon.eventType !== "Interactive Hackathon" && (
+            <ProtectedRoute>
+              <InteractiveElement />
+            </ProtectedRoute>
+          )}
         {!isMeetingRoom && <Footer />}
         {isAuth && !isMeetingRoom && (
           <ChatbotButton

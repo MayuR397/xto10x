@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Papa from "papaparse";
 
-const AdminPage = () => {
+const CreateHackathon = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
   const userId = localStorage.getItem("userId");
   const [eventData, setEventData] = useState({
@@ -58,7 +58,7 @@ const AdminPage = () => {
         activity: "Hackathon Kick-off",
       },
       {
-        date: "2025-04-17T17:00:00+05:30",
+        date: "2025-03-24T10:00:00+05:30",
         activity: "Winner Announcement",
       },
     ],
@@ -74,8 +74,8 @@ const AdminPage = () => {
         description: "Full week of Interaction",
       },
     ],
-    submissionStart: "2025-04-05T08:00:00+05:30",
-    submissionEnd: "2025-04-06T23:59:59+05:30",
+    submissionStart: "2025-03-24T10:00:00+05:30",
+    submissionEnd: "2025-03-24T10:00:00+05:30",
     status: "Upcoming",
     eventType: "Interactive Hackathon",
     prizeDetails: [
@@ -912,4 +912,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default CreateHackathon;

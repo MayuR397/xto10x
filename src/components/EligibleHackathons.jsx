@@ -1,28 +1,339 @@
+// import React, { useContext, useEffect, useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import { MyContext } from "../context/AuthContextProvider";
+// import { ArrowRight, CalendarRange, Frown, MapPin } from "lucide-react";
+
+// const EligibleHackathons = () => {
+//   const baseURL = import.meta.env.VITE_BASE_URL;
+//   const [hackathons, setHackathons] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const userId = localStorage.getItem("userId");
+//   const { setCurrentHackathonId, userData } = useContext(MyContext);
+//   const navigate = useNavigate();
+
+//   const fetchHackathons = async (user) => {
+//     setLoading(true);
+//     const role = user?.role;
+//     if (role === "admin") {
+//       console.log("Going here");
+//       try {
+//         const response = await fetch(`${baseURL}/hackathons`);
+//         const data = await response.json();
+//         console.log("Hackathons Data: ", data);
+//         if (data?.message === "No Hackathons Found") {
+//           setHackathons([]);
+//         } else {
+//           setHackathons(data);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching hackathons:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     } else {
+//       try {
+//         const response = await fetch(`${baseURL}/registrations/user/${userId}`);
+//         const data = await response.json();
+//         console.log("Hackathons Data for member: ", data);
+//         if (data?.message === "No registrations found for this user") {
+//           setHackathons([]);
+//         } else {
+//           setHackathons(data.registrations);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching hackathons:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (userData) {
+//       console.log("This is parsed data", userData);
+//       fetchHackathons(userData); // pass parsed data directly
+//     } else {
+//       setLoading(false); // fallback if no user is found
+//     }
+//   }, [userData]);
+
+//   const handleDelete = async (id) => {
+//     const response = await fetch(`${baseURL}/hackathons/${id}`, {
+//       method: "DELETE",
+//     });
+//     fetchHackathons();
+//   };
+
+//   const handleCreateTeam = async (id) => {
+//     const response = await fetch(`${baseURL}/team/auto`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         minSize: 3,
+//         maxSize: 5,
+//         hackathonId: `${id}`,
+//       }),
+//     });
+//   };
+
+//   const handleCardClick = (hackathonId) => {
+//     setCurrentHackathonId(hackathonId);
+//     console.log("Current Hackathon ID: ", hackathonId);
+//     localStorage.setItem("currentHackathon", hackathonId);
+//     navigate(`/hackathon`);
+//   };
+
+//   // Format date with options
+//   const formatDate = (dateString) => {
+//     const options = { year: "numeric", month: "short", day: "numeric" };
+//     return new Date(dateString).toLocaleDateString(undefined, options);
+//   };
+
+//   // Calculate status based on dates
+//   const getEventStatus = (startDate, endDate) => {
+//     const now = new Date();
+//     const start = new Date(startDate);
+//     const end = new Date(endDate);
+
+//     if (now < start) {
+//       return { label: "Upcoming", color: "bg-blue-100 text-blue-800" };
+//     } else if (now > end) {
+//       return { label: "Completed", color: "bg-gray-100 text-gray-800" };
+//     } else {
+//       return { label: "Active", color: "bg-green-100 text-green-800" };
+//     }
+//   };
+
+//   return (
+//     hackathons && (
+//       <div className="p-6 max-w-7xl mx-auto min-h-screen">
+//         <div className="flex justify-between items-center mb-6">
+//           <h2 className="text-2xl font-bold text-gray-800">Your Hackathons</h2>
+//         </div>
+
+//         {loading ? (
+//           <div className="flex justify-center items-center h-64">
+//             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+//           </div>
+//         ) : hackathons.length === 0 ? (
+//           <div className="bg-white rounded-lg shadow-md p-8 text-center">
+//             <Frown className="w-16 h-16 mx-auto text-gray-400 mb-4"/>
+//             <p className="text-gray-600 text-lg mb-4">
+//               You haven't registered for any hackathons yet.
+//             </p>
+//           </div>
+//         ) : (
+//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//             {userData?.role === "admin"
+//               ? hackathons.map((registration) => {
+//                   console.log(registration);
+//                   const status = getEventStatus(
+//                     registration.startDate,
+//                     registration.endDate
+//                   );
+
+//                   return (
+//                     <div
+//                       key={registration._id}
+//                       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border border-gray-100"
+//                     >
+//                       <div className="h-3 bg-indigo-600"></div>
+//                       <div className="p-6">
+//                         <div className="flex justify-between items-start mb-3">
+//                           <h3 className="text-xl font-semibold text-gray-800 leading-tight">
+//                             {registration.name}
+//                           </h3>
+//                           <span
+//                             className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${status.color}`}
+//                           >
+//                             {status.label}
+//                           </span>
+//                         </div>
+
+//                         <div className="space-y-2 mb-4">
+//                           <div className="flex items-center text-sm text-gray-600">
+//                             <CalendarRange className="w-4 h-4 mr-2"/>
+//                             {formatDate(registration.startDate)} -{" "}
+//                             {formatDate(registration.endDate)}
+//                           </div>
+
+//                           <div className="flex items-center text-sm text-gray-600">
+//                             <MapPin className="w-4 h-4 mr-2"/>
+//                             {registration.eventType}
+//                           </div>
+//                         </div>
+
+//                         <div className="pt-4 border-t border-gray-100">
+//                           <div className="flex justify-between items-center ">
+//                             <div>
+//                               <button
+//                                 onClick={() =>
+//                                   handleCreateTeam(registration._id)
+//                                 }
+//                                 className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-2 rounded-md font-bold transition transform hover:scale-105"
+//                               >
+//                                 Create Team
+//                               </button>
+//                             </div>
+
+//                             <div>
+//                               <Link to={`/edithackathon/${registration._id}`}>
+//                                 <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-2 rounded-md font-bold transition transform hover:scale-105">
+//                                   Edit
+//                                 </button>
+//                               </Link>
+//                             </div>
+
+//                             <div>
+//                               <button
+//                                 onClick={() => handleDelete(registration._id)}
+//                                 className="bg-red-500 hover:bg-red-600 text-white px-2 py-2 rounded-md font-bold transition transform hover:scale-105"
+//                               >
+//                                 Delete
+//                               </button>
+//                             </div>
+
+//                             <div
+//                               className="bg-indigo-50 p-2 rounded-md"
+//                               onClick={() => handleCardClick(registration._id)}
+//                             >
+//                               <ArrowRight className="w-5 h-5 text-indigo-600" />
+//                             </div>
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   );
+//                 })
+//               : hackathons.map((registration) => {
+//                   console.log(registration);
+//                   const status = getEventStatus(
+//                     registration.hackathonId.startDate,
+//                     registration.hackathonId.endDate
+//                   );
+
+//                   return (
+//                     <div
+//                       key={registration._id}
+//                       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border border-gray-100"
+//                       onClick={() =>
+//                         handleCardClick(registration.hackathonId._id)
+//                       }
+//                     >
+//                       <div className="h-3 bg-indigo-600"></div>
+//                       <div className="p-6">
+//                         <div className="flex justify-between items-start mb-3">
+//                           <h3 className="text-xl font-semibold text-gray-800 leading-tight">
+//                             {registration.hackathonId.name}
+//                           </h3>
+//                           <span
+//                             className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${status.color}`}
+//                           >
+//                             {status.label}
+//                           </span>
+//                         </div>
+
+//                         <div className="space-y-2 mb-4">
+//                           <div className="flex items-center text-sm text-gray-600">
+//                             <CalendarRange className="w-4 h-4 mr-2"/>
+//                             {formatDate(registration.hackathonId.startDate)} -{" "}
+//                             {formatDate(registration.hackathonId.endDate)}
+//                           </div>
+
+//                           <div className="flex items-center text-sm text-gray-600">
+//                             <MapPin className="w-4 h-4 mr-2"/>
+//                             {registration.hackathonId.eventType}
+//                           </div>
+//                         </div>
+
+//                         <div className="pt-4 border-t border-gray-100">
+//                           <div className="flex justify-between items-center">
+//                             <div>
+//                               <p className="text-sm font-medium text-gray-900">
+//                                 {registration.teamId?.teamName || "No Team"}
+//                               </p>
+//                               <p className="text-xs text-gray-500">
+//                                 {registration.role}
+//                               </p>
+//                             </div>
+//                             <div className="bg-indigo-50 p-2 rounded-md">
+//                               <ArrowRight className="w-5 h-5 text-indigo-600"/>
+//                             </div>
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   );
+//                 })}
+//           </div>
+//         )}
+//       </div>
+//     )
+//   );
+// };
+
+// export default EligibleHackathons;
+
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MyContext } from "../context/AuthContextProvider";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarRange,
+  MapPin,
+  Trophy,
+  Users,
+  Frown,
+  Sparkles,
+} from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ConfirmationModal from "./ConfirmationModal";
 
 const EligibleHackathons = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
   const [hackathons, setHackathons] = useState([]);
   const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("userId");
-  const { setCurrentHackathonId } = useContext(MyContext);
+  const { setCurrentHackathonId, userData } = useContext(MyContext);
   const navigate = useNavigate();
-  const [authData, setAuthData] = useState(
-    JSON.parse(localStorage.getItem("userData") || null)
-  );
-  console.log(authData.role);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState({});
 
-  const fetchHackathons = async () => {
+  // Configure Modal based on Action and Pass Arguments
+  const openModal = (actionType, hackathon, e) => {
+    if (actionType === "create") {
+      setModalConfig({
+        title: "Confirm Create Teams",
+        message: `Are you sure you want to create the teams for ${hackathon.name}.`,
+        onConfirm: () => {
+          handleCreateTeam(hackathon._id, e);
+          setIsModalOpen(false);
+        },
+      });
+    } else if (actionType === "delete") {
+      setModalConfig({
+        title: "Confirm Deleting Team",
+        message:
+          "Are you sure you want to delete the Hackathon? This action is irreversible.",
+        onConfirm: () => {
+          handleDelete(hackathon._id, e);
+          setIsModalOpen(false);
+        },
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const fetchHackathons = async (user) => {
     setLoading(true);
-    if (authData && typeof authData === "object" && authData.role === "admin") {
-      console.log("Going here");
+    const role = user?.role;
+    if (role === "admin") {
       try {
         const response = await fetch(`${baseURL}/hackathons`);
         const data = await response.json();
-        console.log("Hackathons Data: ", data);
         if (data?.message === "No Hackathons Found") {
           setHackathons([]);
         } else {
@@ -37,7 +348,6 @@ const EligibleHackathons = () => {
       try {
         const response = await fetch(`${baseURL}/registrations/user/${userId}`);
         const data = await response.json();
-        console.log("Hackathons Data: ", data);
         if (data?.message === "No registrations found for this user") {
           setHackathons([]);
         } else {
@@ -50,315 +360,252 @@ const EligibleHackathons = () => {
       }
     }
   };
-  useEffect(() => {
-    fetchHackathons();
-  }, [userId, baseURL, authData]);
 
-  const handleDelete = async (id) => {
-    const response = await fetch(`${baseURL}/hackathons/${id}`, {
-      method: "DELETE",
-    });
-    fetchHackathons();
+  useEffect(() => {
+    if (userData) {
+      fetchHackathons(userData);
+    } else {
+      setLoading(false);
+    }
+  }, [userData]);
+
+  const handleDelete = async (id, e) => {
+    e.stopPropagation();
+    if (window.confirm("Are you sure you want to delete this hackathon?")) {
+      await fetch(`${baseURL}/hackathons/${id}`, {
+        method: "DELETE",
+      });
+      fetchHackathons(userData);
+    }
   };
 
-  const handleCreateTeam = async (id) => {
-    const response = await fetch(`${baseURL}/team/auto`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        minSize: 3,
-        maxSize: 5,
-        hackathonId: `${id}`,
-      }),
-    });
+  const handleCreateTeam = async (id, e) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch(`${baseURL}/team/auto`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          minSize: 3,
+          maxSize: 5,
+          hackathonId: `${id}`,
+        }),
+      });
+      if (response.ok) {
+        toast.success("Team created successfully!", {
+          position: "top-right",
+        });
+      } else {
+        toast.warning("Failed to create team. Please try again.", {
+          position: "top-right",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating team:", error);
+      toast.error("An error occurred while creating the team.", {
+        position: "top-right",
+      });
+    }
   };
 
   const handleCardClick = (hackathonId) => {
     setCurrentHackathonId(hackathonId);
-    console.log("Current Hackathon ID: ", hackathonId);
     localStorage.setItem("currentHackathon", hackathonId);
     navigate(`/hackathon`);
   };
 
-  // Format date with options
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "short", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Calculate status based on dates
   const getEventStatus = (startDate, endDate) => {
     const now = new Date();
     const start = new Date(startDate);
     const end = new Date(endDate);
 
     if (now < start) {
-      return { label: "Upcoming", color: "bg-blue-100 text-blue-800" };
+      return {
+        label: "Upcoming",
+        color: "bg-blue-100 text-blue-800",
+        icon: <Sparkles className="w-4 h-4 mr-1" />,
+      };
     } else if (now > end) {
-      return { label: "Completed", color: "bg-gray-100 text-gray-800" };
+      return {
+        label: "Completed",
+        color: "bg-gray-100 text-gray-800",
+        icon: <Trophy className="w-4 h-4 mr-1" />,
+      };
     } else {
-      return { label: "Active", color: "bg-green-100 text-green-800" };
+      return {
+        label: "Active",
+        color: "bg-green-100 text-green-800",
+        icon: <Users className="w-4 h-4 mr-1" />,
+      };
     }
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Your Hackathons</h2>
-        <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
-          Explore New Hackathons
-        </button>
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white">
+      <div className="p-6 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Your Hackathons
+            </h2>
+            <p className="text-gray-600">
+              Manage and track your hackathon journey
+            </p>
+          </div>
+          {userData?.role === "admin" && (
+            <Link to="/create-hackathon">
+              <button className="mt-4 md:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 flex items-center">
+                <Sparkles className="w-5 h-5 mr-2" />
+                Create New Hackathon
+              </button>
+            </Link>
+          )}
+        </div>
 
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-        </div>
-      ) : hackathons.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <svg
-            className="w-16 h-16 mx-auto text-gray-400 mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 16h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <p className="text-gray-600 text-lg mb-4">
-            You haven't registered for any hackathons yet.
-          </p>
-          <button className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
-            Find Hackathons to Join
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {authData?.role === "admin"
-            ? hackathons.map((registration) => {
-                console.log(registration);
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+          </div>
+        ) : hackathons.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-lg p-8 text-center max-w-lg mx-auto border border-gray-100">
+            <div className="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+              <Frown className="w-10 h-10 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              No Hackathons Found
+            </h3>
+            <p className="text-gray-600 mb-6">
+              You haven't registered for any hackathons yet.
+            </p>
+            <Link to="/browse-hackathons">
+              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200">
+                Browse Hackathons
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(userData?.role === "admin" ? hackathons : hackathons).map(
+              (registration) => {
+                const hackathonData =
+                  userData?.role === "admin"
+                    ? registration
+                    : registration.hackathonId;
                 const status = getEventStatus(
-                  registration.startDate,
-                  registration.endDate
+                  hackathonData.startDate,
+                  hackathonData.endDate
                 );
 
                 return (
                   <div
                     key={registration._id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border border-gray-100"
+                    className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-1"
                   >
-                    <div className="h-3 bg-indigo-600"></div>
+                    <div className="h-2 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
                     <div className="p-6">
-                      <div className="flex justify-between items-start mb-3">
-                        <h3 className="text-xl font-semibold text-gray-800 leading-tight">
-                          {registration.name}
+                      <div
+                        className="flex justify-between items-start mb-4"
+                        onClick={() => handleCardClick(hackathonData._id)}
+                      >
+                        <h3 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                          {hackathonData.name}
                         </h3>
                         <span
-                          className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${status.color}`}
+                          className={`flex items-center text-xs font-medium px-3 py-1 rounded-full ${status.color}`}
                         >
+                          {status.icon}
                           {status.label}
                         </span>
                       </div>
 
-                      <div className="space-y-2 mb-4">
+                      <div
+                        className="space-y-3 mb-6"
+                        onClick={() => handleCardClick(hackathonData._id)}
+                      >
                         <div className="flex items-center text-sm text-gray-600">
-                          <svg
-                            className="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          {formatDate(registration.startDate)} -{" "}
-                          {formatDate(registration.endDate)}
+                          <CalendarRange className="w-4 h-4 mr-2 text-indigo-500" />
+                          <span>
+                            {formatDate(hackathonData.startDate)} -{" "}
+                            {formatDate(hackathonData.endDate)}
+                          </span>
                         </div>
-
                         <div className="flex items-center text-sm text-gray-600">
-                          <svg
-                            className="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                          {registration.eventType}
+                          <MapPin className="w-4 h-4 mr-2 text-indigo-500" />
+                          <span>{hackathonData.eventType}</span>
                         </div>
                       </div>
 
                       <div className="pt-4 border-t border-gray-100">
-                        <div className="flex justify-between items-center ">
-                          <div>
+                        {userData?.role === "admin" ? (
+                          <div className="flex justify-between items-center space-x-2">
                             <button
-                              onClick={() => handleCreateTeam(registration._id)}
-                              className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-2 rounded-md font-bold transition transform hover:scale-105"
+                              // onClick={(e) =>
+                              //   handleCreateTeam(hackathonData._id, e)
+                              // }
+                              onClick={(e) =>
+                                openModal("create", hackathonData, e)
+                              }
+                              className="flex-1 bg-purple-500 hover:bg-purple-600 text-white px-3 py-2 rounded-lg font-semibold text-sm transition-all duration-200"
                             >
                               Create Team
                             </button>
-                          </div>
-
-                          <div>
-                            <Link to={`/edithackathon/${registration._id}`}>
-                              <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-2 rounded-md font-bold transition transform hover:scale-105">
+                            <Link
+                              to={`/edithackathon/${hackathonData._id}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex-1"
+                            >
+                              <button className="w-full bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold text-sm transition-all duration-200">
                                 Edit
                               </button>
                             </Link>
-                          </div>
-
-                          <div>
                             <button
-                              onClick={() => handleDelete(registration._id)}
-                              className="bg-red-500 hover:bg-red-600 text-white px-2 py-2 rounded-md font-bold transition transform hover:scale-105"
+                              onClick={(e) =>
+                                openModal("delete", hackathonData._id, e)
+                              }
+                              className="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg font-semibold text-sm transition-all duration-200"
                             >
                               Delete
                             </button>
                           </div>
-
-                          <div
-                            className="bg-indigo-50 p-2 rounded-md"
-                            onClick={() => handleCardClick(registration._id)}
-                          >
-                            <ArrowRight className="w-5 h-5 text-indigo-600" />
+                        ) : (
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">
+                                {registration.teamId?.teamName || "No Team"}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {registration.role}
+                              </p>
+                            </div>
+                            <div className="bg-indigo-50 p-2 rounded-full group-hover:bg-indigo-100 transition-colors">
+                              <ArrowRight className="w-5 h-5 text-indigo-600" />
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 );
-              })
-            : hackathons.map((registration) => {
-                console.log(registration);
-                const status = getEventStatus(
-                  registration.hackathonId.startDate,
-                  registration.hackathonId.endDate
-                );
-
-                return (
-                  <div
-                    key={registration._id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border border-gray-100"
-                    onClick={() =>
-                      handleCardClick(registration.hackathonId._id)
-                    }
-                  >
-                    <div className="h-3 bg-indigo-600"></div>
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-3">
-                        <h3 className="text-xl font-semibold text-gray-800 leading-tight">
-                          {registration.hackathonId.name}
-                        </h3>
-                        <span
-                          className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${status.color}`}
-                        >
-                          {status.label}
-                        </span>
-                      </div>
-
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <svg
-                            className="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          {formatDate(registration.hackathonId.startDate)} -{" "}
-                          {formatDate(registration.hackathonId.endDate)}
-                        </div>
-
-                        <div className="flex items-center text-sm text-gray-600">
-                          <svg
-                            className="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                          {registration.hackathonId.eventType}
-                        </div>
-                      </div>
-
-                      <div className="pt-4 border-t border-gray-100">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {registration.teamId?.teamName || "No Team"}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {registration.role}
-                            </p>
-                          </div>
-                          <div className="bg-indigo-50 p-2 rounded-md">
-                            <svg
-                              className="w-5 h-5 text-indigo-600"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 7l5 5m0 0l-5 5m5-5H6"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-        </div>
-      )}
+              }
+            )}
+          </div>
+        )}
+      </div>
+      {/* Reusable Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={modalConfig.onConfirm}
+        title={modalConfig.title}
+        message={modalConfig.message}
+      />
     </div>
   );
 };

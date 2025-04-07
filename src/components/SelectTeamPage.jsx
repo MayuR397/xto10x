@@ -39,19 +39,14 @@ const SelectTeamPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleContacts, setVisibleContacts] = useState({});
   const [fullTeamDetails, setFullTeamDetails] = useState({});
-  const userData = JSON.parse(localStorage.getItem("userData"));
-
   const userId = localStorage.getItem("userId");
-  const { hackathon } = useContext(MyContext);
+  const { hackathon, userData } = useContext(MyContext);
   const currentHackathon = localStorage.getItem("currentHackathon");
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
   const isInteractive =
     hackathon.eventType == "Interactive Hackathon" ? true : false;
-  const [authData, setAuthData] = useState(
-    JSON.parse(localStorage.getItem("authData"))
-  );
 
   // Configure Modal based on Action and Pass Arguments
   const openModal = (actionType, teamId, creatorId) => {
@@ -519,7 +514,7 @@ const SelectTeamPage = () => {
                   // }
 
                   // ✅ Allow admin to view all teams, others only if member or creator
-                  const isAdmin = authData?.role === "admin";
+                  const isAdmin = userData?.role === "admin";
                   if (!isAdmin && !isMember && !isCreator) {
                     return null; // 🔒 Non-admins can't see this team
                   }
@@ -786,7 +781,7 @@ const SelectTeamPage = () => {
                           )} */}
 
                           {/* Leave Team (For Member) */}
-                          {isMember && !isCreator && !isInteractive && (
+                          {/* {isMember && !isCreator && !isInteractive && (
                             <button
                               onClick={() => openModal("leave")}
                               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition"
@@ -794,7 +789,7 @@ const SelectTeamPage = () => {
                               <LogOut size={18} />
                               <span>Leave Team</span>
                             </button>
-                          )}
+                          )} */}
 
                           {/* Reusable Confirmation Modal */}
                           <ConfirmationModal

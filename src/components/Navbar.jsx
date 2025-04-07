@@ -176,7 +176,7 @@ const Navbar = () => {
                     </Link>
                     {userData.role === "admin" && (
                       <>
-                        <Link to="/admin-page">
+                        <Link to="/create-hackathon">
                           <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500 transition flex items-center">
                             <FilePlus className="h-4 w-4 mr-2" />
                             Create Hackathon
@@ -234,7 +234,7 @@ const Navbar = () => {
 
             {userData.role === "admin" && (
               <>
-                <Link>
+                <Link to="/create-hackathon">
                   <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition mb-2">
                   <FilePlus className="h-5 w-5 text-red-500" />
                     Create Hackathon
