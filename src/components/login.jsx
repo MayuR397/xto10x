@@ -16,8 +16,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const baseURL = import.meta.env.VITE_BASE_URL;
-  const [email, setEmail] = useState("ritickraj35@gmail.com");
-  const [password, setPassword] = useState("4d7g6h9j2");
+  const [email, setEmail] = useState("ankitojha07108@gmail.com");
+  const [password, setPassword] = useState("12345678");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -34,122 +34,33 @@ function Login() {
     setError(null);
     setLoading(true);
 
-    if (email.includes("masaischool.com")) {
-      try {
-        const loginRes = await fetch(
-          "https://experience-api.masaischool.com/",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({
-              query: `
-              mutation login($input: LoginInput!) {
-                login(input: $input) { id }
-              }
-            `,
-              variables: {
-                input: {
-                  email: email,
-                  password: password,
-                  rememberMe: false,
-                },
-              },
-              operationName: "login",
-            }),
-          }
-        );
+    try {
+      const response = await fetch(`${baseURL}/users/verify-user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-        const loginResult = await loginRes.json();
-
-        if (loginRes.ok && loginResult.data?.login?.id) {
-          const userRes = await fetch(
-            "https://experience-api.masaischool.com/",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-              credentials: "include",
-              body: JSON.stringify({
-                query: `
-                query getAuthMe {
-                  me {
-                    id
-                    name
-                    username
-                    role
-                    sections_enrolled { id name }
-                  }
-                }
-              `,
-                operationName: "getAuthMe",
-              }),
-            }
-          );
-
-          const userResult = await userRes.json();
-          const user = userResult.data?.me;
-
-          if (user) {
-            localStorage.setItem(
-              "authData",
-              JSON.stringify({
-                authenticated: true,
-                role: user.role,
-              })
-            );
-            setIsAuth(true);
-            toast.success("User logged in successfully", {
-              position: "top-right",
-            });
-            navigate(from);
-          }
-        } else {
-          setMessage({
-            type: "error",
-            text:
-              loginResult.errors?.[0]?.message ||
-              "Invalid credentials or login failed.",
-          });
-        }
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
       }
-    } else {
-      try {
-        const response = await fetch(`${baseURL}/users/verify-user`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Login failed");
-        }
-
-        const data = await response.json();
-        localStorage.setItem("userId", data.user._id);
-        setIsAuth(true);
-        toast.success("User logged in successfully", {
-          position: "top-right",
-        });
-        console.log("from", from, isAuth);
-        navigate(from);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      const data = await response.json();
+      console.log("This is users ID: ", data)
+      localStorage.setItem("userId", data.user._id);
+      setIsAuth(true);
+      toast.success("User logged in successfully", {
+        position: "top-right",
+      });
+      console.log("from", from, isAuth);
+      navigate(from);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 

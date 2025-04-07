@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Video,
@@ -8,11 +8,13 @@ import {
   ArrowRight,
   BookMarked,
 } from "lucide-react";
+import { MyContext } from "../context/AuthContextProvider";
 
 function VideoConference() {
   const navigate = useNavigate();
   const [isHelpHovered, setIsHelpHovered] = useState(false);
   const [isResourceHovered, setIsResourceHovered] = useState(false);
+  const {hackathon} = useContext(MyContext)
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
@@ -35,12 +37,18 @@ function VideoConference() {
             showcase your skills, creativity, and problem-solving abilities.
           </p>
           <div className="flex gap-4">
-            <button
-              onClick={() => navigate("/meeting-room")}
-              className="bg-white text-[#DD3C3C] px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+            <a
+              href={`https://meet.jit.si/${hackathon.name}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Join Now
-            </button>
+              <button
+                // onClick={() => navigate("/meeting-room")}
+                className="bg-white text-[#DD3C3C] px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              >
+                Join Now
+              </button>
+            </a>
             <button
               onClick={() => navigate("/resource-hub")}
               className="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-[#C53030] transition-colors"

@@ -452,7 +452,7 @@ const SelectTeamPage = () => {
                 </p>
               </div>
 
-              {userTeamId && !isInteractive && (
+              {/* {userTeamId && !isInteractive && (
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="mt-4 md:mt-0 flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition"
@@ -460,7 +460,7 @@ const SelectTeamPage = () => {
                   <LogOut size={18} />
                   Leave Current Team
                 </button>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -715,7 +715,7 @@ const SelectTeamPage = () => {
                                       </div>
                                     </div>
 
-                                    {isCreator &&
+                                    {/* {isCreator &&
                                       member._id !== userId &&
                                       !isInteractive && (
                                         <button
@@ -727,7 +727,7 @@ const SelectTeamPage = () => {
                                         >
                                           <X size={16} />
                                         </button>
-                                      )}
+                                      )} */}
                                   </li>
                                 );
                               })}
@@ -769,7 +769,7 @@ const SelectTeamPage = () => {
                             )}
 
                           {/* Delete Team (For Creator) */}
-                          {isCreator && !isInteractive && (
+                          {/* {isCreator && !isInteractive && (
                             <button
                               onClick={() =>
                                 openModal(
@@ -783,7 +783,7 @@ const SelectTeamPage = () => {
                               <Trash2 size={18} />
                               <span>Delete Team</span>
                             </button>
-                          )}
+                          )} */}
 
                           {/* Leave Team (For Member) */}
                           {isMember && !isCreator && !isInteractive && (
@@ -821,7 +821,7 @@ const SelectTeamPage = () => {
                             </a>
                           )}
 
-                          {userTeamId === team._id && (
+                          {userTeamId === team._id && isInteractive && (
                             <a
                               href={`https://meet.jit.si/${
                                 userData.name

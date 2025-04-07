@@ -22,6 +22,7 @@ import CSBT from "./components/csbt/CSBT";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EligibleHackathons from "./components/EligibleHackathons";
 import CreateUser from "./components/CreateUser";
+import EditHackathon from "./components/EditHackathon";
 
 function App() {
   const { isAuth, hackathon } = useContext(MyContext);
@@ -43,7 +44,7 @@ function App() {
       <ToastContainer />
       <div className="min-h-screen bg-gray-50">
         {!isMeetingRoom && <Navbar />}
-        {isAuth && !isDashboard && !isMeetingRoom && hackathon.eventType !== "Interactive Hackathon" && <CountDownTimer />}
+        {isAuth && !isDashboard && isHackathon && !isMeetingRoom && hackathon.eventType !== "Interactive Hackathon" && <CountDownTimer />}
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
@@ -110,6 +111,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/edithackathon/:id" element={<EditHackathon/>}/>
           {/* <Route path="/eligible-hackathons" element={<ProtectedRoute><EligibleHackathons/></ProtectedRoute>}/> */}
           <Route path="/create-users" element={<CreateUser/>}/>
           <Route path="/admin-page" element={<AdminPage />} />

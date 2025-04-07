@@ -50,6 +50,7 @@ const AuthContextProvider = ({ children }) => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const userData = await response.json();
+        console.log("Data after login",userData)
         localStorage.setItem("userData", JSON.stringify(userData));
         setUserData(userData);
         setIsAuth(true);

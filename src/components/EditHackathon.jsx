@@ -10,117 +10,38 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Papa from "papaparse";
+import { useParams } from "react-router-dom";
 
-const AdminPage = () => {
+const EditHackathon = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
   const userId = localStorage.getItem("userId");
-  const [eventData, setEventData] = useState({
-    name: "Test Hackathon 1",
-    version: "1.0",
-    description:
-      "A two-week interactive coding hackathon for real world grooming",
-    startDate: "2025-03-24T10:00:00+05:30",
-    endDate: "2025-04-06T23:59:59+05:30",
-    allowedEmails: [
-      "ritickraj35@gmail.com",
-      "abhishekkumarverma0811@gmail.com",
-      "gmgurjar1221@gmail.com",
-      "gautamji4966@gmail.com",
-      "vikashkumarbharti035@gmail.com",
-      "punitnaagvanshi@gamil.com",
-      "ashishdadhiich@gmail.com",
-      "rahulchandeshware66@gmail.com",
-      "mrrajak1296@gmail.com",
-      "kartikgautam1106@gmail.com",
-      "rohyadav18@gmail.com",
-      "goswamik1221@gmail.com",
-      "rohitchouhankgn11@gmail.com",
-      "vikrantsheoran4@gmail.com",
-      "khushipatel59946@gmail.com",
-    ],
-    minTeamSize: 2,
-    maxTeamSize: 4,
-    problemStatements: [
-      {
-        track: "ML",
-        description: "Sample ML Problem Statement",
-        difficulty: "Hard",
-      },
-      {
-        track: "DA",
-        description: "Analyze large datasets for insights.",
-        difficulty: "Medium",
-      },
-    ],
-    schedule: [
-      {
-        date: "2025-03-24T10:00:00+05:30",
-        activity: "Hackathon Kick-off",
-      },
-      {
-        date: "2025-04-17T17:00:00+05:30",
-        activity: "Winner Announcement",
-      },
-    ],
-    eventPlan: [
-      {
-        week: 1,
-        phase: "Interaction",
-        description: "Full week of Interaction",
-      },
-      {
-        week: 2,
-        phase: "Hackathon",
-        description: "Full week of Interaction",
-      },
-    ],
-    submissionStart: "2025-04-05T08:00:00+05:30",
-    submissionEnd: "2025-04-06T23:59:59+05:30",
-    status: "Upcoming",
-    eventType: "Interactive Hackathon",
-    prizeDetails: [
-      {
-        position: 1,
-        amount: 5000,
-        description: "Winner",
-      },
-      {
-        position: 2,
-        amount: 3000,
-        description: "Runner-up",
-      },
-    ],
-
-    createdBy: userId,
-  });
+  const [eventData, setEventData] = useState({});
   const [notification, setNotification] = useState(null);
   const [hackathons, setHackathons] = useState([]);
   const [selectedHackathon, setSelectedHackathon] = useState(null);
+  const { id } = useParams();
+  console.log("This is id", id)
 
   // Fetch Hackathon List
-  useEffect(() => {
-    const fetchHackathons = async () => {
+  //   useEffect(() => {
+  //     const fetchHackathons = async () => {
+  //       try {
+  //         const response = await fetch(`${baseURL}/hackathons`);
+  //         if (!response.ok) throw new Error("Failed to fetch hackathons");
+  //         const data = await response.json();
+  //         setHackathons(data);
+  //       } catch (error) {
+  //         console.error(error.message);
+  //       }
+  //     };
+
+  //     fetchHackathons();
+  //   }, []);
+
+  async function fetchHackathon() {
+    if (id) {
       try {
-        const response = await fetch(`${baseURL}/hackathons`);
-        if (!response.ok) throw new Error("Failed to fetch hackathons");
-        const data = await response.json();
-        setHackathons(data);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-
-    fetchHackathons();
-  }, []);
-
-  // Handle Selection and Fetch Hackathon Data by ID
-  const handleSelectChange = async (e) => {
-    const hackathonId = e.target.value;
-    setSelectedHackathon(hackathonId);
-
-    if (hackathonId) {
-      try {
-        const response = await fetch(`${baseURL}/hackathons/${hackathonId}`);
+        const response = await fetch(`${baseURL}/hackathons/${id}`);
         if (!response.ok) throw new Error("Failed to fetch hackathon details");
         const data = await response.json();
         console.log("Selected Hackathon ID", data);
@@ -147,12 +68,58 @@ const AdminPage = () => {
             date: convertUtcToIst(item.date),
           })),
         };
+        console.log("cleaned Dtaa", cleanData)
         setEventData(cleanData);
       } catch (error) {
         console.error(error.message);
       }
     }
-  };
+  }
+
+  useEffect(() => {
+    fetchHackathon()
+  }, [id]);
+
+  // Handle Selection and Fetch Hackathon Data by ID
+//   const handleSelectChange = async (e) => {
+//     const hackathonId = e.target.value;
+//     setSelectedHackathon(hackathonId);
+
+//     if (hackathonId) {
+//       try {
+//         const response = await fetch(`${baseURL}/hackathons/${hackathonId}`);
+//         if (!response.ok) throw new Error("Failed to fetch hackathon details");
+//         const data = await response.json();
+//         console.log("Selected Hackathon ID", data);
+//         // Remove _id before setting state
+//         // const { _id, ...cleanData } = data;
+//         // Convert startDate, endDate, and schedule dates to IST
+//         const {
+//           _id,
+//           startDate,
+//           endDate,
+//           submissionStart,
+//           submissionEnd,
+//           schedule = [],
+//           ...rest
+//         } = data;
+//         const cleanData = {
+//           ...rest,
+//           startDate: convertUtcToIst(startDate),
+//           endDate: convertUtcToIst(endDate),
+//           submissionStart: convertUtcToIst(submissionStart),
+//           submissionEnd: convertUtcToIst(submissionEnd),
+//           schedule: schedule.map((item) => ({
+//             ...item,
+//             date: convertUtcToIst(item.date),
+//           })),
+//         };
+//         setEventData(cleanData);
+//       } catch (error) {
+//         console.error(error.message);
+//       }
+//     }
+//   };
 
   const handleLogout = () => {
     // Implement logout logic here
@@ -413,7 +380,7 @@ const AdminPage = () => {
             <div>
               <h1 className="text-lg font-semibold mb-2">Select a Hackathon</h1>
               <select
-                onChange={handleSelectChange}
+                // onChange={handleSelectChange}
                 className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
               >
                 <option value="">Select Hackathon</option>
@@ -912,4 +879,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default EditHackathon;

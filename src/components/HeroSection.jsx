@@ -15,9 +15,9 @@ const HeroSection = () => {
             creativity, and innovation.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link to="/register-team">
+            <Link to="/select-team">
               <button className="bg-white text-red-600 px-6 py-3 rounded-md font-semibold hover:bg-gray-100 transition transform hover:scale-105">
-                Register Now
+                Check Team
               </button>
             </Link>
             <button className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-md font-semibold hover:bg-white/10 transition transform hover:scale-105">

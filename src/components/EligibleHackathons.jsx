@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MyContext } from "../context/AuthContextProvider";
+import { ArrowRight } from "lucide-react";
 
 const EligibleHackathons = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
@@ -10,50 +11,69 @@ const EligibleHackathons = () => {
   const { setCurrentHackathonId } = useContext(MyContext);
   const navigate = useNavigate();
   const [authData, setAuthData] = useState(
-    JSON.parse(localStorage.getItem("authData") || null)
+    JSON.parse(localStorage.getItem("userData") || null)
   );
+  console.log(authData.role);
 
-  useEffect(() => {
-    const fetchHackathons = async () => {
-      setLoading(true);
-      if (authData && typeof authData === "object" && authData.role === "admin") {
-        console.log("Going here")
-        try {
-          const response = await fetch(`${baseURL}/hackathons`);
-          const data = await response.json();
-          console.log("Hackathons Data: ", data);
-          if (data?.message === "No Hackathons Found") {
-            setHackathons([]);
-          } else {
-            setHackathons(data);
-          }
-        } catch (error) {
-          console.error("Error fetching hackathons:", error);
-        } finally {
-          setLoading(false);
+  const fetchHackathons = async () => {
+    setLoading(true);
+    if (authData && typeof authData === "object" && authData.role === "admin") {
+      console.log("Going here");
+      try {
+        const response = await fetch(`${baseURL}/hackathons`);
+        const data = await response.json();
+        console.log("Hackathons Data: ", data);
+        if (data?.message === "No Hackathons Found") {
+          setHackathons([]);
+        } else {
+          setHackathons(data);
         }
-      } else {
-        try {
-          const response = await fetch(
-            `${baseURL}/registrations/user/${userId}`
-          );
-          const data = await response.json();
-          console.log("Hackathons Data: ", data);
-          if (data?.message === "No registrations found for this user") {
-            setHackathons([]);
-          } else {
-            setHackathons(data.registrations);
-          }
-        } catch (error) {
-          console.error("Error fetching hackathons:", error);
-        } finally {
-          setLoading(false);
-        }
+      } catch (error) {
+        console.error("Error fetching hackathons:", error);
+      } finally {
+        setLoading(false);
       }
-    };
-
+    } else {
+      try {
+        const response = await fetch(`${baseURL}/registrations/user/${userId}`);
+        const data = await response.json();
+        console.log("Hackathons Data: ", data);
+        if (data?.message === "No registrations found for this user") {
+          setHackathons([]);
+        } else {
+          setHackathons(data.registrations);
+        }
+      } catch (error) {
+        console.error("Error fetching hackathons:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+  useEffect(() => {
     fetchHackathons();
   }, [userId, baseURL, authData]);
+
+  const handleDelete = async (id) => {
+    const response = await fetch(`${baseURL}/hackathons/${id}`, {
+      method: "DELETE",
+    });
+    fetchHackathons();
+  };
+
+  const handleCreateTeam = async (id) => {
+    const response = await fetch(`${baseURL}/team/auto`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        minSize: 3,
+        maxSize: 5,
+        hackathonId: `${id}`,
+      }),
+    });
+  };
 
   const handleCardClick = (hackathonId) => {
     setCurrentHackathonId(hackathonId);
@@ -133,9 +153,6 @@ const EligibleHackathons = () => {
                   <div
                     key={registration._id}
                     className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all cursor-pointer border border-gray-100"
-                    onClick={() =>
-                      handleCardClick(registration._id)
-                    }
                   >
                     <div className="h-3 bg-indigo-600"></div>
                     <div className="p-6">
@@ -196,22 +213,38 @@ const EligibleHackathons = () => {
                       </div>
 
                       <div className="pt-4 border-t border-gray-100">
-                        <div className="flex justify-end items-center">
-                          <div className="bg-indigo-50 p-2 rounded-md">
-                            <svg
-                              className="w-5 h-5 text-indigo-600"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
+                        <div className="flex justify-between items-center ">
+                          <div>
+                            <button
+                              onClick={() => handleCreateTeam(registration._id)}
+                              className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-2 rounded-md font-bold transition transform hover:scale-105"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 7l5 5m0 0l-5 5m5-5H6"
-                              />
-                            </svg>
+                              Create Team
+                            </button>
+                          </div>
+
+                          <div>
+                            <Link to={`/edithackathon/${registration._id}`}>
+                              <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-2 rounded-md font-bold transition transform hover:scale-105">
+                                Edit
+                              </button>
+                            </Link>
+                          </div>
+
+                          <div>
+                            <button
+                              onClick={() => handleDelete(registration._id)}
+                              className="bg-red-500 hover:bg-red-600 text-white px-2 py-2 rounded-md font-bold transition transform hover:scale-105"
+                            >
+                              Delete
+                            </button>
+                          </div>
+
+                          <div
+                            className="bg-indigo-50 p-2 rounded-md"
+                            onClick={() => handleCardClick(registration._id)}
+                          >
+                            <ArrowRight className="w-5 h-5 text-indigo-600" />
                           </div>
                         </div>
                       </div>

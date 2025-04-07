@@ -1,7 +1,15 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MyContext } from "../context/AuthContextProvider";
-import { LogOut, User, ChevronDown, Menu, X } from "lucide-react"; // Added icons
+import {
+  LogOut,
+  User,
+  ChevronDown,
+  Menu,
+  X,
+  FilePlus,
+  UserRoundPlus,
+} from "lucide-react"; // Added icons
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -121,17 +129,17 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-4">
               <Link to="/select-team">
                 <button className="bg-white border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50 transition">
-                  Select Team
+                  {userData.role === "admin" ? "Check Teams" : "Select Team"}
                 </button>
               </Link>
 
-              {!isInteractive && (
+              {/* {!isInteractive && (
                 <Link to="/register-team" onClick={() => setIsMenuOpen(false)}>
                   <button className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition mb-2">
                     Register Team
                   </button>
                 </Link>
-              )}
+              )} */}
 
               {/* Profile Dropdown */}
               <div className="relative" ref={profileDropdownRef}>
@@ -166,6 +174,23 @@ const Navbar = () => {
                       <User className="h-4 w-4 inline mr-2" />
                       View Profile
                     </Link>
+                    {userData.role === "admin" && (
+                      <>
+                        <Link to="/admin-page">
+                          <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500 transition flex items-center">
+                            <FilePlus className="h-4 w-4 mr-2" />
+                            Create Hackathon
+                          </button>
+                        </Link>
+
+                        <Link to="/create-users">
+                          <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500 transition flex items-center">
+                            <UserRoundPlus className="h-4 w-4 mr-2" />
+                            Upload Users
+                          </button>
+                        </Link>
+                      </>
+                    )}
                     <button
                       onClick={() => {
                         setIsProfileDropdownOpen(false);
@@ -192,20 +217,31 @@ const Navbar = () => {
               </button>
             </Link>
 
-            {!isInteractive && (
+            {/* {!isInteractive && (
               <Link to="/register-team" onClick={() => setIsMenuOpen(false)}>
                 <button className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition mb-2">
                   Register Team
                 </button>
               </Link>
-            )}
-
+            )} */}
+            
             <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
               <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition mb-2">
                 <User className="h-5 w-5 text-red-500" />
                 <span>View Profile</span>
               </button>
             </Link>
+
+            {userData.role === "admin" && (
+              <>
+                <Link>
+                  <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition mb-2">
+                  <FilePlus className="h-5 w-5 text-red-500" />
+                    Create Hackathon
+                  </button>
+                </Link>
+              </>
+            )}
 
             <button
               onClick={() => {
