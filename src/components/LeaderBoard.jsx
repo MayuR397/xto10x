@@ -20,7 +20,7 @@ const LeaderBoard = () => {
     <>
       {/* Leaderboard */}
       <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-md">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Leaderboard</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Leaderboard <span className="text-lg font-light text-gray-600">(Comming Soon)</span></h2>
         <div className="bg-gray-50 rounded-lg p-3 mb-4 flex justify-between">
           <div className="flex items-center">
             <Trophy size={18} className="text-yellow-500 mr-2" />

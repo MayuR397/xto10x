@@ -31,9 +31,9 @@ const InteractiveElement = () => {
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/register-team" onClick={() => window.scrollTo(0, 0)}>
+            <Link to="/select-team" onClick={() => window.scrollTo(0, 0)}>
               <button className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-md font-bold transition transform hover:scale-105">
-                Register Your Team
+                Check Your Team
               </button>
             </Link>
             <button className="bg-transparent border-2 border-white hover:bg-white/10 text-white px-8 py-3 rounded-md font-bold transition transform hover:scale-105">

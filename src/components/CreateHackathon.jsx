@@ -10,9 +10,11 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Papa from "papaparse";
+import { useNavigate } from "react-router-dom";
 
 const CreateHackathon = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
+  const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
   const [eventData, setEventData] = useState({
     name: "Test Hackathon 1",
@@ -21,23 +23,7 @@ const CreateHackathon = () => {
       "A two-week interactive coding hackathon for real world grooming",
     startDate: "",
     endDate: "",
-    allowedEmails: [
-      "ritickraj35@gmail.com",
-      "abhishekkumarverma0811@gmail.com",
-      "gmgurjar1221@gmail.com",
-      "gautamji4966@gmail.com",
-      "vikashkumarbharti035@gmail.com",
-      "punitnaagvanshi@gamil.com",
-      "ashishdadhiich@gmail.com",
-      "rahulchandeshware66@gmail.com",
-      "mrrajak1296@gmail.com",
-      "kartikgautam1106@gmail.com",
-      "rohyadav18@gmail.com",
-      "goswamik1221@gmail.com",
-      "rohitchouhankgn11@gmail.com",
-      "vikrantsheoran4@gmail.com",
-      "khushipatel59946@gmail.com",
-    ],
+    allowedEmails: [],
     minTeamSize: 2,
     maxTeamSize: 4,
     problemStatements: [
@@ -87,6 +73,11 @@ const CreateHackathon = () => {
       {
         position: 2,
         amount: 3000,
+        description: "Runner-up",
+      },
+      {
+        position: 3,
+        amount: 4000,
         description: "Runner-up",
       },
     ],
@@ -240,6 +231,7 @@ const CreateHackathon = () => {
         toast.success("Hackathon Created Sucessfully", {
           position: "top-right",
         });
+        navigate("/");
       } else {
         throw new Error("Failed to create event");
       }
@@ -410,7 +402,7 @@ const CreateHackathon = () => {
         <div className="space-y-8">
           {/* Basic Information */}
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div>
+            {/* <div>
               <h1 className="text-lg font-semibold mb-2">Select a Hackathon</h1>
               <select
                 onChange={handleSelectChange}
@@ -423,7 +415,7 @@ const CreateHackathon = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
             <h2 className="text-lg font-semibold text-gray-900 mt-4 mb-4">
               Basic Information
             </h2>
@@ -435,6 +427,7 @@ const CreateHackathon = () => {
                 </label>
                 <select
                   value={eventData.eventType}
+                  required
                   onChange={(e) =>
                     handleInputChange("eventType", e.target.value)
                   }
@@ -453,6 +446,7 @@ const CreateHackathon = () => {
                 </label>
                 <input
                   type="text"
+                  required
                   value={eventData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   className="mt-1 block w-full rounded-lg focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-200"
@@ -466,6 +460,7 @@ const CreateHackathon = () => {
                 <input
                   type="text"
                   value={eventData.version}
+                  required
                   onChange={(e) => handleVersionChange(e.target.value)}
                   className="mt-1 block w-full rounded-lg focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-200"
                 />
@@ -477,6 +472,7 @@ const CreateHackathon = () => {
                 </label>
                 <textarea
                   value={eventData.description}
+                  required
                   onChange={(e) =>
                     handleInputChange("description", e.target.value)
                   }
@@ -493,6 +489,7 @@ const CreateHackathon = () => {
                   <input
                     type="datetime-local"
                     value={toIst(eventData.startDate)}
+                    required
                     onChange={(e) =>
                       handleInputChange(
                         "startDate",
@@ -509,6 +506,7 @@ const CreateHackathon = () => {
                   <input
                     type="datetime-local"
                     value={toIst(eventData.endDate)}
+                    required
                     onChange={(e) =>
                       handleInputChange(
                         "endDate",
@@ -528,6 +526,7 @@ const CreateHackathon = () => {
                   <input
                     type="number"
                     value={eventData.minTeamSize}
+                    required
                     onChange={(e) => handleMinTeamSizeChange(e.target.value)}
                     className="mt-1 block w-full rounded-lg focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-200"
                   />
@@ -539,6 +538,7 @@ const CreateHackathon = () => {
                   <input
                     type="number"
                     value={eventData.maxTeamSize}
+                    required
                     onChange={(e) => handleMaxTeamSizeChange(e.target.value)}
                     className="mt-1 block w-full rounded-lg focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-200"
                   />
@@ -552,6 +552,7 @@ const CreateHackathon = () => {
                 <textarea
                   value={eventData.allowedEmails}
                   onChange={(e) => handleAllowedEmailsChange(e.target.value)}
+                  required
                   rows={3}
                   className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
                 />
@@ -591,6 +592,7 @@ const CreateHackathon = () => {
                   <input
                     type="datetime-local"
                     value={toIst(eventData.submissionStart)}
+                    required
                     onChange={(e) =>
                       handleInputChange(
                         "submissionStart",
@@ -607,6 +609,7 @@ const CreateHackathon = () => {
                   <input
                     type="datetime-local"
                     value={toIst(eventData.submissionEnd)}
+                    required
                     onChange={(e) =>
                       handleInputChange(
                         "submissionEnd",
@@ -637,6 +640,7 @@ const CreateHackathon = () => {
                       <input
                         type="text"
                         value={statement.track}
+                        required
                         onChange={(e) =>
                           handleProblemStatementChange(
                             index,
@@ -653,6 +657,7 @@ const CreateHackathon = () => {
                       </label>
                       <select
                         value={statement.difficulty}
+                        required
                         onChange={(e) =>
                           handleProblemStatementChange(
                             index,
@@ -674,6 +679,7 @@ const CreateHackathon = () => {
                     </label>
                     <textarea
                       value={statement.description}
+                      required
                       onChange={(e) =>
                         handleProblemStatementChange(
                           index,
@@ -715,6 +721,7 @@ const CreateHackathon = () => {
                 <div key={index} className="flex items-center space-x-4">
                   <input
                     type="datetime-local"
+                    required
                     value={toIst(event.date)}
                     onChange={(e) =>
                       handleScheduleChange(
@@ -727,6 +734,7 @@ const CreateHackathon = () => {
                   />
                   <input
                     type="text"
+                    required
                     value={event.activity}
                     onChange={(e) =>
                       handleScheduleChange(index, "activity", e.target.value)
@@ -768,6 +776,7 @@ const CreateHackathon = () => {
                       </label>
                       <input
                         type="number"
+                        required
                         value={plan.week}
                         onChange={(e) =>
                           handleEventPlanChange(
@@ -785,6 +794,7 @@ const CreateHackathon = () => {
                       </label>
                       <input
                         type="text"
+                        required
                         value={plan.phase}
                         onChange={(e) =>
                           handleEventPlanChange(index, "phase", e.target.value)
@@ -798,6 +808,7 @@ const CreateHackathon = () => {
                       </label>
                       <textarea
                         value={plan.description}
+                        required
                         onChange={(e) =>
                           handleEventPlanChange(
                             index,
@@ -846,6 +857,7 @@ const CreateHackathon = () => {
                     </label>
                     <input
                       type="number"
+                      required
                       value={prize.position}
                       onChange={(e) =>
                         handlePrizeDetailsChange(
@@ -863,6 +875,7 @@ const CreateHackathon = () => {
                     </label>
                     <input
                       type="number"
+                      required
                       value={prize.amount}
                       onChange={(e) =>
                         handlePrizeDetailsChange(
@@ -880,6 +893,7 @@ const CreateHackathon = () => {
                     </label>
                     <input
                       type="text"
+                      required
                       value={prize.description}
                       onChange={(e) =>
                         handlePrizeDetailsChange(

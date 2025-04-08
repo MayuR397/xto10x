@@ -6,33 +6,31 @@ import {
   LogOut,
   Plus,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Papa from "papaparse";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const EditHackathon = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
   const userId = localStorage.getItem("userId");
   const [eventData, setEventData] = useState(null);
-  const [notification, setNotification] = useState(null);
-  const [hackathons, setHackathons] = useState([]);
-  const [selectedHackathon, setSelectedHackathon] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const { id } = useParams();
-  console.log("This is id", id);
+  const navigate = useNavigate();
 
   async function fetchHackathon() {
     try {
+      setLoading(true);
       const response = await fetch(`${baseURL}/hackathons/${id}`);
       if (!response.ok) throw new Error("Failed to fetch hackathon details");
       const data = await response.json();
-      console.log("Selected Hackathon ID", data);
-      // Remove _id before setting state
-      // const { _id, ...cleanData } = data;
-      // Convert startDate, endDate, and schedule dates to IST
+
+      // Convert dates to local format
       const {
-        _id,
         startDate,
         endDate,
         submissionStart,
@@ -40,21 +38,24 @@ const EditHackathon = () => {
         schedule = [],
         ...rest
       } = data;
+
       const cleanData = {
         ...rest,
-        startDate: convertUtcToIst(startDate),
-        endDate: convertUtcToIst(endDate),
-        submissionStart: convertUtcToIst(submissionStart),
-        submissionEnd: convertUtcToIst(submissionEnd),
+        startDate,
+        endDate,
+        submissionStart,
+        submissionEnd,
         schedule: schedule.map((item) => ({
           ...item,
-          date: convertUtcToIst(item.date),
+          date: item.date,
         })),
       };
-      console.log("cleaned Dtaa", cleanData);
+
       setEventData(cleanData);
     } catch (error) {
-      console.error(error.message);
+      toast.error("Error loading hackathon: " + error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -131,26 +132,40 @@ const EditHackathon = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(eventData);
     try {
-      const response = await fetch(`${baseURL}/hackathons`, {
-        method: "POST",
+      setSaving(true);
+
+      // Prepare the data for submission
+      const submissionData = {
+        ...eventData,
+        startDate: new Date(eventData.startDate).toISOString(),
+        endDate: new Date(eventData.endDate).toISOString(),
+        submissionStart: new Date(eventData.submissionStart).toISOString(),
+        submissionEnd: new Date(eventData.submissionEnd).toISOString(),
+        schedule: eventData.schedule.map(item => ({
+          ...item,
+          date: new Date(item.date).toISOString()
+        }))
+      };
+
+      const response = await fetch(`${baseURL}/hackathons/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(eventData),
+        body: JSON.stringify(submissionData),
       });
-      if (response.ok) {
-        toast.success("Hackathon Created Sucessfully", {
-          position: "top-right",
-        });
-      } else {
-        throw new Error("Failed to create event");
+
+      if (!response.ok) {
+        throw new Error("Failed to update hackathon");
       }
+
+      toast.success("Hackathon updated successfully!");
+      navigate("/dashboard"); // Redirect to dashboard after successful update
     } catch (error) {
-      toast.error(error.message, {
-        position: "top-right",
-      });
+      toast.error("Error updating hackathon: " + error.message);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -162,9 +177,7 @@ const EditHackathon = () => {
   };
 
   const handleAllowedEmailsChange = (input) => {
-    // Split by comma, space, or both, and remove any extra spaces
-    const emails = input.split(/[\s,]+/).filter((email) => email.trim() !== ""); // Remove empty values
-
+    const emails = input.split(/[\s,]+/).filter((email) => email.trim() !== "");
     setEventData((prev) => ({
       ...prev,
       allowedEmails: emails,
@@ -189,39 +202,39 @@ const EditHackathon = () => {
         }));
       },
       error: function (err) {
-        console.error("CSV parsing error:", err.message);
+        toast.error("CSV parsing error: " + err.message);
       },
     });
 
-    // Optional: Reset the file input so the same file can be re-uploaded
     e.target.value = "";
   };
 
   const handleMinTeamSizeChange = (min) => {
-    if (min > eventData.maxTeamSize) {
-      alert("Minimum team size cannot be greater than maximum team size.");
+    const minValue = parseInt(min);
+    if (minValue > eventData.maxTeamSize) {
+      toast.warning("Minimum team size cannot be greater than maximum team size.");
       return;
     }
 
     setEventData((prev) => ({
       ...prev,
-      minTeamSize: min,
+      minTeamSize: minValue,
     }));
   };
 
   const handleMaxTeamSizeChange = (max) => {
-    if (max < eventData.minTeamSize) {
-      alert("Maximum team size cannot be less than minimum team size.");
+    const maxValue = parseInt(max);
+    if (maxValue < eventData.minTeamSize) {
+      toast.warning("Maximum team size cannot be less than minimum team size.");
       return;
     }
 
     setEventData((prev) => ({
       ...prev,
-      maxTeamSize: max,
+      maxTeamSize: maxValue,
     }));
   };
 
-  // Handle changes in a specific event plan
   const handleEventPlanChange = (index, field, value) => {
     setEventData((prev) => ({
       ...prev,
@@ -231,7 +244,6 @@ const EditHackathon = () => {
     }));
   };
 
-  // Add a new event plan
   const handleAddEventPlan = () => {
     setEventData((prev) => ({
       ...prev,
@@ -242,7 +254,6 @@ const EditHackathon = () => {
     }));
   };
 
-  // Remove an event plan
   const handleRemoveEventPlan = (index) => {
     setEventData((prev) => ({
       ...prev,
@@ -250,585 +261,532 @@ const EditHackathon = () => {
     }));
   };
 
-  //   function toIst(isoDateString) {
-  //     const date = new Date(isoDateString);
-
-  //     // Get the year, month, day, hour, and minutes in IST
-  //     const year = date.getFullYear();
-  //     const month = String(date.getMonth() + 1).padStart(2, "0");
-  //     const day = String(date.getDate()).padStart(2, "0");
-
-  //     const hours = String(date.getHours()).padStart(2, "0");
-  //     const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  //     return `${year}-${month}-${day}T${hours}:${minutes}`;
-  //   }
-
-  function toIst(isoDateString) {
-    function parseFlexibleDate(input) {
-      const native = new Date(input);
-      if (!isNaN(native.getTime())) return native;
-
-      // Try DD/MM/YYYY, hh:mm:ss am/pm
-      const [datePart, timePart] = input.split(", ");
-      if (!datePart || !timePart) return new Date(""); // invalid
-
-      const [day, month, year] = datePart.split("/").map(Number);
-      let [time, meridian] = timePart.split(" ");
-      let [hour, minute, second] = time.split(":").map(Number);
-
-      if (meridian?.toLowerCase() === "pm" && hour !== 12) hour += 12;
-      if (meridian?.toLowerCase() === "am" && hour === 12) hour = 0;
-
-      return new Date(year, month - 1, day, hour, minute, second || 0);
-    }
-
-    const date = parseFlexibleDate(isoDateString); // 👈 parse safely
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  function toIst(dateString) {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    
+    return date.toISOString().slice(0, 16);
   }
 
-  function convertUtcToIst(utcDateString) {
-    // Convert UTC string to Date object
-    const date = new Date(utcDateString);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="w-6 h-6 animate-spin text-red-600" />
+          <span className="text-gray-600">Loading hackathon details...</span>
+        </div>
+      </div>
+    );
+  }
 
-    // Convert to IST using toLocaleString
-    const istDate = date.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
-
-    return istDate;
+  if (!eventData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Hackathon Not Found
+          </h2>
+          <p className="text-gray-600 mb-4">
+            The hackathon you're looking for doesn't exist or has been removed.
+          </p>
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    eventData && (
-      <div className="min-h-screen bg-gray-50">
-        <div className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <h1 className="text-2xl font-bold text-gray-900">
-                Create Hackathon Event
-              </h1>
-            </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-2xl font-bold text-gray-900">
+              Edit Hackathon
+            </h1>
           </div>
         </div>
+      </div>
 
-        {notification && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-            <div
-              className={`rounded-lg p-4 ${
-                notification.type === "success"
-                  ? "bg-green-50 text-green-800"
-                  : "bg-red-50 text-red-800"
-              }`}
-            >
-              <p className="flex items-center">
-                <AlertCircle className="h-5 w-5 mr-2" />
-                {notification.message}
-              </p>
-            </div>
-          </div>
-        )}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-8">
+          {/* Basic Information */}
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Basic Information
+            </h2>
+            <div className="space-y-4">
+              {/* Event Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Event Type
+                </label>
+                <select
+                  value={eventData.eventType}
+                //   onChange={(e) => handleInputChange("eventType", e.target.value)}
+                  className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm bg-gray-100"
+                >
+                  <option value="Interactive Hackathon">
+                    Interactive Hackathon
+                  </option>
+                  <option value="Regular Hackathon">Regular Hackathon</option>
+                </select>
+              </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="space-y-8">
-            {/* Basic Information */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 mt-4 mb-4">
-                Basic Information
-              </h2>
-              <div className="space-y-4">
-                {/* Event Type */}
+              {/* Event Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Event Name
+                </label>
+                <input
+                  type="text"
+                  value={eventData.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                />
+              </div>
+
+              {/* Event Version */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Event Version
+                </label>
+                <input
+                  type="text"
+                  value={eventData.version}
+                  onChange={(e) => handleVersionChange(e.target.value)}
+                  className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                />
+              </div>
+
+              {/* Event Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Description
+                </label>
+                <textarea
+                  value={eventData.description}
+                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  rows={3}
+                  className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                />
+              </div>
+
+              {/* Dates */}
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Event Type
+                    Start Date
                   </label>
-                  <select
-                    value={eventData.eventType}
+                  <input
+                    type="datetime-local"
+                    value={toIst(eventData.startDate)}
                     onChange={(e) =>
-                      handleInputChange("eventType", e.target.value)
+                      handleInputChange("startDate", e.target.value)
                     }
                     className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
-                  >
-                    <option value="Interactive Hackathon">
-                      Interactive Hackathon
-                    </option>
-                    <option value="Regular Hackathon">Regular Hackathon</option>
-                  </select>
-                </div>
-                {/* Event Tilte */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Event Name
-                  </label>
-                  <input
-                    type="text"
-                    value={eventData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    className="mt-1 block w-full rounded-lg focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-200"
                   />
                 </div>
-                {/* Event Version */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Event Version
+                    End Date
                   </label>
                   <input
-                    type="text"
-                    value={eventData.version}
-                    onChange={(e) => handleVersionChange(e.target.value)}
-                    className="mt-1 block w-full rounded-lg focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-200"
-                  />
-                </div>
-                {/* Event Description */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Description
-                  </label>
-                  <textarea
-                    value={eventData.description}
+                    type="datetime-local"
+                    value={toIst(eventData.endDate)}
                     onChange={(e) =>
-                      handleInputChange("description", e.target.value)
+                      handleInputChange("endDate", e.target.value)
                     }
-                    rows={3}
-                    className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
                   />
                 </div>
-                {/* Event Start and End Date */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Start Date
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={toIst(eventData.startDate)}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "startDate",
-                          new Date(e.target.value).toISOString()
-                        )
-                      }
-                      className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      End Date
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={toIst(eventData.endDate)}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "endDate",
-                          new Date(e.target.value).toISOString()
-                        )
-                      }
-                      className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                    />
-                  </div>
-                </div>
-                {/* Event Team Size */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Minimum Team Size
-                    </label>
-                    <input
-                      type="number"
-                      value={eventData.minTeamSize}
-                      onChange={(e) => handleMinTeamSizeChange(e.target.value)}
-                      className="mt-1 block w-full rounded-lg focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-200"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Maximum Team Size
-                    </label>
-                    <input
-                      type="number"
-                      value={eventData.maxTeamSize}
-                      onChange={(e) => handleMaxTeamSizeChange(e.target.value)}
-                      className="mt-1 block w-full rounded-lg focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-200"
-                    />
-                  </div>
-                </div>
-                {/* Allowed Emails */}
+              </div>
+
+              {/* Team Size */}
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Allowed Emails
+                    Minimum Team Size
                   </label>
-                  <textarea
-                    value={eventData.allowedEmails}
-                    onChange={(e) => handleAllowedEmailsChange(e.target.value)}
-                    rows={3}
-                    className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                  <input
+                    type="number"
+                    readOnly
+                    value={eventData.minTeamSize}
+                    onChange={(e) => handleMinTeamSizeChange(e.target.value)}
+                    className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm bg-gray-100"
                   />
                 </div>
-                {/* <textarea
-                value={eventData.allowedEmails.join(", ")}
-                readOnly
-                rows={3}
-                className="mt-2 block w-full rounded-lg p-2 border border-gray-200 bg-gray-100 text-sm"
-              ></textarea> */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Upload Allowed Emails CSV
+                  <label className="block text-sm font-medium text-gray-700">
+                    Maximum Team Size
                   </label>
+                  <input
+                    type="number"
+                    readOnly
+                    value={eventData.maxTeamSize}
+                    onChange={(e) => handleMaxTeamSizeChange(e.target.value)}
+                    className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm bg-gray-100"
+                  />
+                </div>
+              </div>
+
+              {/* Allowed Emails */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Allowed Emails
+                </label>
+                <textarea
+                  value={eventData.allowedEmails.join(", ")}
+                  onChange={(e) => handleAllowedEmailsChange(e.target.value)}
+                  rows={3}
+                  className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                />
+                <div className="mt-2">
                   <input
                     type="file"
                     accept=".csv"
                     onChange={handleEmailCSVUpload}
-                    className="block w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4
-               file:rounded-full file:border-0 file:text-sm file:font-semibold
-               file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
                   />
-
-                  {eventData.allowedEmails.length > 0 && (
-                    <div className="mt-2 text-xs text-gray-500">
-                      {eventData.allowedEmails.length} emails added.
-                    </div>
-                  )}
                 </div>
+              </div>
 
-                {/* Submission Start and End Date */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Submission Start Date
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={toIst(eventData.submissionStart)}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "submissionStart",
-                          new Date(e.target.value).toISOString()
-                        )
-                      }
-                      className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Submission End Date
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={toIst(eventData.submissionEnd)}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "submissionEnd",
-                          new Date(e.target.value).toISOString()
-                        )
-                      }
-                      className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                    />
-                  </div>
+              {/* Submission Dates */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Submission Start
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={toIst(eventData.submissionStart)}
+                    onChange={(e) =>
+                      handleInputChange("submissionStart", e.target.value)
+                    }
+                    className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Submission End
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={toIst(eventData.submissionEnd)}
+                    onChange={(e) =>
+                      handleInputChange("submissionEnd", e.target.value)
+                    }
+                    className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                  />
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Problem Statements */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center mb-6">
-                <AlertCircle className="h-5 w-5 mr-2 text-red-500" />
-                Problem Statements
-              </h2>
-              <div className="space-y-4">
-                {eventData.problemStatements.map((statement, index) => (
-                  <div key={index} className="bg-gray-50 rounded-lg p-4">
-                    <div className="grid grid-cols-2 gap-4 mb-2">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          Track
-                        </label>
-                        <input
-                          type="text"
-                          value={statement.track}
-                          onChange={(e) =>
-                            handleProblemStatementChange(
-                              index,
-                              "track",
-                              e.target.value
-                            )
-                          }
-                          className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          Difficulty
-                        </label>
-                        <select
-                          value={statement.difficulty}
-                          onChange={(e) =>
-                            handleProblemStatementChange(
-                              index,
-                              "difficulty",
-                              e.target.value
-                            )
-                          }
-                          className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                        >
-                          <option value="Easy">Easy</option>
-                          <option value="Medium">Medium</option>
-                          <option value="Hard">Hard</option>
-                        </select>
-                      </div>
+          {/* Problem Statements */}
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center mb-6">
+              <AlertCircle className="h-5 w-5 mr-2 text-red-500" />
+              Problem Statements
+            </h2>
+            <div className="space-y-4">
+              {eventData.problemStatements.map((statement, index) => (
+                <div key={index} className="bg-gray-50 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-4 mb-2">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Track
+                      </label>
+                      <input
+                        type="text"
+                        value={statement.track}
+                        onChange={(e) =>
+                          handleProblemStatementChange(
+                            index,
+                            "track",
+                            e.target.value
+                          )
+                        }
+                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Difficulty
+                      </label>
+                      <select
+                        value={statement.difficulty}
+                        onChange={(e) =>
+                          handleProblemStatementChange(
+                            index,
+                            "difficulty",
+                            e.target.value
+                          )
+                        }
+                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                      >
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Description
+                    </label>
+                    <textarea
+                      value={statement.description}
+                      onChange={(e) =>
+                        handleProblemStatementChange(
+                          index,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      rows={3}
+                      className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                    />
+                  </div>
+                  <button
+                    onClick={() => handleRemoveProblemStatement(index)}
+                    className="mt-2 inline-flex items-center px-3 py-1.5 border border-red-500 text-red-600 rounded-lg hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={handleAddProblemStatement}
+                className="inline-flex items-center px-4 py-2 border border-red-500 text-red-600 rounded-lg hover:bg-red-50"
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Add Problem Statement
+              </button>
+            </div>
+          </div>
+
+          {/* Schedule */}
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center mb-6">
+              <Calendar className="h-5 w-5 mr-2 text-red-500" />
+              Schedule
+            </h2>
+            <div className="space-y-4">
+              {eventData.schedule.map((event, index) => (
+                <div key={index} className="flex items-center space-x-4">
+                  <input
+                    type="datetime-local"
+                    value={toIst(event.date)}
+                    onChange={(e) =>
+                      handleScheduleChange(index, "date", e.target.value)
+                    }
+                    className="block w-1/3 rounded-lg p-2 border border-gray-200 sm:text-sm"
+                  />
+                  <input
+                    type="text"
+                    value={event.activity}
+                    onChange={(e) =>
+                      handleScheduleChange(index, "activity", e.target.value)
+                    }
+                    className="block w-2/3 rounded-lg p-2 border border-gray-200 sm:text-sm"
+                    placeholder="Activity"
+                  />
+                  <button
+                    onClick={() => handleRemoveScheduleEvent(index)}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={handleAddScheduleEvent}
+                className="inline-flex items-center px-4 py-2 border border-red-500 text-red-600 rounded-lg hover:bg-red-50"
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Add Schedule Event
+              </button>
+            </div>
+          </div>
+
+          {/* Event Plan */}
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center mb-6">
+              <AlertCircle className="h-5 w-5 mr-2 text-red-500" />
+              Event Plan
+            </h2>
+            <div className="space-y-4">
+              {eventData.eventPlan.map((plan, index) => (
+                <div key={index} className="bg-gray-50 rounded-lg p-4">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Week
+                      </label>
+                      <input
+                        type="number"
+                        value={plan.week}
+                        onChange={(e) =>
+                          handleEventPlanChange(
+                            index,
+                            "week",
+                            parseInt(e.target.value)
+                          )
+                        }
+                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Phase
+                      </label>
+                      <input
+                        type="text"
+                        value={plan.phase}
+                        onChange={(e) =>
+                          handleEventPlanChange(index, "phase", e.target.value)
+                        }
+                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                      />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
                         Description
                       </label>
                       <textarea
-                        value={statement.description}
+                        value={plan.description}
                         onChange={(e) =>
-                          handleProblemStatementChange(
+                          handleEventPlanChange(
                             index,
                             "description",
                             e.target.value
                           )
                         }
-                        rows={2}
-                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
                       />
                     </div>
-                    <button
-                      onClick={() => handleRemoveProblemStatement(index)}
-                      className="mt-2 inline-flex items-center px-3 py-1.5 border border-red-500 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
-                    >
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Remove
-                    </button>
                   </div>
-                ))}
-                <button
-                  onClick={handleAddProblemStatement}
-                  className="inline-flex items-center px-4 py-2 border border-red-500 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add Problem Statement
-                </button>
-              </div>
-            </div>
-
-            {/* Schedule */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center mb-6">
-                <Calendar className="h-5 w-5 mr-2 text-red-500" />
-                Schedule
-              </h2>
-              <div className="space-y-4">
-                {eventData.schedule.map((event, index) => (
-                  <div key={index} className="flex items-center space-x-4">
-                    <input
-                      type="datetime-local"
-                      value={toIst(event.date)}
-                      onChange={(e) =>
-                        handleScheduleChange(
-                          index,
-                          "date",
-                          new Date(e.target.value).toISOString()
-                        )
-                      }
-                      className="block w-1/3 rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                    />
-                    <input
-                      type="text"
-                      value={event.activity}
-                      onChange={(e) =>
-                        handleScheduleChange(index, "activity", e.target.value)
-                      }
-                      className="block w-2/3 rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                      placeholder="Activity"
-                    />
-                    <button
-                      onClick={() => handleRemoveScheduleEvent(index)}
-                      className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors duration-200"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={handleAddScheduleEvent}
-                  className="inline-flex items-center px-4 py-2 border border-red-500 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add Schedule Event
-                </button>
-              </div>
-            </div>
-
-            {/* Event Plan */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center mb-6">
-                <AlertCircle className="h-5 w-5 mr-2 text-red-500" />
-                Event Plan
-              </h2>
-              <div className="space-y-4">
-                {eventData.eventPlan.map((plan, index) => (
-                  <div key={index} className="bg-gray-50 rounded-lg p-4">
-                    <div className="grid grid-cols-3 gap-4 mb-2">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          Week
-                        </label>
-                        <input
-                          type="number"
-                          value={plan.week}
-                          onChange={(e) =>
-                            handleEventPlanChange(
-                              index,
-                              "week",
-                              Number(e.target.value)
-                            )
-                          }
-                          className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          Phase
-                        </label>
-                        <input
-                          type="text"
-                          value={plan.phase}
-                          onChange={(e) =>
-                            handleEventPlanChange(
-                              index,
-                              "phase",
-                              e.target.value
-                            )
-                          }
-                          className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          Description
-                        </label>
-                        <textarea
-                          value={plan.description}
-                          onChange={(e) =>
-                            handleEventPlanChange(
-                              index,
-                              "description",
-                              e.target.value
-                            )
-                          }
-                          rows={2}
-                          className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                        />
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveEventPlan(index)}
-                      className="mt-2 inline-flex items-center px-3 py-1.5 border border-red-500 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
-                    >
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Remove
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={handleAddEventPlan}
-                  className="inline-flex items-center px-4 py-2 border border-red-500 rounded-lg text-sm text-red-600 hover:bg-blue-50 transition-colors duration-200"
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add Event Plan
-                </button>
-              </div>
-            </div>
-
-            {/* Prize Details */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">
-                Prize Details
-              </h2>
-              <div className="space-y-4">
-                {eventData.prizeDetails.map((prize, index) => (
-                  <div
-                    key={index}
-                    className="grid grid-cols-3 gap-4 items-center"
+                  <button
+                    onClick={() => handleRemoveEventPlan(index)}
+                    className="mt-2 inline-flex items-center px-3 py-1.5 border border-red-500 text-red-600 rounded-lg hover:bg-red-50"
                   >
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Position
-                      </label>
-                      <input
-                        type="number"
-                        value={prize.position}
-                        onChange={(e) =>
-                          handlePrizeDetailsChange(
-                            index,
-                            "position",
-                            parseInt(e.target.value)
-                          )
-                        }
-                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Amount
-                      </label>
-                      <input
-                        type="number"
-                        value={prize.amount}
-                        onChange={(e) =>
-                          handlePrizeDetailsChange(
-                            index,
-                            "amount",
-                            parseInt(e.target.value)
-                          )
-                        }
-                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Description
-                      </label>
-                      <input
-                        type="text"
-                        value={prize.description}
-                        onChange={(e) =>
-                          handlePrizeDetailsChange(
-                            index,
-                            "description",
-                            e.target.value
-                          )
-                        }
-                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <div className="flex justify-end">
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Remove
+                  </button>
+                </div>
+              ))}
               <button
-                onClick={handleSubmit}
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                onClick={handleAddEventPlan}
+                className="inline-flex items-center px-4 py-2 border border-red-500 text-red-600 rounded-lg hover:bg-red-50"
               >
-                <Save className="h-5 w-5 mr-2" />
-                Create Event
+                <Plus className="h-4 w-4 mr-1" />
+                Add Event Plan
               </button>
             </div>
           </div>
+
+          {/* Prize Details */}
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900 mb-6">
+              Prize Details
+            </h2>
+            <div className="space-y-4">
+              {eventData.prizeDetails.map((prize, index) => (
+                <div key={index} className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Position
+                    </label>
+                    <input
+                      type="number"
+                      value={prize.position}
+                      onChange={(e) =>
+                        handlePrizeDetailsChange(
+                          index,
+                          "position",
+                          parseInt(e.target.value)
+                        )
+                      }
+                      className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={prize.amount}
+                      onChange={(e) =>
+                        handlePrizeDetailsChange(
+                          index,
+                          "amount",
+                          parseInt(e.target.value)
+                        )
+                      }
+                      className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      value={prize.description}
+                      onChange={(e) =>
+                        handlePrizeDetailsChange(
+                          index,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={saving}
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="h-5 w-5 mr-2" />
+                  Save Changes
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
-    )
+    </div>
   );
 };
 
