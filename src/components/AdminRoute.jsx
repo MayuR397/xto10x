@@ -21,14 +21,14 @@ function AdminRoute({ children }) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
 
-  console.log(
-    "AdminRoute: isAuth =",
-    isAuth,
-    ", role =",
-    userData?.role,
-    ", path =",
-    location.pathname
-  );
+  // console.log(
+  //   "AdminRoute: isAuth =",
+  //   isAuth,
+  //   ", role =",
+  //   userData?.role,
+  //   ", path =",
+  //   location.pathname
+  // );
 
   return children;
 }

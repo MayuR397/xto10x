@@ -114,7 +114,7 @@ const CreateHackathon = () => {
         const response = await fetch(`${baseURL}/hackathons/${hackathonId}`);
         if (!response.ok) throw new Error("Failed to fetch hackathon details");
         const data = await response.json();
-        console.log("Selected Hackathon ID", data);
+        // console.log("Selected Hackathon ID", data);
         // Remove _id before setting state
         // const { _id, ...cleanData } = data;
         // Convert startDate, endDate, and schedule dates to IST
@@ -218,7 +218,7 @@ const CreateHackathon = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(eventData);
+    // console.log(eventData);
     try {
       const response = await fetch(`${baseURL}/hackathons`, {
         method: "POST",

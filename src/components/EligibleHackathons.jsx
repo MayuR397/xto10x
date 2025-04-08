@@ -32,11 +32,11 @@ const EligibleHackathons = () => {
   const fetchHackathons = async (user) => {
     setLoading(true);
     if (role === "admin") {
-      console.log("Going here");
+      // console.log("Going here");
       try {
         const response = await fetch(`${baseURL}/hackathons`);
         const data = await response.json();
-        console.log("Hackathons Data: ", data);
+        // console.log("Hackathons Data: ", data);
         if (data?.message === "No Hackathons Found") {
           setHackathons([]);
         } else {
@@ -51,7 +51,7 @@ const EligibleHackathons = () => {
       try {
         const response = await fetch(`${baseURL}/registrations/user/${userId}`);
         const data = await response.json();
-        console.log("Hackathons Data for member: ", data);
+        // console.log("Hackathons Data for member: ", data);
         if (data?.message === "No registrations found for this user") {
           setHackathons([]);
         } else {
@@ -67,7 +67,7 @@ const EligibleHackathons = () => {
 
   useEffect(() => {
     if (userData) {
-      console.log("This is parsed data", userData);
+      // console.log("This is parsed data", userData);
       fetchHackathons(userData); // pass parsed data directly
     } else {
       setLoading(false); // fallback if no user is found
@@ -122,7 +122,7 @@ const EligibleHackathons = () => {
 
   const handleCardClick = (hackathonId) => {
     setCurrentHackathonId(hackathonId);
-    console.log("Current Hackathon ID: ", hackathonId);
+    // console.log("Current Hackathon ID: ", hackathonId);
     localStorage.setItem("currentHackathon", hackathonId);
     navigate(`/hackathon`);
   };
@@ -190,6 +190,14 @@ const EligibleHackathons = () => {
       <div className="p-6 max-w-7xl mx-auto min-h-screen">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Your Hackathons</h2>
+          {role === "admin" && (
+            <Link to="/create-hackathon">
+              <button className="mt-4 md:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 flex items-center">
+                <Sparkles className="w-5 h-5 mr-2" />
+                Create New Hackathon
+              </button>
+            </Link>
+          )}
         </div>
 
         {loading ? (
@@ -207,7 +215,7 @@ const EligibleHackathons = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {role === "admin"
               ? hackathons.map((registration) => {
-                  console.log(registration);
+                  // console.log(registration);
                   const status = getEventStatus(
                     registration.startDate,
                     registration.endDate
@@ -314,7 +322,7 @@ const EligibleHackathons = () => {
                   );
                 })
               : hackathons.map((registration) => {
-                  console.log(registration);
+                  // console.log(registration);
                   const status = getEventStatus(
                     registration.hackathonId.startDate,
                     registration.hackathonId.endDate

@@ -158,11 +158,11 @@ const ChatWindow = ({ isOpen, onClose }) => {
           {/* Messages */}
           <div className="h-[calc(100%-8rem)] overflow-y-auto p-3 space-y-3 bg-gray-50/50 dark:bg-gray-900">
             {messages.map((message, index) => (
-              <div key={index} className="flex items-start gap-2">
+              <div key={index} className="flex items-start gap-2 text-white">
                 {message.isBot ? (
                   <ChatMessage message={message.text} isBot={true} />
                 ) : (
-                  <div className="flex items-start gap-2 justify-end w-full">
+                  <div className="flex items-start gap-2 justify-end w-full text-white">
                     <div className="flex-1">
                       <ChatMessage message={message.text} isBot={false} />
                     </div>
@@ -174,7 +174,7 @@ const ChatWindow = ({ isOpen, onClose }) => {
               </div>
             ))}
             {isLoading && (
-              <div className="flex items-center gap-2 text-gray-500 p-2">
+              <div className="flex items-center gap-2 text-white p-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span className="text-xs">AI is thinking...</span>
               </div>

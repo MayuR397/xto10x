@@ -90,7 +90,7 @@ function MeetingRoom() {
       patchJsMedia: true,
       leaveOnPageUnload: true,
       success: () => {
-        console.log("Zoom SDK Initialized");
+        // console.log("Zoom SDK Initialized");
 
         ZoomMtgInstance.join({
           meetingNumber: config.meetingNumber,

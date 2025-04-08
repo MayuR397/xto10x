@@ -40,7 +40,7 @@ const SelectTeamPage = () => {
   const [visibleContacts, setVisibleContacts] = useState({});
   const [fullTeamDetails, setFullTeamDetails] = useState({});
   const userId = localStorage.getItem("userId");
-  const { hackathon, userData } = useContext(MyContext);
+  const { hackathon, userData, role } = useContext(MyContext);
   const currentHackathon = localStorage.getItem("currentHackathon");
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -86,6 +86,7 @@ const SelectTeamPage = () => {
       if (!response.ok) throw new Error("Failed to fetch teams");
       const data = await response.json();
       setTeams(data);
+      // console.log("Teams: ", data)
     } catch (err) {
       setError(err.message);
     } finally {
@@ -99,6 +100,7 @@ const SelectTeamPage = () => {
         const response = await fetch(`${baseURL}/users/get-user/${userId}`);
         if (!response.ok) throw new Error("Failed to fetch user data");
         const userData = await response.json();
+        // console.log(userData.teamId)
         setUserTeamId(userData?.teamId || null);
       } catch (err) {
         console.error("Error fetching user data", err);
@@ -107,24 +109,6 @@ const SelectTeamPage = () => {
 
     fetchUserDetails();
     fetchTeams();
-
-    // Listen for team updates
-    // socket.on("teamCreated", (newTeam) => {
-    //   // console.log("🔥 New team created:", newTeam);
-    //   // fetchTeams();
-    //   // setTeams((prevTeams) => [...prevTeams, newTeam]); // Update UI
-    // });
-
-    // socket.on("teamDeleted", (deletedTeamId) => {
-    //   // setTeams((prevTeams) =>
-    //   //   prevTeams.filter((team) => team._id !== deletedTeamId)
-    //   // );
-    // });
-
-    return () => {
-      // socket.off("teamUpdated");
-      // socket.off("teamDeleted");
-    };
   }, [userId]);
 
   useEffect(() => {
@@ -431,6 +415,21 @@ const SelectTeamPage = () => {
       </div>
     );
 
+  if (userData.teamId==null)
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <div className="text-center text-red-600 p-8 bg-white rounded-xl shadow-lg border-l-4 border-red-500 max-w-md">
+          <h3 className="text-xl font-bold mb-2">You are not part of any team</h3>
+          <button
+            onClick={() => window.location.reload()} // 🔄 Fake state change to refresh UI
+            className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
@@ -514,7 +513,7 @@ const SelectTeamPage = () => {
                   // }
 
                   // ✅ Allow admin to view all teams, others only if member or creator
-                  const isAdmin = userData?.role === "admin";
+                  const isAdmin = role === "admin";
                   if (!isAdmin && !isMember && !isCreator) {
                     return null; // 🔒 Non-admins can't see this team
                   }

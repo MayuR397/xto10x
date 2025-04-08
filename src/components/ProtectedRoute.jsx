@@ -18,14 +18,14 @@ function ProtectedRoute({ children }) {
   }
   //   console.log("current state ",isAuth, children)
 
-  console.log(
-    "ProtectedRoute: isAuth =",
-    isAuth,
-    ", Loading =",
-    loading,
-    ", Current Path =",
-    location.pathname
-  );
+  // console.log(
+  //   "ProtectedRoute: isAuth =",
+  //   isAuth,
+  //   ", Loading =",
+  //   loading,
+  //   ", Current Path =",
+  //   location.pathname
+  // );
 
   return children;
 }

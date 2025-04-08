@@ -27,8 +27,8 @@ const CreateUser = () => {
   };
 
   const createUser = async (userData) => {
-    console.log(userData);
-    console.log(JSON.stringify(userData));
+    // console.log(userData);
+    // console.log(JSON.stringify(userData));
     try {
       const response = await fetch(`${baseURL}/users/upload-users`, {
         method: "POST",
