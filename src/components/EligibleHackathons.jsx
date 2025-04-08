@@ -56,7 +56,7 @@ const EligibleHackathons = () => {
         if (data?.message === "No registrations found for this user") {
           setHackathons([]);
         } else {
-          setHackathons(data.registrations);
+          setHackathons(data);
         }
       } catch (error) {
         console.error("Error fetching hackathons:", error);
