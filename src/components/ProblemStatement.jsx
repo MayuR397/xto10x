@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Code, Database, TestTube, ChevronRight } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { MyContext } from "../context/AuthContextProvider";
 
 const ProblemStatement = () => {
+  const {hackathon} = useContext(MyContext)
   return (
     <>
       {/* Problem Statements */}

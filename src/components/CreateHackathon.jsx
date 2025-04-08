@@ -19,8 +19,8 @@ const CreateHackathon = () => {
     version: "1.0",
     description:
       "A two-week interactive coding hackathon for real world grooming",
-    startDate: "2025-03-24T10:00:00+05:30",
-    endDate: "2025-04-06T23:59:59+05:30",
+    startDate: "",
+    endDate: "",
     allowedEmails: [
       "ritickraj35@gmail.com",
       "abhishekkumarverma0811@gmail.com",
@@ -54,11 +54,11 @@ const CreateHackathon = () => {
     ],
     schedule: [
       {
-        date: "2025-03-24T10:00:00+05:30",
+        date: "",
         activity: "Hackathon Kick-off",
       },
       {
-        date: "2025-03-24T10:00:00+05:30",
+        date: "",
         activity: "Winner Announcement",
       },
     ],
@@ -74,8 +74,8 @@ const CreateHackathon = () => {
         description: "Full week of Interaction",
       },
     ],
-    submissionStart: "2025-03-24T10:00:00+05:30",
-    submissionEnd: "2025-03-24T10:00:00+05:30",
+    submissionStart: "",
+    submissionEnd: "",
     status: "Upcoming",
     eventType: "Interactive Hackathon",
     prizeDetails: [

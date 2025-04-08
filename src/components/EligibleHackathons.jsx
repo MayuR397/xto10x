@@ -99,8 +99,8 @@ const EligibleHackathons = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          minSize: 3,
-          maxSize: 5,
+          minSize: 2,
+          maxSize: 3,
           hackathonId: `${id}`,
         }),
       });
