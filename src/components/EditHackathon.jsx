@@ -724,16 +724,17 @@ const EditHackathon = () => {
                       Amount
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       value={prize.amount}
                       onChange={(e) =>
                         handlePrizeDetailsChange(
                           index,
                           "amount",
-                          parseInt(e.target.value)
+                         e.target.value
                         )
                       }
                       className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
+                      placeholder="e.g., Rs. 5,000 or $5,000"
                     />
                   </div>
                   <div>
