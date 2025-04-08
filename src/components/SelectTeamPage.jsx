@@ -415,7 +415,7 @@ const SelectTeamPage = () => {
       </div>
     );
 
-  if (userData.teamId==null)
+  if (userData.teamId==null && role!=="admin")
     return (
       <div className="min-h-screen bg-gray-50 flex justify-center items-center">
         <div className="text-center text-red-600 p-8 bg-white rounded-xl shadow-lg border-l-4 border-red-500 max-w-md">
@@ -503,6 +503,7 @@ const SelectTeamPage = () => {
                   const isMember = team.teamMembers.some(
                     (member) => member._id === userId
                   );
+                  console.log(team)
                   const isCreator = team.createdBy?._id === userId;
                   const teamHasPendingRequests =
                     pendingRequests.length > 0 && isCreator;
@@ -623,7 +624,8 @@ const SelectTeamPage = () => {
                                           )}
 
                                         {/* Contact Details Button */}
-                                        {userTeamId.includes(team._id) && ( // userTeamId is an array
+                                        {console.log("This is user role",role)}
+                                        {( role=="admin" || userTeamId.includes(team._id)) && ( // userTeamId is an array
                                           <div className="mt-2">
                                             <button
                                               onClick={() =>
@@ -799,7 +801,7 @@ const SelectTeamPage = () => {
                             message={modalConfig.message}
                           />
 
-                          {userTeamId.includes(team._id) && (
+                          {(role=="admin" || userTeamId.includes(team._id)) && (
                             <a
                               href={`https://meet.jit.si/${
                                 team.teamName
@@ -815,7 +817,7 @@ const SelectTeamPage = () => {
                             </a>
                           )}
 
-                          {userTeamId.includes(team._id) && isInteractive && (
+                          {(role=="admin" || userTeamId.includes(team._id) ) && isInteractive && (
                             <a
                               href={`https://meet.jit.si/${
                                 userData.name
