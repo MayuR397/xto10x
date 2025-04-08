@@ -52,7 +52,7 @@ function Login() {
       const data = await response.json();
       // console.log("This is users ID: ", data.user.userType);
       localStorage.setItem("userId", data.user.id);
-      setRole(data.user.userType)
+      setRole(data.user.userType.toLowerCase())
       setIsAuth(true);
       toast.success("User logged in successfully", {
         position: "top-right",
