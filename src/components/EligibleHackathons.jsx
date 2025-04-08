@@ -24,14 +24,13 @@ const EligibleHackathons = () => {
   const [hackathons, setHackathons] = useState([]);
   const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("userId");
-  const { setCurrentHackathonId, userData } = useContext(MyContext);
+  const { setCurrentHackathonId, userData, role } = useContext(MyContext);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
 
   const fetchHackathons = async (user) => {
     setLoading(true);
-    const role = user?.role;
     if (role === "admin") {
       console.log("Going here");
       try {
@@ -206,7 +205,7 @@ const EligibleHackathons = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {userData?.role === "admin"
+            {role === "admin"
               ? hackathons.map((registration) => {
                   console.log(registration);
                   const status = getEventStatus(

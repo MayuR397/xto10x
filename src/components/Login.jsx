@@ -23,7 +23,8 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const { isAuth, setIsAuth } = useContext(MyContext);
+  const { isAuth, setIsAuth, setUserData, userData, role, setRole } =
+    useContext(MyContext);
 
   useEffect(() => {
     isAuth && navigate(from);
@@ -49,13 +50,14 @@ function Login() {
       }
 
       const data = await response.json();
-      console.log("This is users ID: ", data)
+      // console.log("This is users ID: ", data.user.userType);
       localStorage.setItem("userId", data.user.id);
+      setRole(data.user.userType)
       setIsAuth(true);
       toast.success("User logged in successfully", {
         position: "top-right",
       });
-      console.log("from", from, isAuth);
+      // console.log("from", from, isAuth);
       navigate(from);
     } catch (err) {
       setError(err.message);

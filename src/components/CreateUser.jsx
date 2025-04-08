@@ -30,7 +30,7 @@ const CreateUser = () => {
     console.log(userData);
     console.log(JSON.stringify(userData));
     try {
-      const response = await fetch(`${baseURL}/users/create-user`, {
+      const response = await fetch(`${baseURL}/users/upload-users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

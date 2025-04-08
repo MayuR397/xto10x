@@ -12,6 +12,7 @@ const AuthContextProvider = ({ children }) => {
   const currentHackathon = localStorage.getItem("currentHackathon");
   let userId = localStorage.getItem("userId");
   const navigate = useNavigate();
+  const [role, setRole] = useState("");
 
   const [hackathon, setHackathon] = useState([]);
   useEffect(() => {
@@ -50,7 +51,7 @@ const AuthContextProvider = ({ children }) => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const userData = await response.json();
-        console.log("Data after login",userData)
+        console.log("Data after login", userData);
         localStorage.setItem("userData", JSON.stringify(userData));
         setUserData(userData);
         setIsAuth(true);
@@ -74,6 +75,9 @@ const AuthContextProvider = ({ children }) => {
         currentHackathonId,
         setCurrentHackathonId,
         hackathon,
+        setUserData,
+        role,
+        setRole,
       }}
     >
       {children}

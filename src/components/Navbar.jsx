@@ -17,7 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Navbar = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
   const userId = localStorage.getItem("userId");
-  const { isAuth, setIsAuth, hackathon } = useContext(MyContext);
+  const { isAuth, setIsAuth, hackathon, role } = useContext(MyContext);
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -132,7 +132,7 @@ const Navbar = () => {
               {!isDashboard && (
                 <Link to="/select-team">
                   <button className="bg-white border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50 transition">
-                    {userData.role === "admin" ? "Check Teams" : "Select Team"}
+                    {role === "admin" ? "Check Teams" : "Select Team"}
                   </button>
                 </Link>
               )}
@@ -186,7 +186,7 @@ const Navbar = () => {
                       <User className="h-4 w-4 inline mr-2" />
                       View Profile
                     </Link>
-                    {userData.role === "admin" && (
+                    {role === "admin" && (
                       <>
                         <Link to="/create-hackathon">
                           <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500 transition flex items-center">
@@ -252,7 +252,7 @@ const Navbar = () => {
               </button>
             </Link>
 
-            {userData.role === "admin" && (
+            {role === "admin" && (
               <>
                 <Link to="/create-hackathon">
                   <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition mb-2">
