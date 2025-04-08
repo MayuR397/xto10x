@@ -67,17 +67,17 @@ const CreateHackathon = () => {
     prizeDetails: [
       {
         position: 1,
-        amount: 5000,
+        amount: "5000",
         description: "Winner",
       },
       {
         position: 2,
-        amount: 3000,
+        amount: "3000",
         description: "Runner-up",
       },
       {
         position: 3,
-        amount: 4000,
+        amount: "2000",
         description: "Runner-up",
       },
     ],
@@ -881,11 +881,11 @@ const CreateHackathon = () => {
                         handlePrizeDetailsChange(
                           index,
                           "amount",
-                          parseInt(e.target.value)
+                          e.target.value
                         )
                       }
                       className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
-                    />
+                    placeholder="e.g., Rs. 5,000 or $5,000"/>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
