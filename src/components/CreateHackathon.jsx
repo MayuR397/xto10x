@@ -874,7 +874,7 @@ const CreateHackathon = () => {
                       Amount
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       required
                       value={prize.amount}
                       onChange={(e) =>
