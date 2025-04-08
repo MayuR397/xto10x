@@ -133,7 +133,7 @@ const SelectTeamPage = () => {
     const fetchPendingRequests = async () => {
       try {
         const response = await fetch(
-          `${baseURL}/team-request/${userTeamId}/join-requests`,
+          `${baseURL}/team-request/${userTeamId}/join-requests`, // userTeamId is an array
           {
             method: "GET",
           }
@@ -152,8 +152,8 @@ const SelectTeamPage = () => {
       }
     };
 
-    fetchPendingRequests();
-  }, [userTeamId]);
+    // fetchPendingRequests();
+  }, [userTeamId]); // userTeamId is an array
 
   const handleJoinRequest = async (teamId) => {
     try {
@@ -624,7 +624,7 @@ const SelectTeamPage = () => {
                                           )}
 
                                         {/* Contact Details Button */}
-                                        {userTeamId === team._id && (
+                                        {userTeamId.includes(team._id) && ( // userTeamId is an array
                                           <div className="mt-2">
                                             <button
                                               onClick={() =>
@@ -732,7 +732,7 @@ const SelectTeamPage = () => {
 
                         {/* Action Buttons */}
                         <div className="flex flex-wrap gap-3 mt-4">
-                          {!userTeamId &&
+                          {/* {!userTeamId &&
                             !isMember &&
                             team.teamMembers.length < 3 && (
                               <button
@@ -761,7 +761,7 @@ const SelectTeamPage = () => {
                                   </>
                                 )}
                               </button>
-                            )}
+                            )} */}
 
                           {/* Delete Team (For Creator) */}
                           {/* {isCreator && !isInteractive && (
@@ -800,7 +800,7 @@ const SelectTeamPage = () => {
                             message={modalConfig.message}
                           />
 
-                          {userTeamId === team._id && (
+                          {userTeamId.includes(team._id) && (
                             <a
                               href={`https://meet.jit.si/${
                                 team.teamName
@@ -816,7 +816,7 @@ const SelectTeamPage = () => {
                             </a>
                           )}
 
-                          {userTeamId === team._id && isInteractive && (
+                          {userTeamId.includes(team._id) && isInteractive && (
                             <a
                               href={`https://meet.jit.si/${
                                 userData.name
