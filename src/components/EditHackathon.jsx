@@ -761,7 +761,7 @@ const EditHackathon = () => {
           {/* Submit Button */}
           <div className="flex justify-end space-x-4">
             <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/")}
               className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               Cancel

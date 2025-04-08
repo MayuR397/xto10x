@@ -23,7 +23,7 @@ const Navbar = () => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const location = useLocation();
   const isLogin = location.pathname === "/login";
-  const isHackathon = location.pathname === "/hackathon";
+  const isDashboard = location.pathname === "/";
   // ✅ Dynamic Month & Year
   const [currentDate, setCurrentDate] = useState("");
   const userData = JSON.parse(localStorage.getItem("userData")) || {};
@@ -129,14 +129,14 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           {isAuth && (
             <div className="hidden md:flex items-center space-x-4">
-              {isHackathon && (
+              {!isDashboard && (
                 <Link to="/select-team">
                   <button className="bg-white border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50 transition">
                     {userData.role === "admin" ? "Check Teams" : "Select Team"}
                   </button>
                 </Link>
               )}
-              {isHackathon && (
+              {!isDashboard && (
                 <Link
                   to="/"
                   className="border p-2 rounded-full bg-gray-800 text-white cursor-pointer"
@@ -236,6 +236,14 @@ const Navbar = () => {
                 </button>
               </Link>
             )} */}
+            {!isDashboard && (
+              <Link to="/">
+                <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition mb-2">
+                  <House className="h-5 w-5 text-red-500" />
+                  <span>Home</span>
+                </button>
+              </Link>
+            )}
 
             <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
               <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition mb-2">
@@ -248,7 +256,7 @@ const Navbar = () => {
               <>
                 <Link to="/create-hackathon">
                   <button className="w-full flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition mb-2">
-                    <FilePlus className="h-5 w-5 text-red-500" />
+                    <FilePlus className="h-5 w-5 mr-2 text-red-500" />
                     Create Hackathon
                   </button>
                 </Link>
