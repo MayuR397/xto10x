@@ -91,7 +91,7 @@ const EligibleHackathons = () => {
     fetchHackathons(userData);
   };
 
-  const handleCreateTeam = async (id) => {
+  const handleCreateTeam = async (hackathon) => {
     try {
       const response = await fetch(`${baseURL}/team/auto`, {
         method: "POST",
@@ -99,9 +99,9 @@ const EligibleHackathons = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          minSize: 2,
-          maxSize: 3,
-          hackathonId: `${id}`,
+          minSize: hackathon.minTeamSize,
+          maxSize: hackathon.maxTeamSize,
+          hackathonId: `${hackathon._id}`,
         }),
       });
       if (response.ok) {
@@ -168,7 +168,7 @@ const EligibleHackathons = () => {
         title: "Confirm Create Teams",
         message: `Are you sure you want to create the teams for ${hackathon.name}.`,
         onConfirm: () => {
-          handleCreateTeam(hackathon._id);
+          handleCreateTeam(hackathon);
           setIsModalOpen(false);
         },
       });
