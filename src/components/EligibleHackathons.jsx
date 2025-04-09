@@ -18,6 +18,7 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ConfirmationModal from "./ConfirmationModal";
+import CSVUploadModal from "./CSVUploadModal";
 
 const EligibleHackathons = () => {
   const baseURL = import.meta.env.VITE_BASE_URL;
@@ -28,6 +29,13 @@ const EligibleHackathons = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
+  const [csvModalOpen, setCsvModalOpen] = useState(false);
+  const [selectedHackathonId, setSelectedHackathonId] = useState(null);
+
+  const handleCSVUploadClick = (hackathonId) => {
+    setSelectedHackathonId(hackathonId);
+    setCsvModalOpen(true);
+  };
 
   const fetchHackathons = async (user) => {
     setLoading(true);
@@ -273,17 +281,20 @@ const EligibleHackathons = () => {
                             </div>
 
                             <div>
-                              <Link to={`/team/create-from-emails`}>
-                                <button className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-2 rounded-full font-bold transition transform hover:scale-105">
-                                  <UserPlus/>
-                                </button>
-                              </Link>
+                              <button
+                                onClick={() =>
+                                  handleCSVUploadClick(registration._id)
+                                }
+                                className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-2 rounded-full font-bold transition transform hover:scale-105"
+                              >
+                                <UserPlus />
+                              </button>
                             </div>
 
                             <div>
                               <Link to={`/edithackathon/${registration._id}`}>
                                 <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-2 rounded-full font-bold transition transform hover:scale-105">
-                                  <Pencil/>
+                                  <Pencil />
                                 </button>
                               </Link>
                             </div>
@@ -295,8 +306,7 @@ const EligibleHackathons = () => {
                                 }
                                 className="bg-red-500 hover:bg-red-600 text-white px-2 py-2 rounded-full font-bold transition transform hover:scale-105"
                               >
-                                
-                                <Trash2/>
+                                <Trash2 />
                               </button>
                             </div>
 
@@ -385,6 +395,12 @@ const EligibleHackathons = () => {
                 })}
           </div>
         )}
+        <CSVUploadModal
+          isOpen={csvModalOpen}
+          onClose={() => setCsvModalOpen(false)}
+          hackathonId={selectedHackathonId}
+          baseURL={baseURL}
+        />
       </div>
     )
   );
