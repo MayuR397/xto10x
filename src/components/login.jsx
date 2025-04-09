@@ -23,7 +23,7 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const { isAuth, setIsAuth, setUserData, userData, role, setRole } =
+  const { isAuth, setIsAuth, setUserData, userData, role } =
     useContext(MyContext);
 
   useEffect(() => {
@@ -52,7 +52,6 @@ function Login() {
       const data = await response.json();
       // console.log("This is users ID: ", data.user.userType);
       localStorage.setItem("userId", data.user.id);
-      setRole(data.user.userType.toLowerCase())
       setIsAuth(true);
       toast.success("User logged in successfully", {
         position: "top-right",

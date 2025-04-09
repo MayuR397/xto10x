@@ -9,6 +9,7 @@ const CreateUser = () => {
   const [progress, setProgress] = useState(0);
   const [successCount, setSuccessCount] = useState(0);
   const [errorCount, setErrorCount] = useState(0);
+  const [fileName, setFileName] = useState(""); // Add this
   const [file, setFile] = useState(null); // replaces `users`
 
   const handleFileUpload = (event) => {
@@ -97,7 +98,7 @@ const CreateUser = () => {
           onClick={handleUpload}
           disabled={uploading || !file}
           className={`w-full flex items-center justify-center py-3 rounded-lg text-white font-semibold transition-all duration-300 ${
-            uploading || users.length === 0
+            uploading || !file
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg"
           }`}

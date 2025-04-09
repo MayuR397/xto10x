@@ -51,9 +51,10 @@ const AuthContextProvider = ({ children }) => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const userData = await response.json();
-        // console.log("Data after login", userData);
+        console.log("Data after login", userData);
         localStorage.setItem("userData", JSON.stringify(userData));
         setUserData(userData);
+        setRole(userData.userType.toLowerCase());
         setIsAuth(true);
       } catch (err) {
         console.error("Error fetching user data", err);
@@ -77,7 +78,6 @@ const AuthContextProvider = ({ children }) => {
         hackathon,
         setUserData,
         role,
-        setRole,
       }}
     >
       {children}
