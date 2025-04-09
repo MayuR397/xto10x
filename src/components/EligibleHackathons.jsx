@@ -59,7 +59,7 @@ const EligibleHackathons = () => {
       try {
         const response = await fetch(`${baseURL}/registrations/user/${userId}`);
         const data = await response.json();
-        // console.log("Hackathons Data for member: ", data);
+        console.log("Hackathons Data for member: ", data);
         if (data?.message === "No registrations found for this user") {
           setHackathons([]);
         } else {
@@ -358,13 +358,13 @@ const EligibleHackathons = () => {
                       <div
                         key={registration._id}
                         className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all cursor-pointer border border-gray-100 group"
-                        onClick={() => handleCardClick(registration.hackathonId._id)}
+                        onClick={() => handleCardClick(registration?.hackathonId?._id)}
                       >
                         <div className="h-2 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
                         <div className="p-6">
                           <div className="flex justify-between items-start mb-4">
                             <h3 className="text-xl font-bold text-gray-800 leading-tight group-hover:text-indigo-600 transition-colors">
-                              {registration.hackathonId.name}
+                              {registration?.hackathonId?.name}
                             </h3>
                             <span
                               className={`flex items-center text-xs font-medium px-3 py-1 rounded-full ${status.color}`}
@@ -378,13 +378,13 @@ const EligibleHackathons = () => {
                             <div className="flex items-center text-sm text-gray-600">
                               <CalendarRange className="w-4 h-4 mr-2 text-indigo-500" />
                               <span className="font-medium">
-                                {formatDate(registration.hackathonId.startDate)} - {formatDate(registration.hackathonId.endDate)}
+                                {formatDate(registration?.hackathonId?.startDate)} - {formatDate(registration?.hackathonId?.endDate)}
                               </span>
                             </div>
 
                             <div className="flex items-center text-sm text-gray-600">
                               <MapPin className="w-4 h-4 mr-2 text-indigo-500" />
-                              <span>{registration.hackathonId.eventType}</span>
+                              <span>{registration?.hackathonId?.eventType}</span>
                             </div>
                           </div>
 
@@ -396,7 +396,7 @@ const EligibleHackathons = () => {
                                 </p>
                                 <p className="text-xs text-indigo-600 mt-1">
                                   {console.log(registration)}
-                                  Role: <span className="font-medium">{registration.role}</span>
+                                  Role: <span className="font-medium">{registration?.role}</span>
                                 </p>
                               </div>
                               <div className="bg-indigo-100 hover:bg-indigo-200 p-3 rounded-lg transition-all duration-300">

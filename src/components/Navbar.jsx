@@ -132,7 +132,7 @@ const Navbar = () => {
               {!isDashboard && (
                 <Link to="/select-team">
                   <button className="bg-white border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50 transition">
-                    {role === "admin" ? "Check Teams" : "Select Team"}
+                    {role === "admin" ? "Check Teams" : "Team"}
                   </button>
                 </Link>
               )}
@@ -225,7 +225,7 @@ const Navbar = () => {
           <div className="md:hidden mt-4 space-y-3">
             <Link to="/select-team" onClick={() => setIsMenuOpen(false)}>
               <button className="w-full bg-white border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-50 transition mb-2">
-                Select Team
+                Team
               </button>
             </Link>
 

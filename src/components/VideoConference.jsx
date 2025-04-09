@@ -14,7 +14,7 @@ function VideoConference() {
   const navigate = useNavigate();
   const [isHelpHovered, setIsHelpHovered] = useState(false);
   const [isResourceHovered, setIsResourceHovered] = useState(false);
-  const {hackathon} = useContext(MyContext)
+  const { hackathon } = useContext(MyContext);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
@@ -112,19 +112,24 @@ function VideoConference() {
             Share your knowledge and improve your teaching skills by helping
             other students. Join our help room and make a difference!
           </p>
-          <button
-            onClick={() => navigate("/meeting-room")}
-            onMouseEnter={() => setIsHelpHovered(true)}
-            onMouseLeave={() => setIsHelpHovered(false)}
-            className="inline-flex items-center bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent font-medium hover:from-red-600 hover:to-red-800 transition-colors cursor-pointer"
+          <a
+            href={`https://meet.jit.si/${hackathon.name}`}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            Enter Help Room
-            <ArrowRight
-              className={`ml-2  text-red-500 group-hover:text-red-700 transform transition-transform duration-200 ${
-                isHelpHovered ? "translate-x-1" : ""
-              }`}
-            />
-          </button>
+            <button
+              onMouseEnter={() => setIsHelpHovered(true)}
+              onMouseLeave={() => setIsHelpHovered(false)}
+              className="inline-flex items-center bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent font-medium hover:from-red-600 hover:to-red-800 transition-colors cursor-pointer"
+            >
+              Enter Help Room
+              <ArrowRight
+                className={`ml-2  text-red-500 group-hover:text-red-700 transform transition-transform duration-200 ${
+                  isHelpHovered ? "translate-x-1" : ""
+                }`}
+              />
+            </button>
+          </a>
         </div>
 
         <div className="bg-gray-50 rounded-xl p-8 border border-gray-200">
