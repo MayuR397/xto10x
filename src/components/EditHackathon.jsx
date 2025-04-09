@@ -500,7 +500,7 @@ const EditHackathon = () => {
               {eventData.problemStatements.map((statement, index) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-4">
                   <div className="grid grid-cols-2 gap-4 mb-2">
-                    <div>
+                    {/* <div>
                       <label className="block text-sm font-medium text-gray-700">
                         Track
                       </label>
@@ -516,6 +516,26 @@ const EditHackathon = () => {
                         }
                         className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
                       />
+                    </div> */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                      Track
+                      </label>
+                      <select
+                        value={statement.track}
+                        onChange={(e) =>
+                          handleProblemStatementChange(
+                            index,
+                            "track",
+                            e.target.value
+                          )
+                        }
+                        className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
+                      >
+                        <option value="Frontend">Frontend</option>
+                        <option value="SDET">SDET</option>
+                        <option value="DA">DA</option>
+                      </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">

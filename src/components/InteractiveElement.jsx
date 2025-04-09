@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { MyContext } from "../context/AuthContextProvider";
 
 const InteractiveElement = () => {
+  const { hackathon } = useContext(MyContext);
+  const prizeDetails = hackathon?.prizeDetails || [];
+
+  // Optional color mapping based on position
+  const prizeColors = {
+    1: "text-yellow-400",
+    2: "text-gray-300",
+    3: "text-amber-600",
+  };
+
   return (
     <>
       {/* Interactive Element */}
@@ -16,18 +27,29 @@ const InteractiveElement = () => {
               10,000!
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white/5 p-4 rounded-lg backdrop-blur-sm">
-                <h3 className="font-bold text-xl mb-2">1st Prize</h3>
-                <p className="text-2xl font-bold text-yellow-400">5,000</p>
-              </div>
-              <div className="bg-white/5 p-4 rounded-lg backdrop-blur-sm">
-                <h3 className="font-bold text-xl mb-2">2nd Prize</h3>
-                <p className="text-2xl font-bold text-gray-300">3,000</p>
-              </div>
-              <div className="bg-white/5 p-4 rounded-lg backdrop-blur-sm">
-                <h3 className="font-bold text-xl mb-2">3rd Prize</h3>
-                <p className="text-2xl font-bold text-amber-600">2,000</p>
-              </div>
+              {prizeDetails.map((prize, index) => (
+                <div
+                  key={prize._id}
+                  className="bg-white/5 p-4 rounded-lg backdrop-blur-sm"
+                >
+                  <h3 className="font-bold text-xl mb-2">
+                    {prize.position === 1
+                      ? "1st Prize"
+                      : prize.position === 2
+                      ? "2nd Prize"
+                      : prize.position === 3
+                      ? "3rd Prize"
+                      : `${prize.position}th Prize`}
+                  </h3>
+                  <p
+                    className={`text-2xl font-bold ${
+                      prizeColors[prize.position] || "text-white"
+                    }`}
+                  >
+                    ₹{prize.amount.toLocaleString()}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
