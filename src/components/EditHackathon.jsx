@@ -161,7 +161,7 @@ const EditHackathon = () => {
       }
 
       toast.success("Hackathon updated successfully!");
-      navigate("/dashboard"); // Redirect to dashboard after successful update
+      navigate("/"); // Redirect to dashboard after successful update
     } catch (error) {
       toast.error("Error updating hackathon: " + error.message);
     } finally {

@@ -24,7 +24,7 @@ const AuthContextProvider = ({ children }) => {
         );
         const data = await response.json();
         // console.log("current id", currentHackathon);
-        // console.log("Current hack data", data);
+        console.log("Current hack data", data);
         setHackathon(data);
       } catch (error) {
         console.error("Error fetching hackathons:", error);
@@ -51,7 +51,7 @@ const AuthContextProvider = ({ children }) => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const userData = await response.json();
-        console.log("Data after login", userData);
+        // console.log("Data after login", userData);
         localStorage.setItem("userData", JSON.stringify(userData));
         setUserData(userData);
         setRole(userData.userType.toLowerCase());
