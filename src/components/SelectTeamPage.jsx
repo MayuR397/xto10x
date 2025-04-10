@@ -83,10 +83,10 @@ const SelectTeamPage = () => {
   const fetchTeams = async () => {
     try {
       const response = await fetch(`${baseURL}/team/${currentHackathon}`);
-      let res = await response.json()
-      console.log(res)
-      if (!response.ok) throw new Error(res.message);
+      // let res = await response.json()
+      // console.log(res)
       const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
       setTeams(data);
       // console.log("Teams: ", data)
     } catch (err) {
