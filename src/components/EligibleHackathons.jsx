@@ -89,10 +89,12 @@ const EligibleHackathons = () => {
     if (response.ok) {
       toast.success("Hackathon Deleted successfully!", {
         position: "top-right",
+        autoClose: 3000,
       });
     } else {
       toast.warning("Failed to delete hackathon. Please try again.", {
         position: "top-right",
+        autoClose: 3000,
       });
     }
     fetchHackathons(userData);
@@ -114,16 +116,19 @@ const EligibleHackathons = () => {
       if (response.ok) {
         toast.success("Teams created successfully!", {
           position: "top-right",
+          autoClose: 3000,
         });
       } else {
         toast.warning("Failed to create teams. Please try again.", {
           position: "top-right",
+          autoClose: 3000,
         });
       }
     } catch (error) {
       console.error("Error creating team:", error);
       toast.error("An error occurred while creating the teams.", {
         position: "top-right",
+        autoClose: 3000,
       });
     }
   };

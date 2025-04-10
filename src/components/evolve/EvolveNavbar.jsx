@@ -56,6 +56,7 @@ const EvolveNavbar = () => {
     setIsAuth(false);
     toast.success("User logged out successfully", {
       position: "top-right",
+      autoClose: 3000,
     });
     navigate("/login");
   };

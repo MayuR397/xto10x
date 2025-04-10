@@ -230,6 +230,7 @@ const CreateHackathon = () => {
       if (response.ok) {
         toast.success("Hackathon Created Sucessfully", {
           position: "top-right",
+          autoClose: 3000,
         });
         navigate("/");
       } else {
@@ -238,6 +239,7 @@ const CreateHackathon = () => {
     } catch (error) {
       toast.error(error.message, {
         position: "top-right",
+        autoClose: 3000,
       });
     }
   };

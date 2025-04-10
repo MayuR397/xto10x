@@ -83,7 +83,9 @@ const SelectTeamPage = () => {
   const fetchTeams = async () => {
     try {
       const response = await fetch(`${baseURL}/team/${currentHackathon}`);
-      if (!response.ok) throw new Error("Failed to fetch teams");
+      let res = await response.json()
+      console.log(res)
+      if (!response.ok) throw new Error(res.message);
       const data = await response.json();
       setTeams(data);
       // console.log("Teams: ", data)
@@ -151,10 +153,12 @@ const SelectTeamPage = () => {
       if (response.ok) {
         toast.success("Join request sent successfully!", {
           position: "top-right",
+          autoClose: 3000,
         });
       } else {
         toast.error(`${result.message}`, {
           position: "top-right",
+          autoClose: 3000,
         });
       }
     } catch (err) {
@@ -187,16 +191,19 @@ const SelectTeamPage = () => {
 
         toast.success("User accepted to the team!", {
           position: "top-right",
+          autoClose: 3000,
         });
       } else {
         toast.error(result.message, {
           position: "top-right",
+          autoClose: 3000,
         });
       }
     } catch (err) {
       console.error("Error accepting join request:", err);
       toast.error("Failed to accept request. Please try again.", {
         position: "top-right",
+        autoClose: 3000,
       });
     } finally {
       setRequestProcessing(false);
@@ -220,16 +227,19 @@ const SelectTeamPage = () => {
         );
         toast.success("Join request declined!", {
           position: "top-right",
+          autoClose: 3000,
         });
       } else {
         toast.error(result.message, {
           position: "top-right",
+          autoClose: 3000,
         });
       }
     } catch (err) {
       console.error("Error declining join request:", err);
       toast.error("Failed to decline request. Please try again.", {
         position: "top-right",
+        autoClose: 3000,
       });
     } finally {
       setRequestProcessing(false);
@@ -254,12 +264,14 @@ const SelectTeamPage = () => {
       }
       toast.success("You have successfully left the team", {
         position: "top-right",
+        autoClose: 3000,
       });
       await fetchTeams(); // ✅ Refresh teams after successful deletion
     } catch (error) {
       console.error("Error:", error);
       toast.success(error.message, {
         position: "top-right",
+        autoClose: 3000,
       });
     }
   };
@@ -281,12 +293,14 @@ const SelectTeamPage = () => {
       }
       toast.success("You have successfully deleted the team", {
         position: "top-right",
+        autoClose: 3000,
       });
       fetchTeams(); // ✅ Refresh teams after successful deletion
     } catch (error) {
       console.error("Error:", error);
       toast.error(error.message, {
         position: "top-right",
+        autoClose: 3000,
       });
     }
   };

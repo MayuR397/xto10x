@@ -55,6 +55,7 @@ function Login() {
       setIsAuth(true);
       toast.success("User logged in successfully", {
         position: "top-right",
+        autoClose: 3000,
       });
       // console.log("from", from, isAuth);
       navigate(from);

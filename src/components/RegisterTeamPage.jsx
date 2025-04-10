@@ -71,6 +71,7 @@ const RegisterTeamPage = () => {
       setShowConfetti(true);
       toast.success("Team created successfully!", {
         position: "top-right",
+        autoClose: 3000,
       });
       setTimeout(() => {
         setShowConfetti(false);
