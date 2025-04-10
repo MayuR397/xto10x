@@ -155,7 +155,7 @@ function App() {
               <VideoConference />
             </ProtectedRoute>
           )}
-        {!isMeetingRoom &&
+        {/* {!isMeetingRoom &&
           !isDashboard &&
           isAuth &&
           isHackathon &&
@@ -163,7 +163,7 @@ function App() {
             <ProtectedRoute>
               <InteractiveElement />
             </ProtectedRoute>
-          )}
+          )} */}
         {!isMeetingRoom && <Footer />}
         {isAuth && !isMeetingRoom && (
           <ChatbotButton
