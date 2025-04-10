@@ -16,6 +16,11 @@ import {
   ChevronUp,
   Code,
   Video,
+  SquareArrowOutUpRight,
+  Github,
+  Globe,
+  User2,
+  CloudUpload,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
@@ -33,6 +38,7 @@ const SelectTeamPage = () => {
   const [userTeamId, setUserTeamId] = useState(null);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [problemLoading, setProblemLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userIsCreator, setUserIsCreator] = useState(false);
   const [requestProcessing, setRequestProcessing] = useState(false);
@@ -47,6 +53,102 @@ const SelectTeamPage = () => {
   const [modalConfig, setModalConfig] = useState({});
   const isInteractive =
     hackathon.eventType == "Interactive Hackathon" ? true : false;
+
+  const [currentTeamId, setCurrentTeamId] = useState(null);
+  const [problemStatements, setProblemStatements] = useState([]);
+  const [showSelectProblemModal, setShowSelectProblemModal] = useState(false);
+  const [selectedProblemId, setSelectedProblemId] = useState("");
+  const [submissionTeamId, setSubmissionTeamId] = useState(null);
+  const [teamSubmissions, setTeamSubmissions] = useState([]);
+  const [showSubmissionModal, setShowSubmissionModal] = useState(false);
+  const [submissionData, setSubmissionData] = useState({
+    githubLink: "",
+    deploymentLink: "",
+    selfVideoLink: "",
+    teamVideoLink: "",
+  });
+  const [showGroupSubmissionModal, setShowGroupSubmissionModal] =
+    useState(false);
+
+  const handleSubmissionInputChange = (e) => {
+    const { name, value } = e.target;
+    setSubmissionData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const fetchProblemStatements = async (id) => {
+    setShowSelectProblemModal(true);
+    setProblemLoading(true);
+    try {
+      const res = await fetch(
+        `${baseURL}/hackathons/problems/${currentHackathon}`
+      );
+      const data = await res.json();
+      setCurrentTeamId(id);
+      setProblemStatements(data.problemStatements || []);
+    } catch (err) {
+      toast.error("Failed to load problem statements");
+    } finally {
+      setProblemLoading(false);
+    }
+  };
+
+  const handleProblemSelection = async (problemId, teamId) => {
+    try {
+      const res = await fetch(`${baseURL}/team/select-problem`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          teamId: currentTeamId,
+          hackathonId: currentHackathon,
+          problemStatementId: problemId,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to select problem");
+      toast.success("Problem statement selected successfully");
+      setShowSelectProblemModal(false);
+    } catch (err) {
+      toast.error("Error selecting problem statement");
+    }
+  };
+
+  const handleSubmission = async (teamId) => {
+    try {
+      const body = {
+        userId,
+        ...submissionData,
+      };
+
+      const res = await fetch(`${baseURL}/team/submissions/${teamId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) throw new Error("Submission failed");
+      toast.success("Submission successful");
+      setShowSubmissionModal(false);
+      setSubmissionData({
+        githubLink: "",
+        deploymentLink: "",
+        selfVideoLink: "",
+        teamVideoLink: "",
+      });
+    } catch (err) {
+      toast.error("Error submitting project");
+    }
+  };
+
+  const fetchTeamSubmissions = async (teamId) => {
+    try {
+      const res = await fetch(`${baseURL}/team/submissions/${teamId}`);
+      const data = await res.json();
+      setTeamSubmissions(data.submissions);
+      setShowGroupSubmissionModal(true);
+    } catch (err) {
+      toast.error("Failed to fetch submissions");
+    }
+  };
 
   // Configure Modal based on Action and Pass Arguments
   const openModal = (actionType, teamId, creatorId) => {
@@ -429,11 +531,13 @@ const SelectTeamPage = () => {
       </div>
     );
 
-  if (userData.teamId==null && role!=="admin")
+  if (userData.teamId == null && role !== "admin")
     return (
       <div className="min-h-screen bg-gray-50 flex justify-center items-center">
         <div className="text-center text-red-600 p-8 bg-white rounded-xl shadow-lg border-l-4 border-red-500 max-w-md">
-          <h3 className="text-xl font-bold mb-2">You are not part of any team</h3>
+          <h3 className="text-xl font-bold mb-2">
+            You are not part of any team
+          </h3>
           <button
             onClick={() => window.location.reload()} // 🔄 Fake state change to refresh UI
             className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
@@ -517,7 +621,7 @@ const SelectTeamPage = () => {
                   const isMember = team.teamMembers.some(
                     (member) => member._id === userId
                   );
-                  console.log(team)
+                  console.log(team);
                   const isCreator = team.createdBy?._id === userId;
                   const teamHasPendingRequests =
                     pendingRequests.length > 0 && isCreator;
@@ -638,8 +742,9 @@ const SelectTeamPage = () => {
                                           )}
 
                                         {/* Contact Details Button */}
-                                        {console.log("This is user role",role)}
-                                        {( role=="admin" || userTeamId.includes(team._id)) && ( // userTeamId is an array
+                                        {console.log("This is user role", role)}
+                                        {(role == "admin" ||
+                                          userTeamId.includes(team._id)) && ( // userTeamId is an array
                                           <div className="mt-2">
                                             <button
                                               onClick={() =>
@@ -815,7 +920,8 @@ const SelectTeamPage = () => {
                             message={modalConfig.message}
                           />
 
-                          {(role=="admin" || userTeamId.includes(team._id)) && (
+                          {(role == "admin" ||
+                            userTeamId.includes(team._id)) && (
                             <a
                               href={`https://meet.jit.si/${
                                 team.teamName
@@ -831,21 +937,46 @@ const SelectTeamPage = () => {
                             </a>
                           )}
 
-                          {(role=="admin" || userTeamId.includes(team._id) ) && isInteractive && (
-                            <a
-                              href={`https://meet.jit.si/${
-                                userData.name
-                              }_${generateThreeDigitNumber()}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <button
-                                className={`flex items-center justify-center gap-2 ${colorScheme.button} text-white px-4 py-2.5 rounded-md transition`}
+                          <button
+                            onClick={() => fetchProblemStatements(team._id)}
+                            className={`${colorScheme.button} text-white px-3 py-2 rounded-md`}
+                          >
+                            Select Problem
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setSubmissionTeamId(team._id);
+                              setShowSubmissionModal(true);
+                            }}
+                            className={`${colorScheme.button} text-white px-3 py-2 rounded-md`}
+                          >
+                            Team Submission
+                          </button>
+
+                          <button
+                            onClick={() => fetchTeamSubmissions(team._id)}
+                            className={`${colorScheme.button} text-white px-3 py-2 rounded-md`}
+                          >
+                            Group Submission
+                          </button>
+
+                          {(role == "admin" || userTeamId.includes(team._id)) &&
+                            isInteractive && (
+                              <a
+                                href={`https://meet.jit.si/${
+                                  userData.name
+                                }_${generateThreeDigitNumber()}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
                               >
-                                <Video /> Solo Meet
-                              </button>
-                            </a>
-                          )}
+                                <button
+                                  className={`flex items-center justify-center gap-2 ${colorScheme.button} text-white px-4 py-2.5 rounded-md transition`}
+                                >
+                                  <Video /> Solo Meet
+                                </button>
+                              </a>
+                            )}
                         </div>
                       </div>
 
@@ -923,6 +1054,290 @@ const SelectTeamPage = () => {
           )}
         </div>
       </div>
+      {showSelectProblemModal && (
+        <>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl p-8 w-[90%] max-w-lg shadow-xl border border-gray-100">
+              {problemLoading ? (
+                <div className=" flex justify-center items-center">
+                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-red-500"></div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-2xl font-bold text-gray-800">
+                      Select Problem Statement
+                    </h3>
+                    <div className="bg-indigo-100 text-indigo-600 text-xs font-semibold px-3 py-1 rounded-full">
+                      {problemStatements.length} Available
+                    </div>
+                  </div>
+
+                  <div className="max-h-[60vh] overflow-y-auto pr-2 space-y-4">
+                    {problemStatements.map((p) => (
+                      <div
+                        key={p._id}
+                        className="bg-gray-50 border border-gray-100 p-4 rounded-lg hover:bg-gray-100 hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col"
+                        onClick={() =>
+                          handleProblemSelection(p._id, userTeamId)
+                        }
+                      >
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-bold text-gray-800">
+                            {p.track}
+                          </span>
+                          <span
+                            className={`text-xs font-medium px-3 py-1 rounded-full ${
+                              p.difficulty === "Easy"
+                                ? "bg-green-100 text-green-800"
+                                : p.difficulty === "Medium"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {p.difficulty}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center mt-2">
+                          <a
+                            href={p.description}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-indigo-600 text-sm font-medium hover:text-indigo-800 transition-colors flex items-center"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            View Description
+                            <SquareArrowOutUpRight className="h-4 w-4 ml-1" />
+                          </a>
+                          <div className="text-gray-500 text-xs">
+                            Select this problem
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 flex justify-end">
+                    <button
+                      onClick={() => setShowSelectProblemModal(false)}
+                      className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-5 py-2 rounded-lg mr-3 font-medium transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => setShowSelectProblemModal(false)}
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-medium transition-colors"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+{showGroupSubmissionModal && (
+  <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div className="bg-white rounded-lg shadow-xl w-[90%] max-w-2xl transform transition-all">
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-800">Group Submissions</h3>
+          <button 
+            onClick={() => setShowGroupSubmissionModal(false)}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        {teamSubmissions.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-500">No submissions available.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {teamSubmissions.map((sub, idx) => (
+              <div key={idx} className="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-center mb-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+                    {sub.userId.name.charAt(0)}
+                  </div>
+                  <h4 className="ml-3 font-medium text-gray-800">{sub.userId.name}</h4>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-gray-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    <a href={sub.githubLink} className="text-blue-600 hover:underline truncate" target="_blank" rel="noreferrer">
+                      {sub.githubLink}
+                    </a>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    <a href={sub.deploymentLink} className="text-blue-600 hover:underline truncate" target="_blank" rel="noreferrer">
+                      {sub.deploymentLink}
+                    </a>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <a href={sub.selfVideoLink} className="text-blue-600 hover:underline truncate" target="_blank" rel="noreferrer">
+                      {sub.selfVideoLink}
+                    </a>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <a href={sub.teamVideoLink} className="text-blue-600 hover:underline truncate" target="_blank" rel="noreferrer">
+                      {sub.teamVideoLink}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        <div className="mt-6 text-right">
+          <button
+            onClick={() => setShowGroupSubmissionModal(false)}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+      {showSubmissionModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-8 w-[90%] max-w-lg shadow-xl border border-gray-100">
+            <div className="flex items-center mb-6">
+              <div className="bg-blue-100 p-3 rounded-lg mr-4">
+                <CloudUpload className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800">
+                Submit Your Project
+              </h3>
+            </div>
+
+            <div className="space-y-5 mb-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  GitHub Repository
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-gray-400"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    name="githubLink"
+                    value={submissionData.githubLink}
+                    onChange={handleSubmissionInputChange}
+                    placeholder="https://github.com/username/repository"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Deployment Link
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Globe className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="deploymentLink"
+                    value={submissionData.deploymentLink}
+                    onChange={handleSubmissionInputChange}
+                    placeholder="https://your-project.vercel.app"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Self Explanation Video
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Video className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="selfVideoLink"
+                    value={submissionData.selfVideoLink}
+                    onChange={handleSubmissionInputChange}
+                    placeholder="https://youtu.be/your-video-id"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Team Explanation Video
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <User2 className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="teamVideoLink"
+                    value={submissionData.teamVideoLink}
+                    onChange={handleSubmissionInputChange}
+                    placeholder="https://youtu.be/your-team-video-id"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-8">
+              <button
+                onClick={() => setShowSubmissionModal(false)}
+                className="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => handleSubmission(submissionTeamId)}
+                className="px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                Submit Project
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
