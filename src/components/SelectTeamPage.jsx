@@ -942,7 +942,7 @@ const SelectTeamPage = () => {
                               new Date() <=
                                 new Date(
                                   new Date(hackathon?.startDate).getTime() +
-                                    3 * 60 * 60 * 1000
+                                    5 * 60 * 60 * 1000
                                 ))) && (
                             <button
                               onClick={() => fetchProblemStatements(team._id)}

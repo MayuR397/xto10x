@@ -137,7 +137,7 @@ const ProblemStatement = () => {
                   getFilteredProblems(selectedTrack).map((item, index) => (
                     <div
                       key={item._id}
-                      className="mb-3 bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-100"
+                      className="mb-3 bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-100 "
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
