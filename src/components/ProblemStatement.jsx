@@ -97,14 +97,14 @@ const ProblemStatement = () => {
           <div className="bg-white rounded-xl p-8 w-full max-w-lg relative shadow-2xl">
             <div
               className={`absolute -top-4 -left-4 p-3 rounded-full ${
-                selectedTrack === "Frontend"
+                selectedTrack === "Software Development"
                   ? "bg-blue-500"
                   : selectedTrack === "DA"
                   ? "bg-purple-500"
                   : "bg-green-500"
               } text-white`}
             >
-              {selectedTrack === "Frontend" ? (
+              {selectedTrack === "Software Development" ? (
                 <Code size={24} />
               ) : selectedTrack === "DA" ? (
                 <Database size={24} />
@@ -181,16 +181,16 @@ const ProblemStatement = () => {
           Problem Statements
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Frontend */}
+          {/* Software Development */}
           <div
-            onClick={() => openModal("Frontend")}
+            onClick={() => openModal("Software Development")}
             className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200 hover:shadow-md transition transform hover:-translate-y-1 cursor-pointer"
           >
             <div className="bg-blue-500 text-white p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4">
               <Code size={24} />
             </div>
             <h3 className="text-lg font-semibold text-blue-800 mb-2">
-              Frontend
+              Software Development
             </h3>
             <p className="text-blue-700 text-sm mb-4">
               Build innovative UI/UX solutions with modern frameworks

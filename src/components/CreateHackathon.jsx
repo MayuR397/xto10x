@@ -669,7 +669,7 @@ const CreateHackathon = () => {
                         }
                         className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
                       >
-                        <option value="Frontend">Frontend</option>
+                        <option value="Software Development">Software Development</option>
                         <option value="SDET">SDET</option>
                         <option value="DA">DA</option>
                       </select>
