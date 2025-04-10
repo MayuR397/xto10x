@@ -31,10 +31,11 @@ function VideoConference() {
 
       <div className="bg-gradient-to-r from-red-500 to-red-700 rounded-xl p-8 mb-12 text-white">
         <div className="max-w-3xl">
-          <h3 className="text-2xl font-bold mb-4">Student Help Hub</h3>
+          <h3 className="text-2xl font-bold mb-4">Student Community Hub</h3>
           <p className="text-lg mb-6">
-            Join the most exciting student collaboration platform of 2025 and
-            showcase your skills, creativity, and problem-solving abilities.
+            Dive into a 24/7 live hub where students can connect, exchange
+            ideas, solve problems together, and collaborate beyond team
+            boundaries.
           </p>
           <div className="flex gap-4">
             <a

@@ -4,11 +4,11 @@ import { MyContext } from "../context/AuthContextProvider";
 import { toast } from "react-toastify";
 
 function AdminRoute({ children }) {
-  const { isAuth, loading, userData } = useContext(MyContext);
+  const { isAuth, loading, userData, role } = useContext(MyContext);
   const location = useLocation();
 
   useEffect(() => {
-    if (!loading && isAuth && userData?.role !== "admin") {
+    if (!loading && isAuth && role !== "admin") {
       toast.error("Access Denied: You are not an admin");
     }
   }, [loading, isAuth, userData]);
@@ -17,7 +17,7 @@ function AdminRoute({ children }) {
     return <p>Loading...</p>;
   }
 
-  if (!isAuth || userData?.role !== "admin") {
+  if (!isAuth || role !== "admin") {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
 
