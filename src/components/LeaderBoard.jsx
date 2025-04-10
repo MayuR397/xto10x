@@ -21,7 +21,7 @@ const LeaderBoard = () => {
       {/* Leaderboard */}
       <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-md">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Leaderboard</h2>
-        <div className="tflex-1 text-2xl text-center flex items-center justify-center rounded-md">Comming Soon</div>
+        <div className="tflex-1 text-2xl text-center flex items-center justify-center rounded-md">Coming Soon</div>
         
         {/* <div className="bg-gray-50 rounded-lg p-3 mb-4 flex justify-between">
           <div className="flex items-center">

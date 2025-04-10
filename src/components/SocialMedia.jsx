@@ -35,7 +35,7 @@ const SocialMedia = () => {
             <span className="text-white">YouTube</span>
           </a>
           <a
-            href="#"
+            href="https://join.slack.com/t/xto10xedition3/shared_invite/zt-33dau5ud1-b9U3j6_kLtJ43eGSZ0TLDw"
             target="_blank"
             className="flex items-center justify-center gap-2 bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition"
           >
