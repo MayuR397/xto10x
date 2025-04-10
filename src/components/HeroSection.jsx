@@ -20,8 +20,12 @@ const HeroSection = () => {
                 Check Team
               </button>
             </Link>
-            <button className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-md font-semibold hover:bg-white/10 transition transform hover:scale-105">
-              Learn More
+
+            <button
+              onClick={() => navigate("/resource-hub")}
+              className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-md font-semibold hover:bg-white/10 transition transform hover:scale-105"
+            >
+              Resource Hub
             </button>
           </div>
         </div>

@@ -53,7 +53,7 @@ function VideoConference() {
               onClick={() => navigate("/resource-hub")}
               className="border border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-[#C53030] transition-colors"
             >
-              Learn More
+              Resource Hub
             </button>
           </div>
         </div>

@@ -58,9 +58,6 @@ const InteractiveElement = () => {
                 Check Your Team
               </button>
             </Link>
-            <button className="bg-transparent border-2 border-white hover:bg-white/10 text-white px-8 py-3 rounded-md font-bold transition transform hover:scale-105">
-              Download Brochure
-            </button>
           </div>
         </div>
       </section>
