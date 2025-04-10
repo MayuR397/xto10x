@@ -43,7 +43,7 @@ const SocialMedia = () => {
             <span className="text-white">Slack</span>
           </a>
           <a
-            href="#"
+            href="https://github.com/masai-course"
             target="_blank"
             className="flex items-center justify-center gap-2 bg-gray-800 text-white p-3 rounded-lg hover:bg-gray-900 transition"
           >
@@ -55,28 +55,28 @@ const SocialMedia = () => {
         <h3 className="font-medium text-gray-700 mb-3">Follow Us</h3>
         <div className="flex justify-between">
           <a
-            href="#"
+            href="https://x.com/masaischool"
             target="_blank"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition"
           >
             <Twitter size={20} className="text-blue-800"/>
           </a>
           <a
-            href="#"
+            href="https://www.instagram.com/masaischool/"
             target="_blank"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-pink-100 text-pink-600 hover:bg-pink-200 transition"
           >
             <Instagram size={20} className="text-pink-800"/>
           </a>
           <a
-            href="#"
+            href="https://www.linkedin.com/school/masaischool/posts/?feedView=all"
             target="_blank"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 transition"
           >
             <Linkedin size={20} className="text-blue-800"/>
           </a>
           <a
-            href="#"
+            href="https://github.com/masai-course"
             target="_blank"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition"
           >
