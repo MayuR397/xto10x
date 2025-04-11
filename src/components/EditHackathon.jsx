@@ -142,10 +142,10 @@ const EditHackathon = () => {
         endDate: new Date(eventData.endDate).toISOString(),
         submissionStart: new Date(eventData.submissionStart).toISOString(),
         submissionEnd: new Date(eventData.submissionEnd).toISOString(),
-        schedule: eventData.schedule.map(item => ({
+        schedule: eventData.schedule.map((item) => ({
           ...item,
-          date: new Date(item.date).toISOString()
-        }))
+          date: new Date(item.date).toISOString(),
+        })),
       };
 
       const response = await fetch(`${baseURL}/hackathons/${id}`, {
@@ -212,7 +212,9 @@ const EditHackathon = () => {
   const handleMinTeamSizeChange = (min) => {
     const minValue = parseInt(min);
     if (minValue > eventData.maxTeamSize) {
-      toast.warning("Minimum team size cannot be greater than maximum team size.");
+      toast.warning(
+        "Minimum team size cannot be greater than maximum team size."
+      );
       return;
     }
 
@@ -265,8 +267,11 @@ const EditHackathon = () => {
     if (!dateString) return "";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "";
-    
-    return date.toISOString().slice(0, 16);
+
+    const istOffset = 330 * 60 * 1000;
+    const istDate = new Date(date.getTime() + istOffset);
+
+    return istDate.toISOString().slice(0, 16);
   }
 
   if (loading) {
@@ -308,9 +313,7 @@ const EditHackathon = () => {
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Edit Hackathon
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">Edit Hackathon</h1>
           </div>
         </div>
       </div>
@@ -330,7 +333,7 @@ const EditHackathon = () => {
                 </label>
                 <select
                   value={eventData.eventType}
-                //   onChange={(e) => handleInputChange("eventType", e.target.value)}
+                  //   onChange={(e) => handleInputChange("eventType", e.target.value)}
                   className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm bg-gray-100"
                 >
                   <option value="Interactive Hackathon">
@@ -373,7 +376,9 @@ const EditHackathon = () => {
                 </label>
                 <textarea
                   value={eventData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   rows={3}
                   className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
                 />
@@ -519,7 +524,7 @@ const EditHackathon = () => {
                     </div> */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
-                      Track
+                        Track
                       </label>
                       <select
                         value={statement.track}
@@ -533,8 +538,12 @@ const EditHackathon = () => {
                         }
                         className="mt-1 block w-full rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
                       >
-                        <option value="" disabled>Select a track</option>
-                        <option value="Software Development">Software Development</option>
+                        <option value="" disabled>
+                          Select a track
+                        </option>
+                        <option value="Software Development">
+                          Software Development
+                        </option>
                         <option value="SDET">SDET</option>
                         <option value="DA">DA</option>
                       </select>
@@ -607,11 +616,16 @@ const EditHackathon = () => {
                 <div key={index} className="flex items-center space-x-4">
                   <input
                     type="datetime-local"
+                    required
                     value={toIst(event.date)}
                     onChange={(e) =>
-                      handleScheduleChange(index, "date", e.target.value)
+                      handleScheduleChange(
+                        index,
+                        "date",
+                        new Date(e.target.value).toISOString()
+                      )
                     }
-                    className="block w-1/3 rounded-lg p-2 border border-gray-200 sm:text-sm"
+                    className="block w-1/3 rounded-lg p-2 border border-gray-200 focus:border-red-500 focus:ring-red-500 sm:text-sm"
                   />
                   <input
                     type="text"
@@ -752,7 +766,7 @@ const EditHackathon = () => {
                         handlePrizeDetailsChange(
                           index,
                           "amount",
-                         e.target.value
+                          e.target.value
                         )
                       }
                       className="mt-1 block w-full rounded-lg p-2 border border-gray-200 sm:text-sm"
