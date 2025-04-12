@@ -63,7 +63,7 @@ const SelectTeamPage = () => {
   const [showSubmissionModal, setShowSubmissionModal] = useState(false);
   const [submissionData, setSubmissionData] = useState({
     githubLink: "",
-    otherLink: "",
+    deploymentLink: "",
     teamVideoLink: "",
   });
   const [showGroupSubmissionModal, setShowGroupSubmissionModal] =
@@ -129,7 +129,7 @@ const SelectTeamPage = () => {
       setShowSubmissionModal(false);
       setSubmissionData({
         githubLink: "",
-        otherLink: "",
+        deploymentLink: "",
         teamVideoLink: "",
       });
     } catch (err) {
@@ -1235,12 +1235,12 @@ const SelectTeamPage = () => {
                             />
                           </svg>
                           <a
-                            href={sub.otherLink}
+                            href={sub.deploymentLink}
                             className="text-blue-600 hover:underline truncate"
                             target="_blank"
                             rel="noreferrer"
                           >
-                            {sub.otherLink}
+                            {sub.deploymentLink}
                           </a>
                         </div>
 
@@ -1355,8 +1355,8 @@ const SelectTeamPage = () => {
                   </div>
                   <input
                     type="text"
-                    name="otherLink"
-                    value={submissionData.otherLink}
+                    name="deploymentLink"
+                    value={submissionData.deploymentLink}
                     onChange={handleSubmissionInputChange}
                     placeholder="https://your-project.vercel.app"
                     className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
