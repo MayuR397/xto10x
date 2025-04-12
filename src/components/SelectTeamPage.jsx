@@ -130,7 +130,6 @@ const SelectTeamPage = () => {
       setSubmissionData({
         githubLink: "",
         otherLink: "",
-
         teamVideoLink: "",
       });
     } catch (err) {
@@ -1290,13 +1289,33 @@ const SelectTeamPage = () => {
       {showSubmissionModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-8 w-[90%] max-w-lg shadow-xl border border-gray-100">
-            <div className="flex items-center mb-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center bg-white shadow rounded-lg p-4 mb-6">
               <div className="bg-blue-100 p-3 rounded-lg mr-4">
                 <CloudUpload className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800">
-                Submit Your Project
-              </h3>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  Submit Your Project
+                </h3>
+                <div className="flex items-center mt-1 text-gray-600">
+                  <span className="font-medium">
+                    Deadline:{" "}
+                    <span className="text-blue-600">
+                      {new Date(hackathon?.submissionEnd).toLocaleString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        }
+                      )}
+                    </span>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-5 mb-6">
