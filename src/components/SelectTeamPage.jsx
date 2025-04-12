@@ -63,8 +63,7 @@ const SelectTeamPage = () => {
   const [showSubmissionModal, setShowSubmissionModal] = useState(false);
   const [submissionData, setSubmissionData] = useState({
     githubLink: "",
-    deploymentLink: "",
-    selfVideoLink: "",
+    otherLink: "",
     teamVideoLink: "",
   });
   const [showGroupSubmissionModal, setShowGroupSubmissionModal] =
@@ -130,8 +129,8 @@ const SelectTeamPage = () => {
       setShowSubmissionModal(false);
       setSubmissionData({
         githubLink: "",
-        deploymentLink: "",
-        selfVideoLink: "",
+        otherLink: "",
+
         teamVideoLink: "",
       });
     } catch (err) {
@@ -1237,36 +1236,12 @@ const SelectTeamPage = () => {
                             />
                           </svg>
                           <a
-                            href={sub.deploymentLink}
+                            href={sub.otherLink}
                             className="text-blue-600 hover:underline truncate"
                             target="_blank"
                             rel="noreferrer"
                           >
-                            {sub.deploymentLink}
-                          </a>
-                        </div>
-
-                        <div className="flex items-center">
-                          <svg
-                            className="w-5 h-5 text-gray-500 mr-2"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                            />
-                          </svg>
-                          <a
-                            href={sub.selfVideoLink}
-                            className="text-blue-600 hover:underline truncate"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {sub.selfVideoLink}
+                            {sub.otherLink}
                           </a>
                         </div>
 
@@ -1327,7 +1302,7 @@ const SelectTeamPage = () => {
             <div className="space-y-5 mb-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  GitHub Repository
+                  GitHub Repository <span className="text-red-600">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -1342,6 +1317,7 @@ const SelectTeamPage = () => {
                   <input
                     type="text"
                     name="githubLink"
+                    required
                     value={submissionData.githubLink}
                     onChange={handleSubmissionInputChange}
                     placeholder="https://github.com/username/repository"
@@ -1352,7 +1328,7 @@ const SelectTeamPage = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Deployment Link
+                  Other Link
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -1360,8 +1336,8 @@ const SelectTeamPage = () => {
                   </div>
                   <input
                     type="text"
-                    name="deploymentLink"
-                    value={submissionData.deploymentLink}
+                    name="otherLink"
+                    value={submissionData.otherLink}
                     onChange={handleSubmissionInputChange}
                     placeholder="https://your-project.vercel.app"
                     className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -1371,26 +1347,7 @@ const SelectTeamPage = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Self Explanation Video
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Video className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    name="selfVideoLink"
-                    value={submissionData.selfVideoLink}
-                    onChange={handleSubmissionInputChange}
-                    placeholder="https://youtu.be/your-video-id"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Team Explanation Video
+                  Team Explanation Video <span className="text-red-600">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -1399,6 +1356,7 @@ const SelectTeamPage = () => {
                   <input
                     type="text"
                     name="teamVideoLink"
+                    required
                     value={submissionData.teamVideoLink}
                     onChange={handleSubmissionInputChange}
                     placeholder="https://youtu.be/your-team-video-id"
