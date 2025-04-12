@@ -125,6 +125,7 @@ const SelectTeamPage = () => {
       });
 
       if (!res.ok) throw new Error("Submission failed");
+      console.log(res);
       toast.success("Submission successful");
       setShowSubmissionModal(false);
       setSubmissionData({
@@ -1200,6 +1201,44 @@ const SelectTeamPage = () => {
                           {sub.userId.name}
                         </h4>
                       </div>
+                      <div className="flex items-center mt-1 text-gray-600">
+                        <span className="flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-1.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          <span className="text-sm">
+                            Last updated{" "}
+                            <time
+                              dateTime={sub?.createdAt}
+                              className="font-medium text-blue-600"
+                            >
+                              {new Date(sub?.createdAt).toLocaleString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                }
+                              )}
+                            </time>
+                          </span>
+                        </span>
+                      </div>
+
+                      <hr className="mt-1 mb-2 border-t-1 border-gray-300" />
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                         <div className="flex items-center">
