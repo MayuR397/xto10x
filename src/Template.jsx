@@ -30,7 +30,8 @@ function App() {
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
-      const targetDate = new Date("2025-02-28T00:00:00");
+      const hackathonStart = new Date("2024-03-15T20:00:00"); // 8 PM start time
+      const targetDate = new Date(hackathonStart.getTime() + (4 * 60 * 60 * 1000)); // Add 4 hours
       const difference = targetDate.getTime() - now.getTime();
 
       if (difference > 0) {
