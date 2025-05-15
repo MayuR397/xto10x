@@ -1008,25 +1008,15 @@ const SelectTeamPage = () => {
                             </a>
                           )}
 
-                          {(role === "admin" ||
-                            (new Date() >= new Date(hackathon?.startDate) &&
-                              new Date() <=
-                                new Date(
-                                  new Date(hackathon?.startDate).getTime() +
-                                    5 * 60 * 60 * 1000
-                                ))) && (
-                            <button
-                              onClick={() => fetchProblemStatements(team._id)}
-                              className={`${colorScheme.button} text-white px-3 py-2 rounded-md`}
-                              disabled={role !== "admin" && timeLeft && timeLeft.expired}
-                            >
-                              Select Problem
-                            </button>
-                          )}
+                          <button
+                            onClick={() => fetchProblemStatements(team._id)}
+                            className={`${colorScheme.button} text-white px-3 py-2 rounded-md`}
+                          >
+                            Select Problem
+                          </button>
 
                           {(role === "admin" ||
-                            (new Date() >=
-                              new Date(hackathon?.submissionStart) &&
+                            (new Date() >= new Date(hackathon?.submissionStart) &&
                               new Date() <=
                                 new Date(hackathon?.submissionEnd))) && (
                             <>

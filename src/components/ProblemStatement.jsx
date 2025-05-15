@@ -174,55 +174,44 @@ const ProblemStatement = () => {
               Select a challenge to view details
             </p>
 
-            {/* Disable selection if window expired for non-admins */}
-            {new Date(hackathon?.startDate) > new Date() && role !== "admin" ? (
-              <div className="text-center py-8 text-gray-500">
-                Hackathon not started yet.
-              </div>
-            ) : timeLeft && timeLeft.expired && role !== "admin" ? (
-              <div className="text-center py-8 text-gray-500">
-                You can no longer select a problem statement.
-              </div>
-            ) : (
-              <div className="max-h-72 overflow-y-auto pr-2 rounded-lg">
-                {getFilteredProblems(selectedTrack)?.length > 0 ? (
-                  getFilteredProblems(selectedTrack).map((item, index) => (
-                    <div
-                      key={item._id}
-                      className="mb-3 bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-100 "
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-semibold text-sm mr-3">
-                            {index + 1}
-                          </span>
-                          <a
-                            href={item.description}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-gray-700 font-medium hover:text-indigo-600 transition-colors flex-1"
-                          >
-                            Problem {index + 1}
-                          </a>
-                        </div>
+            <div className="max-h-72 overflow-y-auto pr-2 rounded-lg">
+              {getFilteredProblems(selectedTrack)?.length > 0 ? (
+                getFilteredProblems(selectedTrack).map((item, index) => (
+                  <div
+                    key={item._id}
+                    className="mb-3 bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors border border-gray-100 "
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-semibold text-sm mr-3">
+                          {index + 1}
+                        </span>
                         <a
                           href={item.description}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-indigo-500 hover:text-indigo-700 p-2 rounded-md hover:bg-indigo-50 transition-colors"
+                          className="text-gray-700 font-medium hover:text-indigo-600 transition-colors flex-1"
                         >
-                          <ChevronRight size={18} />
+                          Problem {index + 1}
                         </a>
                       </div>
+                      <a
+                        href={item.description}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-indigo-500 hover:text-indigo-700 p-2 rounded-md hover:bg-indigo-50 transition-colors"
+                      >
+                        <ChevronRight size={18} />
+                      </a>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No challenges available for this track yet.
                   </div>
-                )}
-              </div>
-            )}
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  No challenges available for this track yet.
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
