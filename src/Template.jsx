@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   Clock,
   Trophy,
@@ -21,45 +21,7 @@ import CountDownTimer from "./CountDownTimer";
 
 function App() {
   const { hackathon } = useContext(MyContext);
-  const [timeLeft, setTimeLeft] = useState({
-    days: 2,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    expired: false,
-  });
-
   const [activeTab, setActiveTab] = useState("fri");
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      const hackathonStart = new Date("2024-03-15T20:00:00"); // 8 PM start time
-      const targetDate = new Date(hackathonStart.getTime() + (4 * 60 * 60 * 1000)); // Add 4 hours
-      const difference = targetDate.getTime() - now.getTime();
-
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-        setTimeLeft({ days, hours, minutes, seconds, expired: false });
-      } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: true });
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const formatTime = (time) => {
-    return time < 10 ? `0${time}` : time;
-  };
 
   const leaderboardData = [
     { rank: 1, team: "Team 6", streak: 15 },
