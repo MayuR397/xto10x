@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Clock,
   Trophy,
@@ -16,13 +16,17 @@ import {
   Twitter,
   Linkedin,
 } from "lucide-react";
+import { MyContext } from "../context/AuthContextProvider";
+import CountDownTimer from "./CountDownTimer";
 
 function App() {
+  const { hackathon } = useContext(MyContext);
   const [timeLeft, setTimeLeft] = useState({
     days: 2,
     hours: 0,
     minutes: 0,
     seconds: 0,
+    expired: false,
   });
 
   const [activeTab, setActiveTab] = useState("fri");
@@ -44,7 +48,9 @@ function App() {
         );
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-        setTimeLeft({ days, hours, minutes, seconds });
+        setTimeLeft({ days, hours, minutes, seconds, expired: false });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: true });
       }
     }, 1000);
 
@@ -128,40 +134,7 @@ function App() {
       </header>
 
       {/* Countdown Timer */}
-      <div className="bg-gray-900 text-white py-4">
-        <div className="container mx-auto flex justify-center items-center">
-          <Clock className="mr-2" size={24} />
-          <div className="flex space-x-4">
-            <div className="text-center">
-              <span className="text-2xl font-mono">
-                {formatTime(timeLeft.days)}
-              </span>
-              <span className="text-xs block">DAYS</span>
-            </div>
-            <span className="text-2xl">:</span>
-            <div className="text-center">
-              <span className="text-2xl font-mono">
-                {formatTime(timeLeft.hours)}
-              </span>
-              <span className="text-xs block">HOURS</span>
-            </div>
-            <span className="text-2xl">:</span>
-            <div className="text-center">
-              <span className="text-2xl font-mono">
-                {formatTime(timeLeft.minutes)}
-              </span>
-              <span className="text-xs block">MINUTES</span>
-            </div>
-            <span className="text-2xl">:</span>
-            <div className="text-center">
-              <span className="text-2xl font-mono">
-                {formatTime(timeLeft.seconds)}
-              </span>
-              <span className="text-xs block">SECONDS</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CountDownTimer />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
