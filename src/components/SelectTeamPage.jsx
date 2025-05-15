@@ -69,6 +69,11 @@ const SelectTeamPage = () => {
   const [showGroupSubmissionModal, setShowGroupSubmissionModal] =
     useState(false);
 
+  // Countdown timer state
+  const [timeLeft, setTimeLeft] = useState(null);
+  // Store selected problem details for each team
+  const [selectedProblems, setSelectedProblems] = useState({});
+
   const handleSubmissionInputChange = (e) => {
     const { name, value } = e.target;
     setSubmissionData((prev) => ({ ...prev, [name]: value }));
@@ -507,6 +512,52 @@ const SelectTeamPage = () => {
     if (teams.length > 0) fetchFullMemberDetails();
   }, [teams]);
 
+  // Countdown timer logic
+  useEffect(() => {
+    if (!hackathon?.startDate) return;
+    const interval = setInterval(() => {
+      const start = new Date(hackathon.startDate);
+      const now = new Date();
+      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // 2 hours after start
+      const diff = end - now;
+      if (diff > 0) {
+        setTimeLeft({
+          hours: Math.floor(diff / (1000 * 60 * 60)),
+          minutes: Math.floor((diff / (1000 * 60)) % 60),
+          seconds: Math.floor((diff / 1000) % 60),
+          expired: false,
+        });
+      } else {
+        setTimeLeft({ hours: 0, minutes: 0, seconds: 0, expired: true });
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [hackathon?.startDate]);
+
+  // Fetch selected problem for each team on mount or teams change
+  useEffect(() => {
+    const fetchSelectedProblems = async () => {
+      const problems = {};
+      for (const team of teams) {
+        if (team.selectedProblem) {
+          // Fetch problem details from backend if not already present
+          try {
+            const res = await fetch(
+              `${baseURL}/hackathons/problems/${currentHackathon}`
+            );
+            const data = await res.json();
+            const found = (data.problemStatements || []).find(
+              (p) => p._id === team.selectedProblem
+            );
+            if (found) problems[team._id] = found;
+          } catch {}
+        }
+      }
+      setSelectedProblems(problems);
+    };
+    if (teams.length > 0) fetchSelectedProblems();
+  }, [teams, baseURL, currentHackathon]);
+
   if (loading)
     return (
       <div className="min-h-screen bg-gray-50 flex justify-center items-center">
@@ -551,6 +602,27 @@ const SelectTeamPage = () => {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
+          {/* Countdown Timer */}
+          {hackathon?.startDate && (
+            <div className="mb-6 flex flex-col items-center justify-center">
+              {timeLeft && !timeLeft.expired ? (
+                <div className="flex items-center space-x-2 text-red-600 font-semibold">
+                  <span>Time left to pick your problem statement:</span>
+                  <span className="bg-gray-100 px-3 py-1 rounded-lg text-lg tracking-wider">
+                    {`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
+                      .toString()
+                      .padStart(2, "0")}:${timeLeft.seconds
+                      .toString()
+                      .padStart(2, "0")}`}
+                  </span>
+                </div>
+              ) : timeLeft && timeLeft.expired ? (
+                <div className="text-red-500 font-semibold">
+                  Problem selection window has closed.
+                </div>
+              ) : null}
+            </div>
+          )}
           {/* Header */}
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
@@ -946,6 +1018,7 @@ const SelectTeamPage = () => {
                             <button
                               onClick={() => fetchProblemStatements(team._id)}
                               className={`${colorScheme.button} text-white px-3 py-2 rounded-md`}
+                              disabled={role !== "admin" && timeLeft && timeLeft.expired}
                             >
                               Select Problem
                             </button>
@@ -1060,6 +1133,25 @@ const SelectTeamPage = () => {
                               </li>
                             ))}
                           </ul>
+                        </div>
+                      )}
+
+                      {/* Selected Problem Statement Card */}
+                      {selectedProblems[team._id] && (
+                        <div className="mt-6 p-4 bg-indigo-50 border-l-4 border-indigo-400 rounded-lg shadow">
+                          <h4 className="text-lg font-bold text-indigo-700 mb-2 flex items-center">
+                            <Code className="w-5 h-5 mr-2 text-indigo-500" />
+                            Selected Problem Statement
+                          </h4>
+                          <div className="mb-1">
+                            <span className="font-semibold text-gray-700">Track:</span> {selectedProblems[team._id].track}
+                          </div>
+                          <div className="mb-1">
+                            <span className="font-semibold text-gray-700">Difficulty:</span> {selectedProblems[team._id].difficulty}
+                          </div>
+                          <div className="mb-1">
+                            <span className="font-semibold text-gray-700">Description:</span> <a href={selectedProblems[team._id].description} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">View Problem</a>
+                          </div>
                         </div>
                       )}
                     </div>

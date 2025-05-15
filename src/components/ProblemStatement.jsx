@@ -64,7 +64,7 @@
 
 // export default ProblemStatement;
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Code, Database, TestTube, ChevronRight, X } from "lucide-react";
 import { MyContext } from "../context/AuthContextProvider";
 
@@ -72,6 +72,30 @@ const ProblemStatement = () => {
   const { hackathon, role } = useContext(MyContext);
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  // Countdown timer state
+  const [timeLeft, setTimeLeft] = useState(null);
+
+  // Helper to calculate time left for 2-hour window
+  useEffect(() => {
+    if (!showModal || !hackathon?.startDate) return;
+    const interval = setInterval(() => {
+      const start = new Date(hackathon.startDate);
+      const now = new Date();
+      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // 2 hours after start
+      const diff = end - now;
+      if (diff > 0) {
+        setTimeLeft({
+          hours: Math.floor(diff / (1000 * 60 * 60)),
+          minutes: Math.floor((diff / (1000 * 60)) % 60),
+          seconds: Math.floor((diff / 1000) % 60),
+          expired: false,
+        });
+      } else {
+        setTimeLeft({ hours: 0, minutes: 0, seconds: 0, expired: true });
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [showModal, hackathon?.startDate]);
 
   const openModal = (track) => {
     setSelectedTrack(track);
@@ -123,13 +147,41 @@ const ProblemStatement = () => {
             <h3 className="text-2xl font-bold mb-2 pl-1 text-gray-800">
               {selectedTrack} Challenges
             </h3>
+
+            {/* Countdown Timer for all users */}
+            {hackathon?.startDate && (
+              <div className="mb-4 pl-1">
+                {timeLeft && !timeLeft.expired ? (
+                  <div className="flex items-center space-x-2 text-red-600 font-semibold">
+                    <span>Time left to pick your problem statement:</span>
+                    <span className="bg-gray-100 px-3 py-1 rounded-lg text-lg tracking-wider">
+                      {`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
+                        .toString()
+                        .padStart(2, "0")}:${timeLeft.seconds
+                        .toString()
+                        .padStart(2, "0")}`}
+                    </span>
+                  </div>
+                ) : timeLeft && timeLeft.expired ? (
+                  <div className="text-red-500 font-semibold">
+                    Problem selection window has closed.
+                  </div>
+                ) : null}
+              </div>
+            )}
+
             <p className="text-gray-500 mb-6 pl-1">
               Select a challenge to view details
             </p>
 
+            {/* Disable selection if window expired for non-admins */}
             {new Date(hackathon?.startDate) > new Date() && role !== "admin" ? (
               <div className="text-center py-8 text-gray-500">
                 Hackathon not started yet.
+              </div>
+            ) : timeLeft && timeLeft.expired && role !== "admin" ? (
+              <div className="text-center py-8 text-gray-500">
+                You can no longer select a problem statement.
               </div>
             ) : (
               <div className="max-h-72 overflow-y-auto pr-2 rounded-lg">

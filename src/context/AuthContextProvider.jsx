@@ -24,7 +24,7 @@ const AuthContextProvider = ({ children }) => {
         );
         const data = await response.json();
         // console.log("current id", currentHackathon);
-        console.log("Current hack data", data);
+        // console.log("Current hack data", data);
         setHackathon(data);
       } catch (error) {
         console.error("Error fetching hackathons:", error);
