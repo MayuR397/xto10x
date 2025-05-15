@@ -21,7 +21,7 @@ const HeroSection = () => {
               </button>
             </Link>
 
-            <a href="https://us06web.zoom.us/j/81424191480" target="_blank">
+            <a href="https://us06web.zoom.us/j/88056472555" target="_blank">
               <button className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-md font-semibold hover:bg-white/10 transition transform hover:scale-105">
                 Join Helpdesk
               </button>

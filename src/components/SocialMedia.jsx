@@ -19,7 +19,7 @@ const SocialMedia = () => {
         </h2>
         <div className="grid grid-cols-2 gap-4 mb-6">
           <a
-            href="https://us06web.zoom.us/j/89309330744"
+            href="https://us06web.zoom.us/j/82747654356"
             target="_blank"
             className="flex items-center justify-center gap-2 bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition"
           >
@@ -35,7 +35,7 @@ const SocialMedia = () => {
             <span className="text-white">YouTube</span>
           </a>
           <a
-            href="https://join.slack.com/t/xto10xedition3/shared_invite/zt-33dau5ud1-b9U3j6_kLtJ43eGSZ0TLDw"
+            href="https://bit.ly/Xto10X_Hackathon_4"
             target="_blank"
             className="flex items-center justify-center gap-2 bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition"
           >
