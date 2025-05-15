@@ -347,7 +347,7 @@ function App() {
           </h2>
           <div className="grid grid-cols-2 gap-4 mb-6">
             <a
-              href="#"
+              href="https://us06web.zoom.us/j/82747654356"
               className="flex items-center justify-center gap-2 bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition"
             >
               <Video size={20} />
